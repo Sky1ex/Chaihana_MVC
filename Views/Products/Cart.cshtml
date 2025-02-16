@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ProductCount>
+
+<h1>Корзина</h1>
+<p>Добро пожаловать в наше кафе! Вот наш ассортимент:</p>
+
+@* <div class="product-grid">
+    @foreach (var productCount in Model)
+    {
+        <div class="product-card">
+            <div class="product-info">
+                <div class="product-name">@productCount.ProductId</div>
+                <div class="product-details">
+                    <div class="product-price">@productCount.Count</div>
+                </div>
+            </div>
+            <button class="add-to-cart-btn">Добавить</button>
+        </div>
+    }
+</div> *@
+
+<div id="cartModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Ваша корзина</h2>
+        <ul id="cartItems">
+            <!-- Здесь будут отображаться товары -->
+        </ul>
+        <p>Общая стоимость: <span id="totalPrice">0</span> руб.</p>
+    </div>
+</div>
