@@ -6,10 +6,12 @@
 
         public string Name { get; set; }
 
-        public List<string> Adresses { get; set; }
+        public List<Adress> Adresses { get; set; }
 
         public List<Order> Orders { get; set; }
 
         public string Phone { get; set; }
+
+        public  Cart Cart { get; set; }
     }
 }

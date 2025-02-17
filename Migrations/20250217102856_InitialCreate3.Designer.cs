@@ -13,7 +13,7 @@ using WebApplication1.DataBase;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250216123107_InitialCreate3")]
+    [Migration("20250217102856_InitialCreate3")]
     partial class InitialCreate3
     {
         /// <inheritdoc />
@@ -25,29 +25,6 @@ namespace WebApplication1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("WebApplication1.Models.Admin", b =>
-                {
-                    b.Property<Guid>("AdminId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("login")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("AdminId");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("WebApplication1.Models.Booking", b =>
                 {
@@ -71,13 +48,52 @@ namespace WebApplication1.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.Order", b =>
+            modelBuilder.Entity("WebApplication1.Models.Cart", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<Guid>("CartId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.CartElement", b =>
+                {
+                    b.Property<Guid>("CartElementId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Count")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CartElementId");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartElements");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Order", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
@@ -92,13 +108,35 @@ namespace WebApplication1.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.Product", b =>
+            modelBuilder.Entity("WebApplication1.Models.OrderElement", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<Guid>("OrderElementId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Count")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductId"));
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrderElementId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderElements");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Product", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -112,9 +150,6 @@ namespace WebApplication1.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("integer");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
@@ -126,8 +161,6 @@ namespace WebApplication1.Migrations
                         .HasColumnType("double precision");
 
                     b.HasKey("ProductId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Products");
                 });
@@ -166,6 +199,30 @@ namespace WebApplication1.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebApplication1.Models.Cart", b =>
+                {
+                    b.HasOne("WebApplication1.Models.User", "User")
+                        .WithOne("Cart")
+                        .HasForeignKey("WebApplication1.Models.Cart", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.CartElement", b =>
+                {
+                    b.HasOne("WebApplication1.Models.Cart", null)
+                        .WithMany("CartElement")
+                        .HasForeignKey("CartId");
+
+                    b.HasOne("WebApplication1.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("WebApplication1.Models.Order", b =>
                 {
                     b.HasOne("WebApplication1.Models.User", null)
@@ -173,20 +230,36 @@ namespace WebApplication1.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.Product", b =>
+            modelBuilder.Entity("WebApplication1.Models.OrderElement", b =>
                 {
                     b.HasOne("WebApplication1.Models.Order", null)
-                        .WithMany("Products")
+                        .WithMany("OrderElement")
                         .HasForeignKey("OrderId");
+
+                    b.HasOne("WebApplication1.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Cart", b =>
+                {
+                    b.Navigation("CartElement");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Order", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("OrderElement");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.User", b =>
                 {
+                    b.Navigation("Cart")
+                        .IsRequired();
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

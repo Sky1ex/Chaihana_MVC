@@ -1,11 +1,17 @@
-﻿namespace WebApplication1.Models
+﻿using System.Net;
+
+namespace WebApplication1.Models
 {
     public class Order
     {
         public DateTime dateTime { get; set; }
 
-        public int OrderId { get; set; } // Добавить еще элементы...
+        public Guid OrderId { get; set; }
 
-        public List<ProductCount> ProductCounts { get; set; }
+        public List<OrderElement> OrderElement { get; set; }
+
+        public Adress Adress { get; set; }
+
+        public int Sum { get; set; }
     }
 }

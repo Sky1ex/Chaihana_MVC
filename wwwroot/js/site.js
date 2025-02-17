@@ -1,8 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-/*<script src="~/lib/jquery/dist/jquery.min.js"></script>*/
+﻿
 $(document).ready(function () {
     // Обработка нажатия кнопки "Добавить в корзину"
     $('.add-to-cart-btn').click(function () {
@@ -14,6 +10,8 @@ $(document).ready(function () {
         setTimeout(() => {
             $(this).removeClass('added');
         }, 500);
+
+
 
         // Отправляем данные на сервер (AJAX)
         $.ajax({
@@ -33,3 +31,37 @@ $(document).ready(function () {
         });
     });
 });
+
+//Кусок кода отвечающий за открытие/корзины в виде модального окна
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const cartButton = document.getElementById("view-cart");
+    const cartModal = document.getElementById("cartModal");
+    const closeButton = document.querySelector(".close");
+
+    if (!cartModal || !cartButton || !closeButton) {
+        console.error("Один из элементов не найден!");
+        return;
+    }
+
+    cartButton.addEventListener("click", () => {
+        cartModal.style.display = "block";
+    });
+
+    closeButton.addEventListener("click", () => {
+        cartModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === cartModal) {
+            cartModal.style.display = "none";
+        }
+    });
+
+
+});
+
+
+
+

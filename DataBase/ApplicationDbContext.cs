@@ -15,25 +15,6 @@ namespace WebApplication1.DataBase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*modelBuilder.Entity<Order>().OwnsMany(o => o.ProductCounts, pc =>
-            {
-                pc.WithOwner().HasForeignKey("OrderId");
-                pc.Property<int>("Id").ValueGeneratedOnAdd();
-                pc.HasKey("Id");
-            });*/
-
-            modelBuilder.Entity<Order>(order =>
-            {
-                order.HasKey(o => o.OrderId); // Указываем первичный ключ
-
-                // Настройка вложенной сущности ProductCount
-                order.OwnsMany(o => o.ProductCounts, pc =>
-                {
-                    pc.WithOwner().HasForeignKey("OrderId"); // Внешний ключ для связи с Order
-                    pc.Property<int>("Id").ValueGeneratedOnAdd(); // Скрытый идентификатор
-                    pc.HasKey("Id"); // Указываем первичный ключ
-                });
-            });     
 
             base.OnModelCreating(modelBuilder);
         }
@@ -44,10 +25,16 @@ namespace WebApplication1.DataBase
 
         public DbSet<Order> Orders { get; set; } 
 
-        public DbSet<Admin> Admins { get; set; }
-
         public DbSet<Booking> Bookings { get; set; }
 
-        public DbSet<ProductCount> ProductsCount { get; set; }
+        public DbSet<CartElement> CartElements { get; set; }
+
+        public DbSet<Cart> Carts { get; set; }
+
+        public DbSet<OrderElement> OrderElements { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Adress> Adresses { get; set; }
     }
 }
