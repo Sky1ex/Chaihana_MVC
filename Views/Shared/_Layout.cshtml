@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model IEnumerable<WebApplication1.Models.Product>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -45,7 +46,7 @@
         @* <div class="container">
             &copy; 2025 - Чайхана - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div> *@
-        <button id="view-cart" asp-area="Views/Products" asp-controller="Cart" asp-action="CartShow">Корзина</button> 
+        <button id="view-cart" @* asp-area="Views/Products" asp-controller="Cart" asp-action="ShowCart" *@>Корзина</button> 
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -57,10 +58,11 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Ваша корзина</h2>
-            <ul id="cartItems">
+            <div id="cartContent"></div>
+            @* <ul id="cartItems"> *@
                 <!-- Здесь будут отображаться товары -->
             </ul>
-            <p>Общая стоимость: <span id="totalPrice">0</span> руб.</p>
+            @* <p>Общая стоимость: <span id="totalPrice">0</span> руб.</p> *@
         </div>
     </div>
 
