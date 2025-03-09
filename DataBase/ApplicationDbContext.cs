@@ -10,13 +10,12 @@ namespace WebApplication1.DataBase
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             //_ = Database.EnsureCreated();
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
+
         }
 
         public DbSet<Product> Products { get; set; }

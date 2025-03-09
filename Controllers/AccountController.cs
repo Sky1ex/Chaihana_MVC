@@ -9,23 +9,58 @@ using System.Net;
 using WebApplication1.OtherClasses;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace WebApplication1.Controllers
 {
     public class AccountController : Controller
     {
         private readonly UserService _userService;
+        private readonly ApplicationDbContext _context;
 
-        public AccountController(UserService userService)
+        public AccountController(UserService userService, ApplicationDbContext context)
         {
             _userService = userService;
+            _context = context;
         }
 
-        [HttpGet("autologin")]
+        [HttpGet("Api/Login")]
         public async Task<IActionResult> AutoLogin()
         {
             var userId = await _userService.AutoLogin();
             return Ok($"User ID: {userId}");
         }
+
+        [HttpGet("Account")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet("Account/Addresses")]
+        public IActionResult Addresses()
+        {
+            var userId = _userService.AutoLogin().Result;
+            var user = _context.Users
+                .Include(c => c.Adresses)
+                .FirstOrDefaultAsync(c => c.UserId == userId).Result;
+            List<Models.Adress> Adresses = user.Adresses;
+
+            return View(Adresses);
+        }
+
+        [HttpGet("Account/Orders")]
+        public IActionResult Orders()
+        {
+            var userId = _userService.AutoLogin();
+            var user = _context.Users
+                .Include(c => c.Orders)
+                .FirstOrDefaultAsync(c => c.UserId == userId.Result);
+            var orders = user.Result.Adresses.ToList();
+
+            return View(orders);
+        }
     }
 }
+
+// Доделать представления для Orders, Adresses и UserData(смотри Account/Index)

@@ -1,0 +1,10 @@
+﻿@model WebApplication1.DTO.CartDto
+<!-- _CartContentPartial.cshtml -->
+<div>
+    <ul>
+        @foreach (var item in Model.Products)
+        {
+            <li>@item.Name - @item.Price.ToString("C") - @item.Count</li>
+        }
+    </ul>
+</div>

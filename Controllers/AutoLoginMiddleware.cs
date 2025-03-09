@@ -35,7 +35,11 @@ namespace WebApplication1.Controllers
 
                 // Создаем нового пользователя
                 var user = new User { UserId = userId };
-                var cart = new Cart(user);
+                var cart = new Cart()
+                {
+                    CartId = Guid.NewGuid(),
+                    User = user
+                };
 
                 // Сохраняем в базу данных
                 dbContext.Users.Add(user);

@@ -38,7 +38,12 @@ namespace WebApplication1.OtherClasses
 
                 // Создаем нового пользователя
                 var user = new User { UserId = userId };
-                var cart = new Cart(user)/* { User = user }*/;
+                /*var cart = new Cart(user)*//* { User = user }*//*;*/
+                var cart = new Cart()
+                {
+                    CartId = Guid.NewGuid(),
+                    User = user
+                };
 
                 // Сохраняем в базу данных
                 _dbContext.Users.Add(user);

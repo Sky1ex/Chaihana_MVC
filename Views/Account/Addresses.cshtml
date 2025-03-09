@@ -1,0 +1,12 @@
+﻿@model IEnumerable<WebApplication1.Models.Adress>
+<h1>Ваши сохраненные адреса:</h1>
+
+@foreach (var adress in Model)
+    {
+        <li>
+            <div hidden class="product-id">@adress.AdressId</div>
+            <div class="City">@adress.City</div>
+            <div class="Street">@adress.Street</div>
+            <div class="House">@adress.House</div>
+        </li>
+    }

@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Products\Details.cshtml" />
+    <Content Remove="Views\Menu\Details.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Products\Details.cshtml" />
+    <None Include="Views\Menu\Details.cshtml" />
     <None Include="wwwroot\Images\Tea.jpg" />
   </ItemGroup>
 
@@ -31,10 +31,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DataBase\Data\" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
   </ItemGroup>
 
 </Project>

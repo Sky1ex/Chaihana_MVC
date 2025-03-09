@@ -6,18 +6,12 @@ namespace WebApplication1.Models
     public class Cart
     {
         public Cart() { }
-        public Cart(User user)
-        {
-            CartId = Guid.NewGuid();
-            User = user;
-            this.CartElement = new List<CartElement>();
-        }
 
         [Key]
         [ForeignKey("User")]
         public Guid CartId { get; set; }
-        public User? User { get; set; }
-        public List<CartElement>? CartElement { get; set; }
+        public required User User { get; set; }
+        public List<CartElement>? CartElement { get; set; } = new List<CartElement>();
 
     }
 }

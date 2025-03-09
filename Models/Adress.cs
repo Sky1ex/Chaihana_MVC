@@ -3,10 +3,10 @@
     public class Adress
     {
         public Guid AdressId { get; set; }
-        public string City { get; set; }
+        public required string City { get; set; } = "Nan";
 
-        public string Street { get; set; }
+        public required string Street { get; set; } = "Nan";
 
-        public string House { get; set; }
+        public required string House { get; set; } = "Nan";
     }
 }

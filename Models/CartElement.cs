@@ -3,8 +3,8 @@
     public class CartElement
     {
         public Guid CartElementId { get; set; }
-        public Product Product { get; set; }
-        public int Count { get; set; }
+        public required Product Product { get; set; }
+        public int Count { get; set; } = 1;
     }
 }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication1.Models.Product>
+﻿@* @model IEnumerable<WebApplication1.Models.Product> *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +21,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Меню</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Menu" asp-action="">Меню</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Магазины</a>
@@ -29,7 +29,7 @@
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Личный кабинет</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Личный кабинет</a>
                         </li>
                     </ul>
                 </div>
@@ -43,28 +43,24 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        @* <div class="container">
-            &copy; 2025 - Чайхана - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div> *@
-        <button id="view-cart" @* asp-area="Views/Products" asp-controller="Cart" asp-action="ShowCart" *@>Корзина</button> 
+        @* <button id="view-cart">Корзина</button>  *@
+        @if (ViewContext.RouteData.Values["controller"].ToString() == "Menu")
+        {
+            <button id="view-cart">Корзина</button>
+             <div id="cartModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Ваша корзина</h2>
+                    <div id="cartContent"></div>
+                    <button id="purshare">Оформить заказ</button>
+                </div>
+            </div> 
+        }
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    <!-- Модальное окно корзины -->
-    <div id="cartModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Ваша корзина</h2>
-            <div id="cartContent"></div>
-            @* <ul id="cartItems"> *@
-                <!-- Здесь будут отображаться товары -->
-            </ul>
-            @* <p>Общая стоимость: <span id="totalPrice">0</span> руб.</p> *@
-        </div>
-    </div>
 
 </body>
     
