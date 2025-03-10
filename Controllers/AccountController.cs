@@ -55,10 +55,24 @@ namespace WebApplication1.Controllers
             var userId = _userService.AutoLogin();
             var user = _context.Users
                 .Include(c => c.Orders)
+                .ThenInclude(ce => ce.OrderElement)
+                .ThenInclude(ced => ced.Product)
+                .Include(c => c.Orders)
+                .ThenInclude(ce => ce.Adress)
                 .FirstOrDefaultAsync(c => c.UserId == userId.Result);
-            var orders = user.Result.Adresses.ToList();
+            var orders = user.Result.Orders.ToList();
 
             return View(orders);
+        }
+
+        [HttpGet("Account/UserData")]
+        public IActionResult UserData()
+        {
+            var userId = _userService.AutoLogin();
+            var user = _context.Users
+                .FirstOrDefaultAsync(c => c.UserId == userId.Result).Result;
+
+            return View(user);
         }
     }
 }

@@ -1,0 +1,19 @@
+﻿@model WebApplication1.Models.User
+
+@if(Model.Phone != null)
+{
+	<div>Телефон - @Model.Phone</div>
+}
+else
+{
+	<div>Телефон - не указан</div>
+}
+
+@if (Model.Name != null)
+{
+	<div>Имя - @Model.Name</div>
+}
+else
+{
+	<div>Имя - не указан</div>
+}
