@@ -3,11 +3,13 @@
     $('#view-cart').on('click', function () {
         $('#cartModal').css('display', 'block');
         loadCart();
+        console.log("Функция открытия корзины");
     });
 
     // Закрытие модального окна корзины
     $('.close').on('click', function () {
         $('#cartModal').css('display', 'none');
+        console.log("Функция закрытия корзины");
     });
 
     // Загрузка содержимого корзины
@@ -17,29 +19,66 @@
             type: 'GET',
             success: function (data) {
                 $('#cartContent').html(data);
+                console.log("Функция загрузки содержимого корзины");
             }
         });
     }
 
-    // Добавление товара в корзину
-    $('.add-to-cart-btn').click(function () {
-        var productCard = $(this).closest('.product-card');
+    // Увеличение количества товара (делегирование событий)
+    $(document).on('click', '.increase-quantity', function () {
+        var productId = $(this).data('product-id');
+        updateCartItemQuantity(productId, 1);
+        console.log("Функция увеличения товара");
+    });
 
-        var productId = productCard.find('.product-id').text().trim();
+    // Уменьшение количества товара (делегирование событий)
+    $(document).on('click', '.decrease-quantity', function () {
+        var productId = $(this).data('product-id');
+        updateCartItemQuantity(productId, -1);
+        console.log("Функция уменьшения товара");
+    });
 
-        // Добавляем анимацию
-        $(this).addClass('added');
-        setTimeout(() => {
-            $(this).removeClass('added');
-        }, 500);
-
+    // Обновление количества товара в корзине
+    function updateCartItemQuantity(productId, change) {
         $.ajax({
-            url: 'https://localhost:7008/Cart/AddToCart',
+            url: '/Cart/UpdateCartItemCount',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, count: 1 }),
+            data: JSON.stringify({ productId: productId, change: change }),
             success: function () {
                 loadCart();
+            }
+        });
+    }
+
+    // Оформление выбранных товаров
+    $('#checkout-selected').on('click', function () {
+        var selectedProducts = [];
+        $('.cart-item-checkbox:checked').each(function () {
+            selectedProducts.push($(this).data('product-id'));
+        });
+
+        var selectedAddressId = $('input[name="selectedAddress"]:checked').val();
+
+        if (selectedProducts.length === 0) {
+            alert('Выберите товары для оформления!');
+            return;
+        }
+
+        if (!selectedAddressId) {
+            alert('Выберите адрес доставки!');
+            return;
+        }
+
+        $.ajax({
+            url: '/Cart/CheckoutSelected',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ productIds: selectedProducts, addressId: selectedAddressId }),
+            success: function (data) {
+                alert('Заказ оформлен!');
+                loadCart();
+                console.log("Функция оформления выбранной части заказа");
             }
         });
     });
@@ -55,36 +94,9 @@
             success: function (data) {
                 alert('Заказ оформлен!');
                 loadCart();
+                console.log("Функция оформления заказа");
             }
         });
     });
 });
 
-initMap();
-
-async function initMap() {
-    // Промис `ymaps3.ready` будет зарезолвлен, когда загрузятся все компоненты основного модуля API
-    await ymaps3.ready;
-
-    const { YMap, YMapDefaultSchemeLayer } = ymaps3;
-
-    // Иницилиазируем карту
-    const map = new YMap(
-        // Передаём ссылку на HTMLElement контейнера
-        document.getElementById('map'),
-        // Передаём параметры инициализации карты
-        {
-            // Координаты центра карты
-            center: [37.588144, 55.733842],
-            // Уровень масштабирования
-            zoom: 10,
-            controls: ['searchControl']
-        },
-        {
-        searchControlProvider: 'yandex#search'
-        }
-    );
-
-    // Добавляем слой для отображения схематической карты
-    map.addChild(new YMapDefaultSchemeLayer());
-}

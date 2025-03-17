@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication1.Models.Order>
+﻿@model IEnumerable<WebApplication1.DTO.OrderDto>
 <h1>Ваши заказы:</h1>
 
 @if (Model == null)
@@ -9,11 +9,11 @@
 else @foreach (var order in Model)
     {
         <li>
-            <div class="Order">Дата заказа - @order.dateTime, Адрес заказа - @order.Adress.City, @order.Adress.Street, @order.Adress.House</div>>
+            <div class="Order">Дата заказа - @order.DateTime, Адрес заказа - @order.Address.City, @order.Address.Street, @order.Address.House</div>>
             <div class="Products">Товары:</div>
-            @foreach(var orderElem in order.OrderElement)
+            @foreach(var orderElem in order.Products)
             {
-                <div class="product">@orderElem.Product.Name - @orderElem.Product.Price - @orderElem.Count</div>
+                <div class="product">@orderElem.Name - @orderElem.Price - @orderElem.Count</div>
             }
         </li>
     }

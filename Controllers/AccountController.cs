@@ -10,18 +10,23 @@ using WebApplication1.OtherClasses;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using WebApplication1.DTO;
+using WebApplication1.Services;
+using Twilio.Rest.Trunking.V1;
 
 namespace WebApplication1.Controllers
 {
     public class AccountController : Controller
     {
         private readonly UserService _userService;
+        private readonly AccountService _accountService;
         private readonly ApplicationDbContext _context;
 
-        public AccountController(UserService userService, ApplicationDbContext context)
+        public AccountController(UserService userService, AccountService accountService, ApplicationDbContext context)
         {
             _userService = userService;
             _context = context;
+            _accountService = accountService;
         }
 
         [HttpGet("Api/Login")]
@@ -41,26 +46,16 @@ namespace WebApplication1.Controllers
         public IActionResult Addresses()
         {
             var userId = _userService.AutoLogin().Result;
-            var user = _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefaultAsync(c => c.UserId == userId).Result;
-            List<Models.Adress> Adresses = user.Adresses;
+            var addresses = _accountService.GetAddresses(userId);
 
-            return View(Adresses);
+            return View(addresses);
         }
 
         [HttpGet("Account/Orders")]
         public IActionResult Orders()
         {
-            var userId = _userService.AutoLogin();
-            var user = _context.Users
-                .Include(c => c.Orders)
-                .ThenInclude(ce => ce.OrderElement)
-                .ThenInclude(ced => ced.Product)
-                .Include(c => c.Orders)
-                .ThenInclude(ce => ce.Adress)
-                .FirstOrDefaultAsync(c => c.UserId == userId.Result);
-            var orders = user.Result.Orders.ToList();
+            var userId = _userService.AutoLogin().Result;
+            var orders = _accountService.GetOrders(userId);
 
             return View(orders);
         }
@@ -74,6 +69,50 @@ namespace WebApplication1.Controllers
 
             return View(user);
         }
+
+        [HttpPost("Account/AddAddress")]
+        public async Task<IActionResult> AddAddress([FromBody] AddressDto request)
+        {
+            var userId = _userService.AutoLogin();
+
+            var user = await _context.Users
+                .Include(c => c.Adresses)
+                .FirstOrDefaultAsync(c => c.UserId == userId.Result);
+
+            var address = new Adress { AdressId = Guid.NewGuid(), City = request.City, House = request.House, Street = request.Street };
+
+            user.Adresses.Add(address);
+            _context.Adresses.Add(address);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpDelete("Account/DeleteAddress")]
+        public ActionResult DeleteAddress(string addressId)
+        {
+            var userId = _userService.AutoLogin();
+
+            var user = _context.Users
+                .Include(c => c.Adresses)
+                .FirstOrDefault(c => c.UserId == userId.Result);
+
+            var address = user.Adresses.FirstOrDefault(c => c.AdressId == new Guid(addressId));
+
+
+            /*user.Adresses.Remove(address);
+            _context.Adresses.Remove(address);
+            await _context.SaveChangesAsync();*/
+
+            return RedirectToAction("Addresses");
+        }
+
+        /*[HttpPost("Account/UpdateUserData")]
+        public Task<IActionResult> AddUserData([FromBody] UserDto request)
+        {
+
+            return Ok();
+        }*/
     }
 }
 

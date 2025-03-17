@@ -27,12 +27,41 @@ namespace WebApplication1.Controllers
             return Ok();
         }
 
+        /*[HttpGet("Cart/ShowCart")]
+        public async Task<IActionResult> GetCart()
+        {
+            var userId = await _userService.AutoLogin();
+            var cart = await _cartService.GetCartAsync(userId);
+
+            var addresses = await 
+
+            return PartialView("_CartContentPartial", cart);*//*return Ok(cart);*//*
+        }*/
+
         [HttpGet("Cart/ShowCart")]
         public async Task<IActionResult> GetCart()
         {
             var userId = await _userService.AutoLogin();
             var cart = await _cartService.GetCartAsync(userId);
-            return PartialView("_CartContentPartial", cart);/*return Ok(cart);*/
+            var addresses = _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+            ViewBag.Addresses = addresses.Result;
+            return PartialView("_CartContentPartial", cart);
+        }
+
+        [HttpPost("Cart/UpdateCartItemCount")]
+        public async Task<IActionResult> UpdateCartItemQuantity([FromBody] UpdateCartItemQuantityDto request)
+        {
+            var userId = await _userService.AutoLogin();
+            await _cartService.UpdateCartItemQuantityAsync(userId, request.ProductId, request.Change);
+            return Ok();
+        }
+
+        [HttpPost("Cart/CheckoutSelected")]
+        public async Task<IActionResult> CheckoutSelected([FromBody] CheckoutSelectedDto request)
+        {
+            var userId = await _userService.AutoLogin();
+            var order = await _cartService.CheckoutSelectedAsync(userId, request.ProductIds, request.AddressId);
+            return Ok(order);
         }
 
         [HttpPost("Cart/Purshare")]
@@ -43,6 +72,18 @@ namespace WebApplication1.Controllers
             return Ok(order);
         }
     }
+}
+
+public class UpdateCartItemQuantityDto
+{
+    public Guid ProductId { get; set; }
+    public int Change { get; set; } // 1 для увеличения, -1 для уменьшения
+}
+
+public class CheckoutSelectedDto
+{
+    public List<Guid> ProductIds { get; set; }
+    public Guid AddressId { get; set; }
 }
 
 public class PurshareDto

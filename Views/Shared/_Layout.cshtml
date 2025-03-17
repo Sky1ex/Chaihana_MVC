@@ -43,14 +43,12 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        @* <button id="view-cart">Корзина</button>  *@
         @if (ViewContext.RouteData.Values["controller"].ToString() == "Menu")
         {
             <button id="view-cart">Корзина</button>
              <div id="cartModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <h2>Ваша корзина</h2>
                     <div id="cartContent"></div>
                     <button id="purshare">Оформить заказ</button>
                 </div>

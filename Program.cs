@@ -18,11 +18,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddHttpContextAccessor(); // Добавляем поддержку IHttpContextAccessor
 builder.Services.AddScoped<UserService>(); // Регистрируем UserService
+builder.Services.AddScoped<AccountService>(); // Регистрируем UserService
 
 builder.Services.AddEndpointsApiExplorer(); //
 builder.Services.AddSwaggerGen(); // добавление swagger(для работы с бд)
 
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
@@ -56,32 +58,6 @@ app.MapControllerRoute(
     name: "products",
     pattern: "Menu/{action=Index}/{id?}",
     defaults: new { controller = "Menu" });
-
-/*app.MapControllerRoute(
-    name: "addtocart",
-    pattern: "Cart/AddToCart/{action=AddToCart}/{id?}",
-    defaults: new { controller = "Cart" });*/
-
-/*app.MapControllerRoute(
-    name: "showcart",
-    pattern: "Cart/ShowCart/{action=ShowCart}/{id?}");*/
-
-/*app.MapControllerRoute(
-    name: "purshare",
-    pattern: "Cart/Purshare/{action=Purshare}/{id?}");*/
-
-app.MapControllerRoute(
-    name: "account",
-    pattern: "Account/{action=Index}/{id?}",
-    defaults: new { controller = "Account" });
-
-app.MapControllerRoute(
-    name: "adresses",
-    pattern: "Account/Adresses/{action=Adresses}/{id?}");
-
-app.MapControllerRoute(
-    name: "orders",
-    pattern: "Account/Orders/{action=Orders}/{id?}");
 
 app.UseMiddleware<AutoLoginMiddleware>();
 

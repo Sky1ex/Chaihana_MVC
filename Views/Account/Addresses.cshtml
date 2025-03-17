@@ -1,12 +1,53 @@
-﻿@model IEnumerable<WebApplication1.Models.Adress>
+﻿@model IEnumerable<WebApplication1.DTO.AddressDto>
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script hidden src="https://api-maps.yandex.ru/v3/?apikey=46514e07-4df3-4059-9c68-309be409aa4b&lang=ru_RU"></script>
+<script src="~/js/Account.js" asp-append-version="true"></script>
+
 <h1>Ваши сохраненные адреса:</h1>
+<style>
+    #map {
+        width: 100%;
+        height: 500px;
+        position: relative;
+    }
+
+    .center-marker {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        background-color: red;
+        border-radius: 50%;
+        z-index: 1000;
+    }
+
+    #address-data {
+        position: absolute;
+        top: 0%;
+        left: 0%;
+    }
+</style>
 
 @foreach (var adress in Model)
 {
     <li>
-        <div hidden class="product-id">@adress.AdressId</div>
-        <div class="City">@adress.City</div>
-        <div class="Street">@adress.Street</div>
-        <div class="House">@adress.House</div>
+        <p hidden class="Adress-id"> @adress.AddressId</p>
+        <p class="City">@adress.City, @adress.Street, @adress.House</p>
+        <p>
+            <button id="delete-address-data">Удалить</button>
+        </p>
     </li>
 }
+
+<div id="map">
+    <div class="center-marker">
+        @* <img src="~/resources/Marker.png"/> *@
+    </div>
+</div>
+<div class="address-data"></div>
+<button id="send-address-data">Сохранить адресс</button>

@@ -1,10 +1,34 @@
 ﻿@model WebApplication1.DTO.CartDto
-<!-- _CartContentPartial.cshtml -->
+
 <div>
+    <h3>Ваша корзина</h3>
     <ul>
         @foreach (var item in Model.Products)
         {
-            <li>@item.Name - @item.Price.ToString("C") - @item.Count</li>
+            <li>
+                <input type="checkbox" class="cart-item-checkbox" data-product-id="@item.ProductId" />
+                <span>@item.Name - @item.Price.ToString("C")</span>
+                <button class="decrease-quantity" data-product-id="@item.ProductId">-</button>
+                <span class="quantity">@item.Count</span>
+                <button class="increase-quantity" data-product-id="@item.ProductId">+</button>
+            </li>
         }
     </ul>
 </div>
+
+<div>
+    <h3>Выберите адрес доставки</h3>
+    <div class="address-scroll">
+        <div class="address-list">
+            @foreach (var address in ViewBag.Addresses)
+            {
+                <div class="address-item" data-address-id="@address.AddressId">
+                    <input type="radio" name="selectedAddress" value="@address.AddressId" />
+                    <span>@address.City, @address.Street, @address.House</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<button id="checkout-selected">Оформить выбранные товары</button>
