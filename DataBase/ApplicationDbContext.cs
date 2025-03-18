@@ -35,5 +35,7 @@ namespace WebApplication1.DataBase
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Adress> Adresses { get; set; }
+
+        public DbSet<AddressElement> AddressElements { get; set; }
     }
 }

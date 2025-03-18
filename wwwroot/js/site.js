@@ -85,7 +85,7 @@
 
     // Оформление заказа
     $('#purshare').on('click', function () {
-        var addressId = 1; // Здесь должен быть выбранный адрес
+        var addressId = $('input[name="selectedAddress"]:checked').val(); // Здесь должен быть выбранный адрес
         $.ajax({
             url: 'https://localhost:7008/Cart/Purshare',
             type: 'POST',

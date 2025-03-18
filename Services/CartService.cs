@@ -144,7 +144,12 @@ namespace WebApplication1.Services
             {
                 OrderId = Guid.NewGuid(),
                 dateTime = DateTimeOffset.UtcNow,
-                Adress = address,
+                Adress = new AddressElement { 
+                    AddressElementId = address.AdressId,
+                    City = address.City,
+                    Street = address.Street,
+                    House = address.House
+                },
                 OrderElement = cart.CartElement.Select(ce => new OrderElement
                 {
                     OrderElementId = Guid.NewGuid(),
@@ -244,7 +249,13 @@ namespace WebApplication1.Services
             {
                 OrderId = Guid.NewGuid(),
                 dateTime = DateTimeOffset.UtcNow,
-                Adress = address,
+                Adress = new AddressElement
+                {
+                    AddressElementId = address.AdressId,
+                    City = address.City,
+                    Street = address.Street,
+                    House = address.House
+                },
                 OrderElement = selectedCartElements.Select(ce => new OrderElement
                 {
                     OrderElementId = Guid.NewGuid(),

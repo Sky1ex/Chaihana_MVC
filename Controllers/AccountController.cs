@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using WebApplication1.DTO;
 using WebApplication1.Services;
 using Twilio.Rest.Trunking.V1;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 
 namespace WebApplication1.Controllers
 {
@@ -89,7 +92,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpDelete("Account/DeleteAddress")]
-        public ActionResult DeleteAddress(string addressId)
+        public async Task<IActionResult> DeleteAddress(string addressId)
         {
             var userId = _userService.AutoLogin();
 
@@ -100,19 +103,58 @@ namespace WebApplication1.Controllers
             var address = user.Adresses.FirstOrDefault(c => c.AdressId == new Guid(addressId));
 
 
-            /*user.Adresses.Remove(address);
+            user.Adresses.Remove(address);
             _context.Adresses.Remove(address);
-            await _context.SaveChangesAsync();*/
-
-            return RedirectToAction("Addresses");
-        }
-
-        /*[HttpPost("Account/UpdateUserData")]
-        public Task<IActionResult> AddUserData([FromBody] UserDto request)
-        {
+            await _context.SaveChangesAsync();
 
             return Ok();
-        }*/
+        }
+
+        [HttpGet("Account/GetCode")]
+        public async Task<IActionResult> GetCode(string userNumber)
+        {
+            var userId = _userService.AutoLogin().Result;
+
+            using var response = await _accountService.PostSms(userNumber, userId);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            
+            return StatusCode((int)response.StatusCode, responseContent);
+        }
+
+        [HttpPost("Account/CheckCode")]
+        public async Task<IActionResult> CheckCode(string code)
+        {
+            var userId = _userService.AutoLogin().Result;
+
+            bool flag = await _accountService.CheckCode(code, userId);
+
+            if (flag)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("Account/AddName")]
+        public async Task<IActionResult> AddName(string name)
+        {
+            var userId = _userService.AutoLogin().Result;
+
+            await _accountService.AddName(name, userId);
+
+            return Ok();
+        }
+    }
+
+    public class PhoneRequest
+    {
+        public string number { get; set; }
+        public string destination { get; set; }
+        public string text { get; set; }
     }
 }
 

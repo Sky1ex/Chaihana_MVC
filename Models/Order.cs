@@ -10,7 +10,7 @@ namespace WebApplication1.Models
 
         public  List<OrderElement> OrderElement { get; set; } = new List<OrderElement>();
 
-        public required Adress Adress { get; set; }
+        public required AddressElement Adress { get; set; }
 
         public int Sum { get; set; } = 0;
     }
