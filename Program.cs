@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddHttpContextAccessor(); // Добавляем поддержку IHttpContextAccessor
 builder.Services.AddScoped<UserService>(); // Регистрируем UserService
 builder.Services.AddScoped<AccountService>(); // Регистрируем UserService
+builder.Services.AddScoped<MenuService>(); // Регистрируем MenuService
 
 builder.Services.AddEndpointsApiExplorer(); //
 builder.Services.AddSwaggerGen(); // добавление swagger(для работы с бд)

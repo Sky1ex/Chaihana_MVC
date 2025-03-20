@@ -28,6 +28,7 @@
     $(document).on('click', '.increase-quantity', function () {
         var productId = $(this).data('product-id');
         updateCartItemQuantity(productId, 1);
+        updateButtons()
         console.log("Функция увеличения товара");
     });
 
@@ -35,6 +36,7 @@
     $(document).on('click', '.decrease-quantity', function () {
         var productId = $(this).data('product-id');
         updateCartItemQuantity(productId, -1);
+        updateButtons()
         console.log("Функция уменьшения товара");
     });
 
@@ -100,3 +102,35 @@
     });
 });
 
+function updateButtons() {
+    $.ajax({
+        url: '/Api/Cart/ShowCart', // URL для получения данных корзины
+        type: 'GET',
+        contentType: 'application/json',
+        success: function (cartProducts) {
+            // Проходим по каждому товару в корзине
+            cartProducts.forEach(function (productInCart) {
+                var productId = productInCart.productId; // Получаем ID товара
+                var button = $('.add-to-cart-btn[data-product-id="' + productId + '"]'); // Находим кнопку по ID товара
+
+                if (button.length > 0) {
+                    // Если кнопка найдена, обновляем её состояние
+                    if (productInCart.count > 0) {
+                        // Если товар есть в корзине, показываем кнопку "Плюс/Минус"
+                        button.find('.add-text').hide();
+                        button.find('.quantity-controls').show();
+                        button.find('.quantity').text(productInCart.count);
+                    } else {
+                        // Если товара нет в корзине, показываем кнопку "Добавить"
+                        button.find('.add-text').show();
+                        button.find('.quantity-controls').hide();
+                    }
+                }
+            });
+            console.log("Кнопки обновлены на основе данных корзины");
+        },
+        error: function (xhr, status, error) {
+            console.error("Ошибка при получении данных корзины:", error);
+        }
+    });
+}

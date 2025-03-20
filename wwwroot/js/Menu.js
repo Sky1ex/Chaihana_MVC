@@ -1,6 +1,9 @@
-﻿// Добавление товара в корзину
+﻿
+// Добавление товара в корзину
 $(document).ready(function () {
-    $('.add-to-cart-btn').on('click', function () {
+
+    updateButtons();
+    $('.add-to-cart-btn').off('click').on('click', function () {
         var productCard = $(this).closest('.product-card');
         var productId = productCard.find('.product-id').text().trim();
 
@@ -10,14 +13,79 @@ $(document).ready(function () {
             $(this).removeClass('added');
         }, 500);
 
-        $.ajax({
-            url: 'https://localhost:7008/Cart/AddToCart',
+        var button = $(this).closest('.add-to-cart-btn');
+        var quantityElement = button.find('.quantity');
+        var quantity = parseInt(quantityElement.text());
+
+        if(quantity == 0) $.ajax({
+            url: '/Cart/UpdateCartItemCount',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, count: 1 }),
+            data: JSON.stringify({ productId: productId, change: 1 }),
             success: function () {
-                /*loadCart();*/
+                // Если количество равно 0, возвращаем кнопку в исходное состояние
+                button.find('.add-text').hide();
+                button.find('.quantity-controls').show();
+                quantityElement.text('1');
                 console.log("Функция добавления товара в корзину");
+            }
+        });
+    });
+
+    // Обработка клика на плюс
+    $(document).on('click', '.plus-btn', function (event) {
+        event.stopPropagation(); // Останавливаем всплытие события
+
+        var button = $(this).closest('.add-to-cart-btn');
+        var productId = button.data('product-id');
+        var quantityElement = button.find('.quantity');
+        var quantity = parseInt(quantityElement.text());
+
+        // Увеличиваем количество
+        quantity += 1;
+        quantityElement.text(quantity);
+
+        // Отправляем запрос на обновление количества товара в корзине
+        $.ajax({
+            url: '/Cart/UpdateCartItemCount',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ productId: productId, change: 1 }),
+            success: function () {
+                console.log("Количество товара обновлено");
+            }
+        });
+    });
+
+    // Обработка клика на минус
+    $(document).on('click', '.minus-btn', function (event) {
+        event.stopPropagation(); // Останавливаем всплытие события
+
+        var button = $(this).closest('.add-to-cart-btn');
+        var productId = button.data('product-id');
+        var quantityElement = button.find('.quantity');
+        var quantity = parseInt(quantityElement.text());
+
+        // Уменьшаем количество
+        quantity -= 1;
+
+        if (quantity <= 0) {
+            // Если количество равно 0, возвращаем кнопку в исходное состояние
+            button.find('.add-text').show();
+            button.find('.quantity-controls').hide();
+            quantityElement.text('0');
+        } else {
+            // Обновляем количество
+            quantityElement.text(quantity);
+        }
+        // Отправляем запрос на удаление товара из корзины
+        $.ajax({
+            url: '/Cart/UpdateCartItemCount',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ productId: productId, change: -1 }),
+            success: function () {
+                console.log("Товар удален из корзины");
             }
         });
     });

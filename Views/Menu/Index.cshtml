@@ -7,22 +7,36 @@
 <h1>Меню кафе</h1>
 <p>Добро пожаловать в наше кафе! Вот наш ассортимент:</p>
 
-<div class="product-grid">
-    @foreach (var product in Model)
-    {
-        <div class="product-card">
-            <div class="product-image">
-                <img src="@product.ImageUrl" alt="@product.Name" />
-            </div>
-            <div class="product-info">
-                <div class="product-name">@product.Name</div>
-                <div hidden class="product-id">@product.ProductId</div>
-                <div class="product-details">
-                    <div class="product-price">@product.Price.ToString("C")</div>
-                    <div class="product-weight">@product.Weight г</div>
+@foreach(var category in ViewBag.Categories)
+{
+    <div class="Category">@category.Name</div>
+
+    <div class="product-grid">
+        @foreach (var product in Model)
+        {
+            @if(product.Category == category) {
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="@product.ImageUrl" alt="@product.Name" />
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">@product.Name</div>
+                        <div hidden class="product-id">@product.ProductId</div>
+                        <div class="product-details">
+                            <div class="product-price">@product.Price.ToString("C")</div>
+                            <div class="product-weight">@product.Weight г</div>
+                        </div>
+                    </div>
+                    <button class="add-to-cart-btn" data-product-id="@product.ProductId">
+                        <span class="add-text">Добавить</span>
+                        <span class="quantity-controls" style="display: none;">
+                            <span class="minus-btn">-</span>
+                            <span class="quantity">0</span>
+                            <span class="plus-btn">+</span>
+                        </span>
+                    </button>
                 </div>
-            </div>
-            <button class="add-to-cart-btn" asp-area="" asp-controller="Cart" asp-action="AddToCart">Добавить</button>
-        </div>
-    }
-</div>
+            }
+        }
+    </div>
+}

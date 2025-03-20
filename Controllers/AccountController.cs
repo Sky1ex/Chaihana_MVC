@@ -114,9 +114,7 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> GetCode(string userNumber)
         {
             var userId = _userService.AutoLogin().Result;
-
             using var response = await _accountService.PostSms(userNumber, userId);
-
             var responseContent = await response.Content.ReadAsStringAsync();
             
             return StatusCode((int)response.StatusCode, responseContent);
@@ -126,24 +124,16 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> CheckCode(string code)
         {
             var userId = _userService.AutoLogin().Result;
-
             bool flag = await _accountService.CheckCode(code, userId);
 
-            if (flag)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            if (flag) return Ok();
+            else return BadRequest();
         }
 
         [HttpPost("Account/AddName")]
         public async Task<IActionResult> AddName(string name)
         {
             var userId = _userService.AutoLogin().Result;
-
             await _accountService.AddName(name, userId);
 
             return Ok();

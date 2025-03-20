@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebApplication1.DataBase;
+using WebApplication1.DTO;
 using WebApplication1.Models;
 using WebApplication1.OtherClasses;
 using WebApplication1.Services;
@@ -19,25 +20,6 @@ namespace WebApplication1.Controllers
             _userService = userService;
         }
 
-        [HttpPost("Cart/AddToCart")]
-        public async Task<IActionResult> AddToCart([FromBody] AddToCartDto request)
-        {
-            var userId = await _userService.AutoLogin();
-            await _cartService.AddToCartAsync(userId, request.ProductId, request.Count);
-            return Ok();
-        }
-
-        /*[HttpGet("Cart/ShowCart")]
-        public async Task<IActionResult> GetCart()
-        {
-            var userId = await _userService.AutoLogin();
-            var cart = await _cartService.GetCartAsync(userId);
-
-            var addresses = await 
-
-            return PartialView("_CartContentPartial", cart);*//*return Ok(cart);*//*
-        }*/
-
         [HttpGet("Cart/ShowCart")]
         public async Task<IActionResult> GetCart()
         {
@@ -46,6 +28,15 @@ namespace WebApplication1.Controllers
             var addresses = _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
             ViewBag.Addresses = addresses.Result;
             return PartialView("_CartContentPartial", cart);
+        }
+
+        [HttpGet("Api/Cart/ShowCart")]
+        public async Task<List<CartProductDto>> GetCartElement()
+        {
+            var userId = await _userService.AutoLogin();
+            var cart = await _cartService.GetCartAsync(userId);
+            var addresses = _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+            return cart.Products;
         }
 
         [HttpPost("Cart/UpdateCartItemCount")]

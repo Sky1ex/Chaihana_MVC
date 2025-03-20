@@ -10,15 +10,13 @@ namespace WebApplication1.Controllers
     public class MenuController : Controller
     {
 
-        private readonly ICartService _cartService;
-        private readonly UserService _userService;
+        private readonly MenuService _menuService;
         private readonly ApplicationDbContext _context;
 
-        public MenuController(ICartService cartService, UserService userService, ApplicationDbContext context)
+        public MenuController(MenuService menuService, ApplicationDbContext context)
         {
             _context = context;
-            _userService = userService;
-            _cartService = cartService;
+            _menuService = menuService;
         }
 
         public async Task<IActionResult> Index()
@@ -26,9 +24,7 @@ namespace WebApplication1.Controllers
             // Получаем список продуктов
             var products = await _context.Products.ToListAsync();
 
-            // Получаем данные корзины
-            /*var userId = await _userService.AutoLogin();
-            var cart = await _cartService.GetCartAsync(userId);*/
+            ViewBag.Categories = await _menuService.GetCategories();
 
             return View(products);
         }
