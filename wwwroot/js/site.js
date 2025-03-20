@@ -28,7 +28,6 @@
     $(document).on('click', '.increase-quantity', function () {
         var productId = $(this).data('product-id');
         updateCartItemQuantity(productId, 1);
-        updateButtons()
         console.log("Функция увеличения товара");
     });
 
@@ -36,7 +35,6 @@
     $(document).on('click', '.decrease-quantity', function () {
         var productId = $(this).data('product-id');
         updateCartItemQuantity(productId, -1);
-        updateButtons()
         console.log("Функция уменьшения товара");
     });
 
@@ -49,6 +47,7 @@
             data: JSON.stringify({ productId: productId, change: change }),
             success: function () {
                 loadCart();
+                updateButtons()
             }
         });
     }
