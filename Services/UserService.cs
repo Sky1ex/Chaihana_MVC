@@ -58,5 +58,25 @@ namespace WebApplication1.OtherClasses
                 return Guid.Parse(userIdString);
             }
         }
+
+        public bool SetLogin(Guid login)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            if (httpContext == null)
+            {
+                throw new InvalidOperationException("HttpContext is not available.");
+            }
+
+            // Сохраняем GUID в куки
+            httpContext.Response.Cookies.Append("UserId", login.ToString(), new CookieOptions
+            {
+                Expires = DateTimeOffset.Now.AddYears(1), // Куки будут храниться год
+                HttpOnly = true, // Защита от XSS
+                Secure = true // Только для HTTPS
+            });
+
+            return true;
+        }
     }
 }

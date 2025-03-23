@@ -1,21 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication1.DataBase;
 using Microsoft.EntityFrameworkCore;
-using WebApplication1.Models;
-using System.Net;
 using WebApplication1.OtherClasses;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using WebApplication1.DTO;
 using WebApplication1.Services;
-using Twilio.Rest.Trunking.V1;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text;
 
 namespace WebApplication1.Controllers
 {
@@ -46,10 +34,10 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet("Account/Addresses")]
-        public IActionResult Addresses()
+        public async Task<IActionResult> Addresses()
         {
-            var userId = _userService.AutoLogin().Result;
-            var addresses = _accountService.GetAddresses(userId);
+            var userId = await _userService.AutoLogin();
+            var addresses = await _accountService.GetAddresses(userId);
 
             return View(addresses);
         }
@@ -78,15 +66,7 @@ namespace WebApplication1.Controllers
         {
             var userId = _userService.AutoLogin();
 
-            var user = await _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefaultAsync(c => c.UserId == userId.Result);
-
-            var address = new Adress { AdressId = Guid.NewGuid(), City = request.City, House = request.House, Street = request.Street };
-
-            user.Adresses.Add(address);
-            _context.Adresses.Add(address);
-            await _context.SaveChangesAsync();
+            await _accountService.AddAddress(request.City, request.Street, request.House, userId.Result);
 
             return Ok();
         }
@@ -94,18 +74,9 @@ namespace WebApplication1.Controllers
         [HttpDelete("Account/DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(string addressId)
         {
-            var userId = _userService.AutoLogin();
+            var userId = await _userService.AutoLogin();
 
-            var user = _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefault(c => c.UserId == userId.Result);
-
-            var address = user.Adresses.FirstOrDefault(c => c.AdressId == new Guid(addressId));
-
-
-            user.Adresses.Remove(address);
-            _context.Adresses.Remove(address);
-            await _context.SaveChangesAsync();
+            _accountService.DeleteAddress(addressId, userId);
 
             return Ok();
         }
@@ -121,13 +92,12 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("Account/CheckCode")]
-        public async Task<IActionResult> CheckCode(string code)
+        public async Task<string> CheckCode(string code)
         {
             var userId = _userService.AutoLogin().Result;
-            bool flag = await _accountService.CheckCode(code, userId);
-
-            if (flag) return Ok();
-            else return BadRequest();
+            string answer = await _accountService.CheckCode(code, userId);
+            if (!(answer == "true" || answer == "false")) _userService.SetLogin(Guid.Parse(answer));
+            return answer;
         }
 
         [HttpPost("Account/AddName")]
@@ -139,7 +109,7 @@ namespace WebApplication1.Controllers
             return Ok();
         }
     }
-
+    //c528fe2d-bf43-4549-988c-52e28043c85d
     public class PhoneRequest
     {
         public string number { get; set; }

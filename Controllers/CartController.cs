@@ -25,8 +25,8 @@ namespace WebApplication1.Controllers
         {
             var userId = await _userService.AutoLogin();
             var cart = await _cartService.GetCartAsync(userId);
-            var addresses = _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
-            ViewBag.Addresses = addresses.Result;
+            var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+            ViewBag.Addresses = addresses;
             return PartialView("_CartContentPartial", cart);
         }
 
@@ -35,7 +35,7 @@ namespace WebApplication1.Controllers
         {
             var userId = await _userService.AutoLogin();
             var cart = await _cartService.GetCartAsync(userId);
-            var addresses = _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+            var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
             return cart.Products;
         }
 

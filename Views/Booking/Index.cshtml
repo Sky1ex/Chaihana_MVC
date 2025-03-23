@@ -1,0 +1,38 @@
+﻿<div id="cafe-map" style="position: absolute;">
+<!-- Фон схемы (без столов) -->
+<img src="~/resources/Sheme/BackGround.svg" alt="Фон кафе" style="width: 100%; height: auto;">
+
+<!-- Отдельные столы -->
+    <img src="~/resources/Sheme/Стол 2.2.svg" alt="Стол 2" class="table" style="position: absolute; top: 2.93%; left: 84.17%; width: 12.15%; height: 7.32%; cursor: pointer;" data-table-id="1">
+    <img src="~/resources/Sheme/Стол 2.2.svg" alt="Стол 2" class="table" style="position: absolute; top: 13.28%; left: 84.17%; width: 12.15%; height: 7.32%; cursor: pointer;" data-table-id="2">
+    <img src="~/resources/Sheme/Стол 2.2.svg" alt="Стол 2" class="table" style="position: absolute; top: 23.63%; left: 84.17%; width: 12.15%; height: 7.32%; cursor: pointer;" data-table-id="3">
+    <img src="~/resources/Sheme/Стол 2.2.svg" alt="Стол 2" class="table" style="position: absolute; top: 33.98%; left: 84.17%; width: 12.15%; height: 7.32%; cursor: pointer;" data-table-id="4">
+    <img src="~/resources/Sheme/Стол 2.2.svg" alt="Стол 2" class="table" style="position: absolute; top: 44.34%; left: 84.17%; width: 12.15%; height: 7.32%; cursor: pointer;" data-table-id="5">
+    <img src="~/resources/Sheme/Стол 2.2.svg" alt="Стол 2" class="table" style="position: absolute; top: 54.69%; left: 84.17%; width: 12.15%; height: 7.32%; cursor: pointer;" data-table-id="6">
+<!-- Добавьте больше столов -->
+</div>
+
+<style>
+        /* Стили для стол
+     ов */
+    .table {
+
+      transition: transform 0.3s ease;
+    }
+
+    .table:hover {
+      transform: scale(1.1); /* Увеличиваем стол при наведении */
+    }
+</style>
+
+<script>
+    // Обработка кликов на столы
+    document.querySelectorAll('.table').forEach(function (table) {
+      table.addEventListener('click', function () {
+        var tableId = this.getAttribute('data-table-id');
+        alert("Вы выбрали стол #" + tableId);
+        // Здесь можно открыть модальное окно для бронирования
+      });
+    });
+</script>
+

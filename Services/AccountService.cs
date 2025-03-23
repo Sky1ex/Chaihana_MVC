@@ -6,6 +6,7 @@ using Twilio.Rest.Api.V2010.Account.Sip.Domain.AuthTypes.AuthTypeCalls;
 using WebApplication1.Controllers;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
+using WebApplication1.Models;
 
 namespace WebApplication1.Services
 {
@@ -21,11 +22,11 @@ namespace WebApplication1.Services
             _logger = logger;
         }
 
-        public List<AddressDto> GetAddresses(Guid userId)
+        public async Task<List<AddressDto>> GetAddresses(Guid userId)
         {
-            var user = _context.Users
+            var user = await _context.Users
                 .Include(c => c.Adresses)
-                .FirstOrDefaultAsync(c => c.UserId == userId).Result;
+                .FirstOrDefaultAsync(c => c.UserId == userId);
             List<AddressDto> Adresses = user.Adresses
                 .Select(c => new AddressDto
                 {
@@ -101,20 +102,24 @@ namespace WebApplication1.Services
             return response;
         }
 
-        public async Task<bool> CheckCode(string code, Guid userId)
+        public async Task<string> CheckCode(string code, Guid userId)
         {
             CodeDto codeDto = _codeList.FirstOrDefault( x => x.Code == code && x.UserId == userId);
-            if (codeDto == null) return false;
+            if (codeDto == null) return "false";
             else
             {
-                /*var user = await _context.Users
-               .FirstOrDefaultAsync(c => c.UserId == userId);
+                var checkUser = await _context.Users.FirstOrDefaultAsync(x => x.Phone == codeDto.number);
+                if (checkUser != null)
+                {
+                    var user = await _context.Users
+                        .FirstOrDefaultAsync(c => c.UserId == userId);
 
-                user.Phone = codeDto.number;
-                await _context.SaveChangesAsync();
-
-                _codeList.Remove(codeDto);*/
-                return true;
+                    _context.Users.Remove(user);
+                    await _context.SaveChangesAsync();
+                    _codeList.Remove(codeDto);
+                    return checkUser.UserId.ToString();
+                }
+                else return "true";
             }
         }
 
@@ -131,6 +136,32 @@ namespace WebApplication1.Services
             _codeList.Remove(codeDto);
 
             return true;
+        }
+
+        public async Task<bool> AddAddress(string City, string Street, string House, Guid userId)
+        {
+            var user = await _context.Users
+                .Include(c => c.Adresses)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var address = new Adress { AdressId = Guid.NewGuid(), City = City, House = House, Street = Street };
+            user.Adresses.Add(address);
+            await _context.Adresses.AddAsync(address);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async void DeleteAddress(string addressId, Guid userId)
+        {
+            var user = _context.Users
+                .Include(c => c.Adresses)
+                .FirstOrDefault(c => c.UserId == userId);
+
+            var address = user.Adresses.FirstOrDefault(c => c.AdressId == new Guid(addressId));
+
+
+            user.Adresses.Remove(address);
+            _context.Adresses.Remove(address);
+            await _context.SaveChangesAsync();
         }
     }
 

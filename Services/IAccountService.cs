@@ -4,7 +4,7 @@ namespace WebApplication1.Services
 {
     public interface IAccountService
     {
-        List<AddressDto> GetAddresses(Guid userId);
+        Task<List<AddressDto>> GetAddresses(Guid userId);
 
         List<OrderDto> GetOrders(Guid userId);
     }
