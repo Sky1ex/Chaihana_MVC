@@ -40,10 +40,10 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("Cart/UpdateCartItemCount")]
-        public async Task<IActionResult> UpdateCartItemQuantity([FromBody] UpdateCartItemQuantityDto request)
+        public async Task<IActionResult> UpdateCartItemQuantity(Guid productId, int change)
         {
             var userId = await _userService.AutoLogin();
-            await _cartService.UpdateCartItemQuantityAsync(userId, request.ProductId, request.Change);
+            await _cartService.UpdateCartItemQuantityAsync(userId, productId, change);
             return Ok();
         }
 
@@ -56,39 +56,11 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("Cart/Purshare")]
-        public async Task<IActionResult> Checkout([FromBody] CheckoutDto request)
+        public async Task<IActionResult> Checkout(Guid addressId)
         {
             var userId = await _userService.AutoLogin();
-            var order = await _cartService.CheckoutAsync(userId, request.AddressId);
+            var order = await _cartService.CheckoutAsync(userId, addressId);
             return Ok(order);
         }
     }
-}
-
-public class UpdateCartItemQuantityDto
-{
-    public Guid ProductId { get; set; }
-    public int Change { get; set; } // 1 для увеличения, -1 для уменьшения
-}
-
-public class CheckoutSelectedDto
-{
-    public List<Guid> ProductIds { get; set; }
-    public Guid AddressId { get; set; }
-}
-
-public class PurshareDto
-{
-    public string AddressId { get; set; }
-}
-
-public class AddToCartDto
-{
-    public Guid ProductId { get; set; }
-    public int Count { get; set; }
-}
-
-public class CheckoutDto
-{
-    public Guid AddressId { get; set; }
 }

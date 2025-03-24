@@ -20,8 +20,7 @@ $(document).ready(function () {
         if(quantity == 0) $.ajax({
             url: '/Cart/UpdateCartItemCount',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, change: 1 }),
+            data: { productId: productId, change: 1 },
             success: function () {
                 // Если количество равно 0, возвращаем кнопку в исходное состояние
                 button.find('.add-text').hide();
@@ -49,8 +48,7 @@ $(document).ready(function () {
         $.ajax({
             url: '/Cart/UpdateCartItemCount',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, change: 1 }),
+            data: { productId: productId, change: 1 },
             success: function () {
                 console.log("Количество товара обновлено");
             }
@@ -82,8 +80,7 @@ $(document).ready(function () {
         $.ajax({
             url: '/Cart/UpdateCartItemCount',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, change: -1 }),
+            data: { productId: productId, change: -1 },
             success: function () {
                 console.log("Товар удален из корзины");
             }

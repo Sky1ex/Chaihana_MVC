@@ -109,13 +109,6 @@ namespace WebApplication1.Controllers
             return Ok();
         }
     }
-    //c528fe2d-bf43-4549-988c-52e28043c85d
-    public class PhoneRequest
-    {
-        public string number { get; set; }
-        public string destination { get; set; }
-        public string text { get; set; }
-    }
 }
 
 // Доделать представления для Orders, Adresses и UserData(смотри Account/Index)

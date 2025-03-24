@@ -43,8 +43,7 @@
         $.ajax({
             url: '/Cart/UpdateCartItemCount',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, change: change }),
+            data: { productId: productId, change: change },
             success: function () {
                 loadCart();
                 updateButtons()
@@ -86,12 +85,11 @@
 
     // Оформление заказа
     $('#purshare').on('click', function () {
-        var addressId = $('input[name="selectedAddress"]:checked').val(); // Здесь должен быть выбранный адрес
+        var addressId = $('input[name="selectedAddress"]:checked').val(); 
         $.ajax({
-            url: 'https://localhost:7008/Cart/Purshare',
+            url: '/Cart/Purshare',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ addressId: addressId }),
+            data: { addressId: addressId },
             success: function (data) {
                 alert('Заказ оформлен!');
                 loadCart();
