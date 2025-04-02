@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Controllers;
 using WebApplication1.DataBase;
+using WebApplication1.DataBase_and_more;
 using WebApplication1.OtherClasses;
 using WebApplication1.Services;
 
@@ -27,12 +28,15 @@ builder.Services.AddSwaggerGen(); // добавление swagger(для работы с бд)
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+builder.Services.AddExceptionHandler<ExceptionHandler>(); // добавляем обработчик ошибок для клиента
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    /*app.UseExceptionHandler("/Home/Error");*/
+    app.UseExceptionHandler(_ => { });
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     
@@ -42,7 +46,7 @@ app.UseSwagger(); //
 app.UseSwaggerUI(); // методы для swagger
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); // для работы с отправкой кода
 
 app.UseRouting();
 

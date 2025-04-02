@@ -1,0 +1,128 @@
+﻿div.scheme {
+    position: absolute;
+    top: 60px;
+    left: 50%; /* Смещаем блок на 50% вправо */
+    transform: translateX(-50%); /* Смещаем назад на половину своей ширины */
+    z-index: 10;
+}
+
+div.walls {
+    position: relative;
+}
+
+div.bar {
+    left: 195px;
+    top: 20px;
+    position: absolute;
+    z-index: 1;
+}
+
+div.table {
+    position: relative;
+    z-index: 1;
+}
+
+/* кнопка бронирования*/
+.button-booking {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+    position: relative;
+    width: 209px;
+    height: 60px;
+    left: 78px;
+    top: 40px;
+    bottom: 44px;
+    background: #E67225;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+/*текст кнопи бронирования*/
+.button-booking-text {
+
+    width: 172px;
+    height: 25px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    /* identical to box height */
+    text-align: center;
+    color: #FFFFFF;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+/*группа контейнеров выбора времени*/
+.button-time {
+
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+    flex-direction: row;
+    position: relative;
+    width: 460px;
+    height: 60px;
+    left: 410px;
+    top: -20px;
+    gap: 20px;
+}
+
+/*основной контейнер времени*/
+.button-time-container {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    place-items: center;
+    position: relative;
+    width: 300px;
+    height: 60px;
+    background: #E67225;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+/*текст основного контейнера времени*/
+.button-time-text {
+
+    user-select: none;
+    position: fixed;
+    width: 96px;
+    height: 25px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 25px;
+    color: #FFFFFF;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+/*кнопки изменения времени*/
+.button-time-button {
+    cursor: pointer;
+}
+
+/*календарь для выбора дня*/
+.calendar {
+
+    display: inline-block;
+    cursor: pointer;
+    flex-direction: row;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    left: 593px;
+    top: -20px;
+}

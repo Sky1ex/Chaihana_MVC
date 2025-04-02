@@ -1,4 +1,4 @@
-html {
+/*html {
   font-size: 14px;
 }
 
@@ -16,7 +16,23 @@ html {
   position: relative;
   min-height: 100%;
 }
+*/
+
+@font-face {
+    font-family: 'Prosto One';
+    src: url('../css/ProstoOne-Regular.ttf') format('truetype');
+    font-weight: 400; /* Обычное начертание (normal) */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../css/Montserrat-VariableFont_wght.ttf') format('truetype');
+    font-weight: 400; /* Обычное начертание (normal) */
+    font-style: normal;
+}
 
 body {
-  margin-bottom: 60px;
+    /* margin-bottom: 60px;*/
+    background: #D1AEA0 !important;
 }

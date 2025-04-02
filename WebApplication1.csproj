@@ -44,4 +44,8 @@
     <Resource Include="wwwroot\js\Account.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\resources\Sheme\" />
+  </ItemGroup>
+
 </Project>

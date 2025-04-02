@@ -1,7 +1,4 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
+﻿/*a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
@@ -45,11 +42,177 @@ button.accept-policy {
   width: 100%;
   white-space: nowrap;
   line-height: 60px;
-}
+}*/
 
 
 /* Изменения */
 
+/* Стили для модального окна */
+/*.modal {
+    display: none;*/ /* Скрыто по умолчанию */
+    /*position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);*/ /* Затемнение фона */
+/*}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}*/
+
+/* Стили для списка товаров */
+/*#cartItems {
+    list-style-type: none;
+    padding: 0;
+}
+
+#cartItems li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#cartItems li:last-child {
+    border-bottom: none;
+}*/
+
+/*Шрифт*/
+
+
+/*header*/
+header, .menu, .container-fluid {
+    height: 80px;
+    z-index:2;
+    position: relative;
+}
+
+/*Фон для header*/
+.back {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    padding: 0px;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+    display: block;
+}
+
+/*Пункты меню*/
+.navbar-nav {
+    position: absolute;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    gap: 30px;
+    position: absolute;
+    width: 490px;
+    height: 25px;
+    left: calc(50% - 490px/2);
+    top: 27px;
+}
+
+/*Элементы меню*/
+.nav-item {
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    flex-direction: row;
+    /* identical to box height */
+
+    color: #000000;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+/*Иконка ЛК*/
+.nav-item-account {
+    /* ЛК */
+
+    list-style: none;
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    align-items:center;
+    flex: 1;
+    right: 20px;
+    top: 15px;
+}
+
+
+/*Лого*/
+.logo {
+    /* чайхана */
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+
+    width: 138px;
+    height: 37px;
+    left: 20px;
+    top: 20px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 37px;
+    position: absolute;
+
+    color: #E67225;
+}
+
+.pb-0 {
+    /* бронирование */
+    margin: 0px;
+    padding: 0px;
+    width: 100% !important;
+    max-width:2000px;
+    background: #D1AEA0 !important;
+    align-items: center;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    border:0px;
+}
+
+
+
+/* Изменения */
 /* Стили для модального окна */
 .modal {
     display: none; /* Скрыто по умолчанию */
@@ -82,9 +245,9 @@ button.accept-policy {
     cursor: pointer;
 }
 
-.close:hover {
-    color: black;
-}
+    .close:hover {
+        color: black;
+    }
 
 /* Стили для списка товаров */
 #cartItems {
@@ -92,14 +255,14 @@ button.accept-policy {
     padding: 0;
 }
 
-#cartItems li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    #cartItems li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-#cartItems li:last-child {
-    border-bottom: none;
-}
+        #cartItems li:last-child {
+            border-bottom: none;
+        }
