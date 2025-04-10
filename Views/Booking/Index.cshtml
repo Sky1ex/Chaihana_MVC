@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бронирование</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/Booking.js" asp-append-version="true"></script>
 </head>
 <body>
     <div class="scheme">
@@ -35,7 +41,8 @@
         </div>  
 
         <div class="button-time">
-            <div class="button-time-button">
+
+            <div class="button-time-button" id="button-prev">
                 <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="30" cy="30" r="30" transform="rotate(180 30 30)" fill="#E67225"/>
                     <path d="M34 46L18.1778 30.7141" stroke="white" stroke-width="5" stroke-linecap="round"/>
@@ -45,12 +52,14 @@
 
             <div class="button-time-container">
                 <svg width="300" height="60" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <div class="button-time-text">17 : 00</div>
+                    <div class="time-scroll-wrapper" id="time-scroll">
+                        <div class="button-time-text">17 : 00</div>
+                    </div>
                     <rect width="300" height="60" rx="25" fill="#E67225"/>
                 </svg>
             </div>
 
-            <div class="button-time-button">
+            <div class="button-time-button" id="button-next">
                 <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="30" cy="30" r="30" fill="#E67225"/>
                     <path d="M26 14L41.8222 29.2859" stroke="white" stroke-width="5" stroke-linecap="round"/>
@@ -59,7 +68,7 @@
             </div>
         </div>
 
-        <div class="calendar">
+        <div class="calendar" id="calendar-btn">
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="60" height="60" rx="25" fill="#E67225" />
                 <g clip-path="url(#clip0_4_187)">
@@ -71,6 +80,17 @@
                     </clipPath>
                 </defs>
             </svg>
+        </div>
+
+        <div class="calendar-dropdown" id="calendar-dropdown">
+            <div class="calendar-header">
+                <div class="calendar-nav" id="calendar-prev">‹</div>
+                <div class="calendar-title" id="calendar-month">Май 2023</div>
+                <div class="calendar-nav" id="calendar-next">›</div>
+            </div>
+            <div class="calendar-grid" id="calendar-days">
+                <!-- Дни календаря будут добавлены через JavaScript -->
+            </div>
         </div>
 
     </div>

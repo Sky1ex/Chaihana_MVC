@@ -3,7 +3,7 @@
 $(document).ready(function () {
 
     updateButtons();
-    $('.add-to-cart-btn').off('click').on('click', function () {
+    $(/*'.add-to-cart-btn'*/'.rect-btn').off('click').on('click', function () {
         var productCard = $(this).closest('.product-card');
         var productId = productCard.find('.product-id').text().trim();
 
@@ -13,7 +13,7 @@ $(document).ready(function () {
             $(this).removeClass('added');
         }, 500);
 
-        var button = $(this).closest('.add-to-cart-btn');
+        var button = $(this).closest('.rect-btn');
         var quantityElement = button.find('.quantity');
         var quantity = parseInt(quantityElement.text());
 
@@ -23,7 +23,7 @@ $(document).ready(function () {
             data: { productId: productId, change: 1 },
             success: function () {
                 // Если количество равно 0, возвращаем кнопку в исходное состояние
-                button.find('.add-text').hide();
+                button.find(/*'.add-text'*/'.rect-btn-name').hide();
                 button.find('.quantity-controls').show();
                 quantityElement.text('1');
                 console.log("Функция добавления товара в корзину");
@@ -35,7 +35,7 @@ $(document).ready(function () {
     $(document).on('click', '.plus-btn', function (event) {
         event.stopPropagation(); // Останавливаем всплытие события
 
-        var button = $(this).closest('.add-to-cart-btn');
+        var button = $(this).closest('.rect-btn');
         var productId = button.data('product-id');
         var quantityElement = button.find('.quantity');
         var quantity = parseInt(quantityElement.text());
@@ -59,7 +59,7 @@ $(document).ready(function () {
     $(document).on('click', '.minus-btn', function (event) {
         event.stopPropagation(); // Останавливаем всплытие события
 
-        var button = $(this).closest('.add-to-cart-btn');
+        var button = $(this).closest('.rect-btn');
         var productId = button.data('product-id');
         var quantityElement = button.find('.quantity');
         var quantity = parseInt(quantityElement.text());
@@ -69,7 +69,7 @@ $(document).ready(function () {
 
         if (quantity <= 0) {
             // Если количество равно 0, возвращаем кнопку в исходное состояние
-            button.find('.add-text').show();
+            button.find('.rect-btn-name').show();
             button.find('.quantity-controls').hide();
             quantityElement.text('0');
         } else {

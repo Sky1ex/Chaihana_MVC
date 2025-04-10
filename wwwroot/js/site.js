@@ -108,18 +108,18 @@ function updateButtons() {
             // Проходим по каждому товару в корзине
             cartProducts.forEach(function (productInCart) {
                 var productId = productInCart.productId; // Получаем ID товара
-                var button = $('.add-to-cart-btn[data-product-id="' + productId + '"]'); // Находим кнопку по ID товара
+                var button = $('.rect-btn[data-product-id="' + productId + '"]'); // Находим кнопку по ID товара
 
                 if (button.length > 0) {
                     // Если кнопка найдена, обновляем её состояние
                     if (productInCart.count > 0) {
                         // Если товар есть в корзине, показываем кнопку "Плюс/Минус"
-                        button.find('.add-text').hide();
+                        button.find('.rect-btn-name').hide();
                         button.find('.quantity-controls').show();
                         button.find('.quantity').text(productInCart.count);
                     } else {
                         // Если товара нет в корзине, показываем кнопку "Добавить"
-                        button.find('.add-text').show();
+                        button.find('.rect-btn-name').show();
                         button.find('.quantity-controls').hide();
                     }
                 }

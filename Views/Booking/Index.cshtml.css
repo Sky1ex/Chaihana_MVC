@@ -1,8 +1,8 @@
 ﻿div.scheme {
     position: absolute;
     top: 60px;
-    left: 50%; /* Смещаем блок на 50% вправо */
-    transform: translateX(-50%); /* Смещаем назад на половину своей ширины */
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 10;
 }
 
@@ -125,4 +125,135 @@ div.table {
     height: 60px;
     left: 593px;
     top: -20px;
+}
+
+
+/*изменения*/
+
+/* Выпадающий календарь */
+.calendar-dropdown {
+    position: relative;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    padding: 15px;
+    display: none;
+}
+
+    .calendar-dropdown.active {
+        display: block;
+    }
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.calendar-title {
+    font-family: 'Montserrat';
+    font-weight: bold;
+    color: #E67225;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .calendar-day:hover {
+        background-color: #f0f0f0;
+    }
+
+    .calendar-day.selected {
+        background-color: #E67225;
+        color: white;
+    }
+
+    .calendar-day.other-month {
+        color: #ccc;
+    }
+
+.calendar-nav {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+.time-slot.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Градиентные маски */
+.time-mask-left, .time-mask-right {
+    position: absolute;
+    top: 0;
+    width: 50px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.time-mask-left {
+    left: 0;
+    background: linear-gradient(90deg, #E67225 30%, rgba(230, 114, 37, 0) 100%);
+}
+
+.time-mask-right {
+    right: 0;
+    background: linear-gradient(270deg, #E67225 30%, rgba(230, 114, 37, 0) 100%);
+}
+
+/* кнопки изменения времени */
+.button-time-button {
+    cursor: pointer;
+}
+
+.time-scroll-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    align-items: center;
+    scroll-behavior: smooth;
+}
+
+    .time-scroll-wrapper::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+.time-slots {
+    display: flex;
+    gap: 15px;
+    padding: 0 50px;
+    align-items: center;
+    height: 100%;
+}
+
+.time-slot {
+    flex-shrink: 0;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 15px;
+    transition: background-color 0.2s;
 }
