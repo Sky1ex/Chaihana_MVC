@@ -21,6 +21,7 @@ builder.Services.AddHttpContextAccessor(); // Добавляем поддержку IHttpContextAc
 builder.Services.AddScoped<UserService>(); // Регистрируем UserService
 builder.Services.AddScoped<AccountService>(); // Регистрируем UserService
 builder.Services.AddScoped<MenuService>(); // Регистрируем MenuService
+builder.Services.AddScoped<BookingService>(); // Регистрируем BookingService
 
 builder.Services.AddEndpointsApiExplorer(); //
 builder.Services.AddSwaggerGen(); // добавление swagger(для работы с бд)

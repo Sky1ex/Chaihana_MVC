@@ -48,9 +48,8 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/Menu.js" asp-append-version="true"></script>
+ <script src="~/js/Cart.js" asp-append-version="true"></script> 
 
-@* <h1>Меню кафе</h1>
-<p>Добро пожаловать в наше кафе! Вот наш ассортимент:</p> *@
 
 <div class="under-menu-mask">
     <div class="under-menu">
@@ -124,11 +123,4 @@
     <path d="M32.7656 31.3027C31.6621 31.3027 30.7734 32.1914 30.7734 33.2949V45.7461C30.7734 46.8496 31.6621 47.7383 32.7656 47.7383C33.8691 47.7383 34.7578 46.8496 34.7578 45.7461V33.2949C34.7578 32.2012 33.8594 31.3027 32.7656 31.3027Z" fill="white" />
     <path d="M42.4141 31.3027C41.3105 31.3027 40.4219 32.1914 40.4219 33.2949V45.7461C40.4219 46.8496 41.3105 47.7383 42.4141 47.7383C43.5176 47.7383 44.4062 46.8496 44.4062 45.7461V33.2949C44.4062 32.2012 43.5176 31.3027 42.4141 31.3027Z" fill="white" />
 </svg>
-<div id="cartModal" class="modal">
-    <div class="modal-content" @* style="display:none;" *@>
-        <span class="close">&times;</span>
-        <div id="cartContent"></div>
-        <button id="checkout-selected">Оформить выбранные товары</button>
-        <button id="purshare">Оформить заказ</button>
-    </div>
-</div>
+<div id="cartModal" class="modal"></div>

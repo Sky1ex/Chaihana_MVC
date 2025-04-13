@@ -1,34 +1,58 @@
 ﻿@model WebApplication1.DTO.CartDto
 
-<div>
-    <h3>Ваша корзина</h3>
-    <ul>
-        @foreach (var item in Model.Products)
-        {
-            <li>
-                <input type="checkbox" class="cart-item-checkbox" data-product-id="@item.ProductId" />
-                <span>@item.Name - @item.Price.ToString("C")</span>
-                <button class="decrease-quantity" data-product-id="@item.ProductId">-</button>
-                <span class="quantity">@item.Count</span>
-                <button class="increase-quantity" data-product-id="@item.ProductId">+</button>
-            </li>
-        }
-    </ul>
-</div>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-@* <div id="Sum">Общая сумма:<span id="numbers"></span></div> Доделать функцию просчета суммы корзины*@
-
-<div>
-    <h3>Выберите адрес доставки</h3>
-    <div class="address-scroll">
-        <div class="address-list">
-            @foreach (var address in ViewBag.Addresses)
-            {
-                <div class="address-item" data-address-id="@address.AddressId">
-                    <input type="radio" name="selectedAddress" value="@address.AddressId" />
-                    <span>@address.City, @address.Street, @address.House</span>
-                </div>
-            }
-        </div>
+<div class="modal-content">
+    <div class="header">
+        <span class="header-name">Ваши товары</span>
+        <span class="close">&times;</span>
     </div>
+    <div id="cartContent">
+        <div> 
+            <div class="list-mini-card">
+                @foreach (var item in Model.Products)
+                {
+                    <div class="mini-card">
+                        <input type="checkbox" class="cart-item-checkbox" data-product-id="@item.ProductId" />
+                        <img src="@item.ImageUrl" class="mini-card-img">
+                        <span class="mini-card-name">@item.Name</span>
+                        <span class="mini-card-price">@item.Price.ToString("C")</span>
+                        <div class="buttons">
+                            <div class="decrease-quantity" data-product-id="@item.ProductId">-</div>
+                            <span class="quantity">@item.Count</span>
+                            <div class="increase-quantity" data-product-id="@item.ProductId">+</div>
+                        </div>
+                        <svg width="700" height="2" viewBox="0 0 700 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <line y1="1" x2="700" y2="1" stroke="black" stroke-width="2" />
+                        </svg>
+
+                    </div>
+                }
+                
+            </div>
+        </div>
+        @* <div>
+            <h3>Выберите адрес доставки</h3>
+            <div class="address-scroll">
+                <div class="address-list">
+                    @foreach (var address in ViewBag.Addresses)
+                    {
+                        <div class="address-item" data-address-id="@address.AddressId">
+                            <input type="radio" name="selectedAddress" value="@address.AddressId" />
+                            <span>@address.City, @address.Street, @address.House</span>
+                        </div>
+                     }
+                </div>
+             </div>
+        </div> *@
+    </div>
+    @* <button id="checkout-selected">Оформить выбранные товары</button> *@
+    <div id="checkout-selected">
+        <div id="checkout-selected-name">оформить</div>
+    </div>
+    @* <button id="purshare">Оформить заказ</button> *@
 </div>

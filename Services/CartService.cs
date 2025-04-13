@@ -38,7 +38,8 @@ namespace WebApplication1.Services
                     ProductId = ce.Product.ProductId,
                     Name = ce.Product.Name,
                     Price = ce.Product.Price,
-                    Count = ce.Count
+                    Count = ce.Count,
+                    ImageUrl = ce.Product.ImageUrl
                 }).ToList()
             };
         }

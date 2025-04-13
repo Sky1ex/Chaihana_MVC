@@ -1,35 +1,23 @@
 ﻿$(document).ready(function () {
     // Генерация временных слотов
     const timeSlotsContainer = document.querySelector('.button-time-text');
-    const hours = Array.from({ length: 24 }, (_, i) => i);
 
-    hours.forEach(hour => {
-        const timeSlot = document.createElement('div');
-        timeSlot.className = 'time-slot';
-        timeSlot.textContent = `${hour}:00`;
-        timeSlot.addEventListener('click', () => {
-            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
-            timeSlot.classList.add('active');
-        });
-
-        if (hour === 17) {
-            timeSlot.classList.add('active');
-        }
-
-        timeSlotsContainer.appendChild(timeSlot);
-    });
+    var now = new Date().getHours() + 1;
+    if (now >= 22 || now <= 8) timeSlotsContainer.textContent = '8:00';
+    else timeSlotsContainer.textContent = (now) % 22 + ':00';
 
     // Прокрутка времени
-    const timeScroll = document.getElementById('time-scroll');
     const timePrev = document.getElementById('button-prev');
     const timeNext = document.getElementById('button-next');
 
     timePrev.addEventListener('click', () => {
-        timeScroll.scrollBy({ left: -100, behavior: 'smooth' });
+        if (timeSlotsContainer.textContent == '8:00') timeSlotsContainer.textContent = '21:00';
+        else timeSlotsContainer.textContent = (parseInt(timeSlotsContainer.textContent) - 1) % 22 + ':00';
     });
 
     timeNext.addEventListener('click', () => {
-        timeScroll.scrollBy({ left: 100, behavior: 'smooth' });
+        if (timeSlotsContainer.textContent == '21:00') timeSlotsContainer.textContent = '8:00';
+        else timeSlotsContainer.textContent = (parseInt(timeSlotsContainer.textContent) + 1) % 22 + ':00';
     });
 
     // Календарь
@@ -136,6 +124,82 @@
         if (calendarBtn.contains(e.target)) {
             calendarDropdown.classList.remove('active');
         }
+    });
+
+    var tables = document.querySelectorAll('.table');
+    for (var i = 0; i < tables.length; i++)
+    {
+        const table = tables[i];
+        table.addEventListener('click', () => {
+            tables.forEach(d => d.classList.remove('selected'));
+            table.classList.add('selected');
+        })
+    }
+
+    const booking = document.querySelector('.button-booking');
+
+    booking.addEventListener('click', () => {
+
+        const monthNames = {
+            'январь': 0, 'февраль': 1, 'март': 2, 'апрель': 3,
+            'май': 4, 'июнь': 5, 'июль': 6, 'август': 7,
+            'сентябрь': 8, 'октябрь': 9, 'ноябрь': 10, 'декабрь': 11
+        };
+
+        const monthStr = document.querySelector('#calendar-month').textContent.split(' ')[0].toLowerCase();
+        const day = parseInt(document.querySelector('.calendar-day.selected').textContent, 10);
+        const year = new Date().getFullYear();
+        const timeStr = document.querySelector('.button-time-text').textContent.trim(); // "14:00"
+        const tableId = document.querySelector('.table.selected').getAttribute('data-table-id');
+
+        // Получаем номер месяца (0–11)
+        const month = monthNames[monthStr];
+
+        // Разбиваем время на часы и минуты
+        const [hours, minutes] = timeStr.split(':').map(Number);
+
+        // Создаем Date объект
+        const bookingDate = new Date(year, month, day, hours, minutes);
+
+        console.log(bookingDate); // Проверка в консоли
+
+        $.ajax({
+            url: '/Api/Booking/Add',
+            type: 'POST',
+            data: {
+                tableId: tableId,
+                time: bookingDate.toISOString() // Отправляем в формате ISO
+            },
+            success: function () {
+                console.log("Booking добавлен!");
+            }
+        });
+
+        /*var month = document.querySelector('#calendar-month').textContent.split(' ')[0];
+        var day = document.querySelector('.calendar-day.selected').textContent;
+        var time = document.querySelector('.button-time-text').textContent;
+        var tableId = document.querySelector('.table.selected').getAttribute('data-table-id');
+
+        const monthNames = {
+            'январь': 0, 'февраль': 1, 'март': 2, 'апрель': 3,
+            'май': 4, 'июнь': 5, 'июль': 6, 'август': 7,
+            'сентябрь': 8, 'октябрь': 9, 'ноябрь': 10, 'декабрь': 11
+        };
+
+        var fullMonth = new Intl.DateTimeFormat('ru-RU', { dateStyle: "long" });
+
+        var str = month.toString() + ' ' + day.toString() + ',' + new Date().getFullYear() + ' ' + time.toString();
+
+        fullMonth = new Date(month.toString() + ' ' + day.toString() + ',' + new Date().getFullYear() + ' ' + time.toString());
+
+        $.ajax({
+            url: '/Api/Booking/Add',
+            type: 'POST',
+            data: { tableId: tableId, time: fullMonth },
+            success: function () {
+                console.log("Booking добавлен!");
+            }
+        });*/
     });
 
     // Инициализация календаря

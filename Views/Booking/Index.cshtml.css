@@ -93,6 +93,9 @@ div.table {
 
 /*текст основного контейнера времени*/
 .button-time-text {
+    
+    display: inline-flex;
+    flex-flow: row;
 
     user-select: none;
     position: fixed;
@@ -132,9 +135,21 @@ div.table {
 
 /* Выпадающий календарь */
 .calendar-dropdown {
-    position: relative;
+    /* position: relative;
     bottom: 70px;
     left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    padding: 15px;
+    display: none;*/
+
+    position: absolute;
+    bottom: 70px;
+    left: 1100px;
     transform: translateX(-50%);
     width: 250px;
     background: white;
@@ -168,23 +183,24 @@ div.table {
     gap: 5px;
 }
 
-.calendar-day {
+::deep .calendar-day {
+    position: relative;
     text-align: center;
     padding: 5px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-    .calendar-day:hover {
+    ::deep .calendar-day:hover {
         background-color: #f0f0f0;
     }
 
-    .calendar-day.selected {
+    ::deep .calendar-day.selected {
         background-color: #E67225;
         color: white;
     }
 
-    .calendar-day.other-month {
+    ::deep .calendar-day.other-month {
         color: #ccc;
     }
 
@@ -247,6 +263,8 @@ div.table {
 }
 
 .time-slot {
+    /*display: inline-flex;
+    flex-flow: row;*/
     flex-shrink: 0;
     font-family: 'Montserrat';
     font-weight: bold;
@@ -257,3 +275,24 @@ div.table {
     border-radius: 15px;
     transition: background-color 0.2s;
 }
+
+::deep .table.selected rect {
+    fill: #E67225;
+}
+
+::deep .table.selected path {
+    fill: #E67225;
+}
+
+.table{
+    cursor: pointer;
+}
+
+    .table:hover{
+        transform: scale(1.1);
+        transition: 300ms;
+    }
+
+    .table:not(:hover) {
+        transition: 300ms;
+    }
