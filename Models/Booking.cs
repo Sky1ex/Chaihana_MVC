@@ -6,5 +6,6 @@
         public User User { get; set; }
         public int Table { get; set; }
         public DateTime Time { get; set; }
+        public int Interval { get; set; }
     }
 }

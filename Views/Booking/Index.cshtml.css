@@ -296,3 +296,8 @@ div.table {
     .table:not(:hover) {
         transition: 300ms;
     }
+
+::deep .button-booking.denied {
+    background-color: #ccc;
+    cursor: not-allowed
+}

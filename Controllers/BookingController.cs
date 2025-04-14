@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataBase;
+using WebApplication1.DTO;
+using WebApplication1.Models;
 using WebApplication1.OtherClasses;
 using WebApplication1.Services;
 
@@ -22,6 +25,13 @@ namespace WebApplication1.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet("Api/Booking/GetAll")]
+        public async Task<List<BookingDto>> GetAllBookings(int tableId)
+        {
+            var booking = await _bookingService.GetAllBookingsByTableId(tableId);
+            return booking;
         }
 
         [HttpPost("Api/Booking/Add")]
