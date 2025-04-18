@@ -99,6 +99,11 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Обработка навигации по меню
+    $(document).on('click', '.Category', function () {
+        document.getElementById($(this).attr('id')).scrollIntoView();
+    });
 });
 
 // Загрузка содержимого корзины

@@ -1,62 +1,18 @@
-﻿@* @model IEnumerable<Product>
-
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/Menu.js" asp-append-version="true"></script>
-
-<h1>Меню кафе</h1>
-<p>Добро пожаловать в наше кафе! Вот наш ассортимент:</p>
-
-@foreach(var category in ViewBag.Categories)
-{
-    <div class="Category">@category.Name</div>
-
-    <div class="product-grid">
-        @foreach (var product in Model)
-        {
-            @if(product.Category == category) {
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="@product.ImageUrl" alt="@product.Name" />
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">@product.Name</div>
-                        <div hidden class="product-id">@product.ProductId</div>
-                        <div class="product-details">
-                            <div class="product-price">@product.Price.ToString("C")</div>
-                            <div class="product-weight">@product.Weight г</div>
-                        </div>
-                    </div>
-                    <button class="add-to-cart-btn" data-product-id="@product.ProductId">
-                        <span class="add-text">Добавить</span>
-                        <span class="quantity-controls" style="display: none;">
-                            <span class="minus-btn">-</span>
-                            <span class="quantity">0</span>
-                            <span class="plus-btn">+</span>
-                        </span>
-                    </button>
-                </div>
-            }
-        }
-    </div>
-} *@
-
-@model IEnumerable<Product>
+﻿@model IEnumerable<Product>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/Menu.js" asp-append-version="true"></script>
- <script src="~/js/Cart.js" asp-append-version="true"></script> 
-
+<script src="~/js/Cart.js" asp-append-version="true"></script> 
 
 <div class="under-menu-mask">
     <div class="under-menu">
         @foreach (var category in ViewBag.Categories) 
         {  
             <div class="Category-background">
-                <div class="Category">@category.Name</div>
+                <div class="Category" id="@category.CategoryId">@category.Name</div>
             </div> 
         }
     </div>
@@ -64,7 +20,7 @@
 
 @foreach (var category in ViewBag.Categories)
 {
-    <div class="visible-category">
+    <div class="visible-category" href='#@category.CategoryId'>
         <div class="big-category">@category.Name</div>
         <svg class="line"  xmlns="http://www.w3.org/2000/svg">
             <line x1="8.74228e-08" y1="1" x2="12040" y2="1.00011" stroke="black" stroke-width="2" />

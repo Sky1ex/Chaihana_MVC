@@ -32,7 +32,8 @@ namespace WebApplication1.Services
                     AddressId = c.AdressId,
                     City = c.City,
                     Street = c.Street,
-                    House = c.House
+                    House = c.House,
+                    Apartment = c.Apartment
                 }).ToList();
 
             return Adresses;
@@ -56,7 +57,8 @@ namespace WebApplication1.Services
                     {
                         City = c.Adress.City,
                         Street = c.Adress.Street,
-                        House = c.Adress.House
+                        House = c.Adress.House,
+                        Apartment = c.Adress.Apartment
                     },
                     Products = c.OrderElement.Select(ce => new OrderProductDto
                     {
@@ -137,19 +139,34 @@ namespace WebApplication1.Services
             return true;
         }
 
-        public async Task<bool> AddAddress(string City, string Street, string House, Guid userId)
+        public async Task<bool> AddAddress(string City, string Street, string House, int Apartment, Guid userId)
         {
             var user = await _context.Users
                 .Include(c => c.Adresses)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
-            var address = new Adress { AdressId = Guid.NewGuid(), City = City, House = House, Street = Street };
+            var address = new Adress { AdressId = Guid.NewGuid(), City = City, House = House, Street = Street, Apartment = Apartment };
             user.Adresses.Add(address);
             await _context.Adresses.AddAsync(address);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async void DeleteAddress(string addressId, Guid userId)
+		public async Task<bool> PutAddress(string City, string Street, string House, int Apartment, Guid userId, Guid addressId)
+		{
+			var user = await _context.Users
+				.Include(c => c.Adresses)
+				.FirstOrDefaultAsync(c => c.UserId == userId);
+            var address = user.Adresses.FirstOrDefault(c => c.AdressId == addressId);
+            if(address == null) return false;
+            address.House = House;
+            address.City = City;
+            address.Street = Street;
+            address.Apartment = Apartment;
+			await _context.SaveChangesAsync();
+			return true;
+		}
+
+		public async void DeleteAddress(string addressId, Guid userId)
         {
             var user = _context.Users
                 .Include(c => c.Adresses)

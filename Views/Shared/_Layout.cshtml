@@ -40,35 +40,46 @@
 
                 <svg class="back" width="100%" height="80" viewBox="0 0 1440 80" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0H1440V60C1440 71.0457 1431.05 80 1420 80H20C8.95432 80 0 71.0457 0 60V0Z" fill="#F9FBFA" fill-opacity="0.6" />
-                </svg>
+                </svg> 
 
             </div>
 
         </nav>
     </header>
+
+    
+
+    <svg class="vector" width="1440" height="842" viewBox="0 0 1440 842" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g filter="url(#filter0_f_4_189)">
+            <path d="M1497 817.865C1477.17 737.365 1427.8 558.865 1389 488.865C1340.5 401.365 1164.5 799.365 998.5 817.865C832.5 836.365 1113.5 276.365 988.5 232.865C863.5 189.365 583 772.365 441 709.865C299 647.365 535.5 207.865 434 48.365C352.8 -79.235 125.5 305.532 22 513.865L-111 767.865" stroke="#FCFCFC" stroke-opacity="0.3" stroke-width="30" />
+        </g>
+        <defs>
+            <filter id="filter0_f_4_189" x="-132.289" y="-0.00088501" width="1651.85" height="841.314" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                <feGaussianBlur stdDeviation="4" result="effect1_foregroundBlur_4_189" />
+            </filter>
+        </defs>
+    </svg> 
+
     <div class="container-fluid p-0">
         <main role="main" class="pb-0">
             @RenderBody()
         </main>
+
     </div>
 
-    @* <footer class="border-top footer text-muted">
-        @if (ViewContext.RouteData.Values["controller"].ToString() == "Menu")
-        {
-            <button id="view-cart">Корзина</button>
-            <div id="cartModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <div id="cartContent"></div>
-                    <button id="checkout-selected">Оформить выбранные товары</button>
-                    <button id="purshare">Оформить заказ</button>
-                </div>
-            </div>
-        }
-    </footer> *@
+     <footer>
+         <div class="points">
+            <div class="about-us">О нас</div>
+            <div class="point">Пункт</div>
+            <div class="other-site">Для работников чайной (ссылка пока не работает)</div>
+            <div class="contacts">Контакты</div>
+         </div>
+        <div class="copyrite">«© 2025 Чайная «Чайхана» — pet-проект».</div>
+     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
- @*    <script src="~/js/site.js" asp-append-version="true"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

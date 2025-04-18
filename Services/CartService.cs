@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Net;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
@@ -107,7 +108,8 @@ namespace WebApplication1.Services
                     AddressElementId = address.AdressId,
                     City = address.City,
                     Street = address.Street,
-                    House = address.House
+                    House = address.House,
+                    Apartment = address.Apartment
                 },
                 OrderElement = cart.CartElement.Select(ce => new OrderElement
                 {
@@ -129,8 +131,9 @@ namespace WebApplication1.Services
                 {
                     City = address.City,
                     Street = address.Street,
-                    House = address.House
-                },
+                    House = address.House,
+					Apartment = address.Apartment
+				},
                 Products = order.OrderElement.Select(oe => new OrderProductDto
                 {
                     ProductId = oe.Product.ProductId,
@@ -227,7 +230,8 @@ namespace WebApplication1.Services
                     AddressElementId = address.AdressId,
                     City = address.City,
                     Street = address.Street,
-                    House = address.House
+                    House = address.House,
+                    Apartment = address.Apartment
                 },
                 OrderElement = selectedCartElements.Select(ce => new OrderElement
                 {
@@ -256,8 +260,9 @@ namespace WebApplication1.Services
                 {
                     City = address.City,
                     Street = address.Street,
-                    House = address.House
-                },
+                    House = address.House,
+					Apartment = address.Apartment
+				},
                 Products = order.OrderElement.Select(oe => new OrderProductDto
                 {
                     ProductId = oe.Product.ProductId,
@@ -282,8 +287,9 @@ namespace WebApplication1.Services
                 AddressId = a.AdressId,
                 City = a.City,
                 Street = a.Street,
-                House = a.House
-            })
+                House = a.House,
+				Apartment = a.Apartment
+			})
                 .ToList();
 
             return ad;

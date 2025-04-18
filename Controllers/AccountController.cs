@@ -28,9 +28,16 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet("Account")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var userId = await _userService.AutoLogin();
+            var addresses = await _accountService.GetAddresses(userId);
+            var orders = _accountService.GetOrders(userId);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+            ViewBag.Orders = orders;
+            ViewBag.Addresses = addresses;
+            return View(user);
         }
 
         [HttpGet("Account/Addresses")]
@@ -64,14 +71,24 @@ namespace WebApplication1.Controllers
         [HttpPost("Account/AddAddress")]
         public async Task<IActionResult> AddAddress([FromBody] AddressDto request)
         {
-            var userId = _userService.AutoLogin();
+            var userId = await _userService.AutoLogin();
 
-            await _accountService.AddAddress(request.City, request.Street, request.House, userId.Result);
+            await _accountService.AddAddress(request.City, request.Street, request.House, request.Apartment, userId);
 
             return Ok();
         }
 
-        [HttpDelete("Account/DeleteAddress")]
+        [HttpPut("Account/PutAddress")]
+		public async Task<IActionResult> PutAddress([FromBody] AddressDto request)
+		{
+			var userId = await _userService.AutoLogin();
+
+			await _accountService.PutAddress(request.City, request.Street, request.House, request.Apartment, userId, request.AddressId);
+
+			return Ok();
+		}
+
+		[HttpDelete("Account/DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(string addressId)
         {
             var userId = await _userService.AutoLogin();
@@ -86,9 +103,8 @@ namespace WebApplication1.Controllers
         {
             var userId = _userService.AutoLogin().Result;
             using var response = await _accountService.PostSms(userNumber, userId);
-            var responseContent = await response.Content.ReadAsStringAsync();
             
-            return StatusCode((int)response.StatusCode, responseContent);
+            return StatusCode((int)response.StatusCode);
         }
 
         [HttpPost("Account/CheckCode")]

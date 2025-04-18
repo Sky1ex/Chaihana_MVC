@@ -62,7 +62,7 @@
 
 .Category {
     /* блюда */
-
+    cursor: pointer;
     width: 72px;
     height: 25px;
     font-family: 'Prosto One';
