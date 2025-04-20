@@ -5,7 +5,7 @@
 <script hidden src="https://api-maps.yandex.ru/v3/?apikey=46514e07-4df3-4059-9c68-309be409aa4b&lang=ru_RU"></script>
 <script src="~/js/Map.js" asp-append-version="true"></script>
 <script src="~/js/Account.js" asp-append-version="true"></script>
-
+<div class="menu-content-wrapper">
 <div class="account-content">
 	<div class="personal-data-header">
 		<div class="personal-data-header-name">Личные данные</div>
@@ -73,8 +73,45 @@
 		}
 	</div>
 </div>
+	<div class="map-modal">
+		<div class="close">&times;</div>
+		<div class="map-modal-header">
+			<div class="map-modal-header-name">Выберите адрес:</div>
+		</div>
+		<div id="map">
+			<svg xmlns="http://www.w3.org/2000/svg" width="512px" height="512px" class="center-marker" fill="#E67225">
+				<path d="M256,0C167.625,0,96,71.625,96,160c0,23.875,5.25,46.563,14.594 66.875l121.875,264.469C238.313,504.062,246.688,512,256,512c9.312,0 17.688-7.938,23.531-20.625l121.875-264.5C410.781,206.563,416,183.875 416,160C416,71.625,344.375,0,256,0z M256,256c-53,0-96-43-96-96s43-96 96-96s96,43,96,96S309,256,256,256" />
+			</svg>
+		</div>
+		<div class="map-modal-footer">
+			<div class="address-data">
+				<div class="name">
+					Город:
+					<input class="input-address" id="city">
+				</div>
 
-<div class="map-modal">
+				<div class="name">
+					Улица:
+					<input class="input-address" id="street">
+				</div>
+
+				<div class="name">
+					Дом:
+					<input class="input-address" id="house">
+				</div>
+
+				<div class="name">
+					Квартира:
+					<input class="input-address" id="apartment">
+				</div>
+
+			</div>
+		</div>
+		<div id="send-address-data">Сохранить</div>
+	</div>
+</div>
+
+@* <div class="map-modal">
 	<div class="close">&times;</div>
 	<div class="map-modal-header">
 		<div class="map-modal-header-name">Выберите адрес:</div>
@@ -86,26 +123,30 @@
 	</div>
 	<div class="map-modal-footer">
 		<div class="address-data">
-			<div class="name">Город:
+			<div class="name">
+				Город:
 				<input class="input-address" id="city">
 			</div>
-			
-			<div class="name">Улица:
+
+			<div class="name">
+				Улица:
 				<input class="input-address" id="street">
 			</div>
-			
-			<div class="name">Дом:
+
+			<div class="name">
+				Дом:
 				<input class="input-address" id="house">
 			</div>
-			
-			<div class="name">Квартира:
+
+			<div class="name">
+				Квартира:
 				<input class="input-address" id="apartment">
 			</div>
-			
+
 		</div>
 	</div>
 	<div id="send-address-data">Сохранить</div>
-</div>
+</div> *@
 
 <div class="phone-modal">
 	<div class="phone-modal-header">

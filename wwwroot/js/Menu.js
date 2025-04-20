@@ -100,9 +100,10 @@ $(document).ready(function () {
         });
     });
 
-    // Обработка навигации по меню
     $(document).on('click', '.Category', function () {
-        document.getElementById($(this).attr('id')).scrollIntoView();
+        var elems = document.getElementsByClassName('visible-category');
+        var elem = elems.namedItem($(this).attr('id'));
+        elem.scrollIntoView(true);
     });
 });
 

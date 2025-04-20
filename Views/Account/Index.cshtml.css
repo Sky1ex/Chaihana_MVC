@@ -1,4 +1,11 @@
-﻿.account-content {
+﻿.menu-content-wrapper {
+    position: relative;
+    min-height: calc(100vh - 80px); /* Вычитаем высоту header */
+    padding-top: 110px; /* Компенсируем top: 110px у visible-category */
+    margin-bottom: 150px; /* Для футера */
+}
+
+.account-content {
     /* Rectangle 25 */
 
     position: absolute;
@@ -217,13 +224,14 @@
     position: fixed;
     display: none;
     left: calc(100vw/2 - 900px/2);
-    top: calc(100wv/2 - 750px/2);
+    top: calc(100wv/2 - 700px/2);
     width: 900px;
     height: 700px;
     border-radius: 25px;
     place-content: center;
     background-color: dimgray;
     overflow: hidden;
+    z-index: 100;
 }
 
 .center-marker {

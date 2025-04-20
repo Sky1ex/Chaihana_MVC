@@ -1,0 +1,6 @@
+﻿.menu-content-wrapper {
+    position: relative;
+    min-height: calc(100vh - 80px); /* Вычитаем высоту header */
+    padding-top: 110px; /* Компенсируем top: 110px у visible-category */
+    margin-bottom: 150px; /* Для футера */
+}

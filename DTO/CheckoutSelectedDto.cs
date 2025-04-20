@@ -1,5 +1,8 @@
-﻿public class CheckoutSelectedDto
+﻿namespace WebApplication1.DTO
 {
-    public List<Guid> ProductIds { get; set; }
-    public Guid AddressId { get; set; }
+    public class CheckoutSelectedDto
+    {
+        public List<Guid> ProductIds { get; set; }
+        public Guid AddressId { get; set; }
+    }
 }

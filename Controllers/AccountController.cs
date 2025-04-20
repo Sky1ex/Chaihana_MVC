@@ -40,7 +40,7 @@ namespace WebApplication1.Controllers
             return View(user);
         }
 
-        [HttpGet("Account/Addresses")]
+        /*[HttpGet("Account/Addresses")]
         public async Task<IActionResult> Addresses()
         {
             var userId = await _userService.AutoLogin();
@@ -66,7 +66,7 @@ namespace WebApplication1.Controllers
                 .FirstOrDefaultAsync(c => c.UserId == userId.Result).Result;
 
             return View(user);
-        }
+        }*/
 
         [HttpPost("Account/AddAddress")]
         public async Task<IActionResult> AddAddress([FromBody] AddressDto request)

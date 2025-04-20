@@ -49,7 +49,7 @@
 
     
 
-    <svg class="vector" width="1440" height="842" viewBox="0 0 1440 842" fill="none" xmlns="http://www.w3.org/2000/svg">
+    @* <svg class="vector" width="1440" height="842" viewBox="0 0 1440 842" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_f_4_189)">
             <path d="M1497 817.865C1477.17 737.365 1427.8 558.865 1389 488.865C1340.5 401.365 1164.5 799.365 998.5 817.865C832.5 836.365 1113.5 276.365 988.5 232.865C863.5 189.365 583 772.365 441 709.865C299 647.365 535.5 207.865 434 48.365C352.8 -79.235 125.5 305.532 22 513.865L-111 767.865" stroke="#FCFCFC" stroke-opacity="0.3" stroke-width="30" />
         </g>
@@ -60,7 +60,7 @@
                 <feGaussianBlur stdDeviation="4" result="effect1_foregroundBlur_4_189" />
             </filter>
         </defs>
-    </svg> 
+    </svg>  *@
 
     <div class="container-fluid p-0">
         <main role="main" class="pb-0">
@@ -78,10 +78,13 @@
          </div>
         <div class="copyrite">«© 2025 Чайная «Чайхана» — pet-проект».</div>
      </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
+    <!-- В _Layout.cshtml перед </body> -->
+    <canvas id="steamCanvas"></canvas>
+    <script src="~/js/steam.js" asp-append-version="true"></script>
 </body>
 
 </html>
