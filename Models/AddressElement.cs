@@ -2,12 +2,12 @@
 {
     public class AddressElement
     {
-        public Guid AddressElementId { get; set; }
-        public required string City { get; set; } = "Nan";
+        public Guid AddressElementId { get; set; } = Guid.NewGuid();
+        public required string City { get; set; }
 
-        public required string Street { get; set; } = "Nan";
+        public required string Street { get; set; }
 
-        public required string House { get; set; } = "Nan";
+        public required string House { get; set; }
 
 		public required int Apartment { get; set; }
 	}

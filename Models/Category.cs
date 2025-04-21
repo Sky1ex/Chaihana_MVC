@@ -2,7 +2,7 @@
 {
     public class Category
     {
-        public Guid CategoryId { get; set; }
-        public string Name { get; set; }
+        public Guid CategoryId { get; set; } = Guid.NewGuid();
+        public required string Name { get; set; }
     }
 }

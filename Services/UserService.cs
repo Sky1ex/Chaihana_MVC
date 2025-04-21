@@ -1,17 +1,31 @@
 ﻿using WebApplication1.DataBase;
+using WebApplication1.DTO;
 using WebApplication1.Models;
+using WebApplication1.Repository.Default;
 
 namespace WebApplication1.OtherClasses
 {
     public class UserService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        public UserService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task<UserDto> GetUser(Guid userId)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+            return new UserDto
+            {
+                userId = user.UserId,
+                phone = user.Phone,
+                name = user.Name
+            };
         }
 
         public async Task<Guid> AutoLogin()
@@ -36,19 +50,17 @@ namespace WebApplication1.OtherClasses
                     Secure = true // Только для HTTPS
                 });
 
-                // Создаем нового пользователя
-                var user = new User { UserId = userId };
-                /*var cart = new Cart(user)*//* { User = user }*//*;*/
-                var cart = new Cart()
-                {
-                    CartId = Guid.NewGuid(),
-                    User = user
-                };
+				// Создаем нового пользователя
+				var cart = new Cart() { CartId = Guid.NewGuid() };
 
-                // Сохраняем в базу данных
-                _dbContext.Users.Add(user);
-                _dbContext.Carts.Add(cart);
-                await _dbContext.SaveChangesAsync();
+				// Создаем нового пользователя
+				var user = new User { UserId = userId, Cart = cart };
+				cart.User = user;
+
+				// Сохраняем в базу данных
+				await _unitOfWork.Users.AddAsync(user);
+                await _unitOfWork.Carts.AddAsync(cart);
+                await _unitOfWork.SaveChangesAsync();
 
                 return userId;
             }

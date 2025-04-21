@@ -4,11 +4,11 @@ namespace WebApplication1.Models
 {
     public class Order
     {
-        public required DateTimeOffset dateTime { get; set; }
+        public DateTimeOffset dateTime { get; set; } = DateTimeOffset.Now;
 
-        public Guid OrderId { get; set; }
+        public Guid OrderId { get; set; } = Guid.NewGuid();
 
-        public  List<OrderElement> OrderElement { get; set; } = new List<OrderElement>();
+        public List<OrderElement>? OrderElement { get; set; } = new List<OrderElement>();
 
         public required AddressElement Adress { get; set; }
 

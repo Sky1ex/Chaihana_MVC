@@ -1,9 +1,13 @@
+using Mapster;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Controllers;
 using WebApplication1.DataBase;
 using WebApplication1.DataBase_and_more;
+using WebApplication1.DTO;
 using WebApplication1.OtherClasses;
+using WebApplication1.Repository;
+using WebApplication1.Repository.Default;
 using WebApplication1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +21,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Добавление маппинга (доделать его)
+/*builder.Services.AddSingleton<TypeAdapterConfig>(sp =>
+{
+	var config = new TypeAdapterConfig();
+	new MappingConfig().Register(config);
+	return config;
+});
+*/
 builder.Services.AddHttpContextAccessor(); // Добавляем поддержку IHttpContextAccessor
 builder.Services.AddScoped<UserService>(); // Регистрируем UserService
 builder.Services.AddScoped<AccountService>(); // Регистрируем UserService

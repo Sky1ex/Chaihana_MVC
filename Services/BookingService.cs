@@ -3,23 +3,24 @@ using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
 using WebApplication1.OtherClasses;
+using WebApplication1.Repository.Default;
 
 namespace WebApplication1.Services
 {
     public class BookingService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CartService> _logger;
 
-        public BookingService(ApplicationDbContext context, ILogger<CartService> logger)
+        public BookingService(ApplicationDbContext context, ILogger<CartService> logger, IUnitOfWork unitOfWork)
         {
-            _context = context;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<BookingDto>> GetAllBookingsByTableId(int tableId)
         {
-            var booking = await _context.Bookings.Where(x => x.Table == tableId).ToListAsync();
+            var booking = await _unitOfWork.Bookings.GetBookingsByTableId(tableId);
 
             var bookingDto = booking.Select(x => new BookingDto
             {
@@ -32,8 +33,7 @@ namespace WebApplication1.Services
 
         public async Task AddBooking(int tableId, DateTime time, Guid userId)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
             var booking = new Booking
             {
@@ -43,9 +43,9 @@ namespace WebApplication1.Services
                 Table = tableId,
             };
 
-            _context.Bookings.Add(booking);
+            await _unitOfWork.Bookings.AddAsync(booking);
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

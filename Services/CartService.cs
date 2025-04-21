@@ -1,29 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Net;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
+using WebApplication1.Repository;
+using WebApplication1.Repository.Default;
 
 namespace WebApplication1.Services
 {
     public class CartService : ICartService
     {
-        private readonly ApplicationDbContext _context;
         private readonly ILogger<CartService> _logger;
+        private readonly IUnitOfWork _unitOfWork;
+		/*private readonly IMapper _mapper;*/
 
-        public CartService(ApplicationDbContext context, ILogger<CartService> logger)
+		public CartService(ILogger<CartService> logger, IUnitOfWork unitOfWork/*, IMapper mapper*/)
         {
-            _context = context;
             _logger = logger;
+            _unitOfWork = unitOfWork;
+            /*_mapper = mapper;*/
         }
 
         public async Task<CartDto> GetCartAsync(Guid userId)
         {
-            var cart = await _context.Carts
-                .Include(c => c.CartElement)
-                .ThenInclude(ce => ce.Product)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdFull(userId);
 
             if (cart == null)
             {
@@ -46,9 +48,7 @@ namespace WebApplication1.Services
         }
         public async Task RemoveFromCartAsync(Guid userId, Guid productId)
         {
-            var cart = await _context.Carts
-                .Include(c => c.CartElement)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdWithCartElements(userId);
 
             if (cart == null)
             {
@@ -60,15 +60,13 @@ namespace WebApplication1.Services
             if (cartElement != null)
             {
                 cart.CartElement.Remove(cartElement);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
         }
 
         public async Task ClearCartAsync(Guid userId)
         {
-            var cart = await _context.Carts
-                .Include(c => c.CartElement)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdWithCartElements(userId);
 
             if (cart == null)
             {
@@ -77,15 +75,12 @@ namespace WebApplication1.Services
             }
 
             cart.CartElement.Clear();
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<OrderDto> CheckoutAsync(Guid userId, Guid addressId)
         {
-            var cart = await _context.Carts
-                .Include(c => c.CartElement)
-                .ThenInclude(ce => ce.Product)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdFull(userId);
 
             if (cart == null || !cart.CartElement.Any())
             {
@@ -93,7 +88,7 @@ namespace WebApplication1.Services
                 throw new InvalidOperationException("Корзина пуста.");
             }
 
-            var address = await _context.Adresses.FindAsync(addressId);
+            var address = await _unitOfWork.Addresses.GetByIdAsync(addressId);
             if (address == null)
             {
                 _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
@@ -119,9 +114,9 @@ namespace WebApplication1.Services
                 }).ToList()
             };
 
-            _context.Orders.Add(order);
+            await _unitOfWork.Orders.AddAsync(order);
             cart.CartElement.Clear();
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return new OrderDto
             {
@@ -147,10 +142,7 @@ namespace WebApplication1.Services
         // Обновление количества товара в корзине
         public async Task UpdateCartItemQuantityAsync(Guid userId, Guid productId, int change)
         {
-            var cart = await _context.Carts
-                .Include(c => c.CartElement)
-                .ThenInclude(c => c.Product)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdFull(userId);
 
             if (cart == null)
             {
@@ -166,14 +158,12 @@ namespace WebApplication1.Services
                 if (cartElement.Count <= 0)
                 {
                     cart.CartElement.Remove(cartElement);
-                    _context.CartElements.Remove(cartElement);
+                    _unitOfWork.CartElements.Delete(cartElement);
                 }
-
-                await _context.SaveChangesAsync();
             }
             else
             {
-                var product = await _context.Products.FindAsync(productId);
+                var product = await _unitOfWork.Products.GetByIdAsync(productId);
                 CartElement newCartElem = new CartElement
                 {
                     CartElementId = Guid.NewGuid(),
@@ -182,21 +172,20 @@ namespace WebApplication1.Services
                 };
                 cart.CartElement.Add(newCartElem);
 
-                _context.CartElements.Add(newCartElem);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.CartElements.AddAsync(newCartElem);
             }
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         // Оформление выбранных товаров
         public async Task<OrderDto> CheckoutSelectedAsync(Guid userId, List<Guid> productIds, Guid addressId)
         {
-            var cart = await _context.Carts
-                .Include(c => c.CartElement)
-                .ThenInclude(ce => ce.Product)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdFull(userId);
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            /*var user = await _userRepository.GetByIdAsync(userId);*/
+
+            var user = await _unitOfWork.Users.GetByIdWithOrders(userId);
 
             if (cart == null || !cart.CartElement.Any())
             {
@@ -204,7 +193,7 @@ namespace WebApplication1.Services
                 throw new InvalidOperationException("Корзина пуста.");
             }
 
-            var address = await _context.Adresses.FindAsync(addressId);
+            var address = await _unitOfWork.Addresses.GetByIdAsync(addressId);
             if (address == null)
             {
                 _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
@@ -241,7 +230,7 @@ namespace WebApplication1.Services
                 }).ToList()
             };
 
-            _context.Orders.Add(order);
+            await _unitOfWork.Orders.AddAsync(order);
             user.Orders.Add(order);
 
             // Удаляем выбранные товары из корзины
@@ -250,7 +239,7 @@ namespace WebApplication1.Services
                 cart.CartElement.Remove(cartElement);
             }
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return new OrderDto
             {
@@ -276,9 +265,7 @@ namespace WebApplication1.Services
         // Получение адресов пользователя
         public async Task<List<AddressDto>> GetUserAddressesAsync(Guid userId)
         {
-            var user = await _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
 
             List<Models.Adress> addresses = user.Adresses;
 

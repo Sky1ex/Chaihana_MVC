@@ -33,13 +33,11 @@ namespace WebApplication1.Controllers
                     Secure = true // Только для HTTPS
                 });
 
-                // Создаем нового пользователя
-                var user = new User { UserId = userId };
-                var cart = new Cart()
-                {
-                    CartId = Guid.NewGuid(),
-                    User = user
-                };
+				var cart = new Cart() { CartId = Guid.NewGuid() };
+
+				// Создаем нового пользователя
+				var user = new User { UserId = userId, Cart = cart };
+                cart.User = user;
 
                 // Сохраняем в базу данных
                 dbContext.Users.Add(user);

@@ -47,26 +47,26 @@ namespace WebApplication1.Controllers
             return Ok();
         }
 
-		/*[HttpPost("Cart/CheckoutSelected")]
+		[HttpPost("Cart/CheckoutSelected")]
         public async Task<IActionResult> CheckoutSelected([FromBody] CheckoutSelectedDto request)
         {
             var userId = await _userService.AutoLogin();
             var order = await _cartService.CheckoutSelectedAsync(userId, request.ProductIds, request.AddressId);
             return Ok(order);
-        }*/
+        }
 
 
         // Доделать страницу оформления заказа! Идея такова: при помощи кнопки оформления заказа в корзине переходим в нужную страницу с параметрами(закомментированы) через ajax или razor. Сохранять промежуточные данные в бд не будем.
         // Изменения: PaymentPageDto, Views/Cart/Index. Для отмены, использовать код выше.
-        // Планы: добавить репозитории или mock-тесты. Думаю, для начала написать mock-тесты на сервисы. Затем добавить репозитории и изменить DTO. Далее дописать mock-тесы. Дальше code-review.
+        // Планы: добавить репозитории или mock-тесты. Думаю, для начала написать mock-тесты на сервисы. Затем добавить репозитории и изменить DTO. Далее дописать mock-тесы. Дальше code-review. Еще можно изменить авторизация через jwt.
 
-		[HttpGet("Cart/CheckoutSelected")]
-		public async Task<IActionResult> CheckoutSelected(/*[FromBody] CheckoutSelectedDto request*/)
+		/*[HttpGet("Cart/CheckoutSelected")]
+		public async Task<IActionResult> CheckoutSelected(*//*[FromBody] CheckoutSelectedDto request*//*)
 		{
             CheckoutSelectedDto request = new CheckoutSelectedDto();
 
             return View("Index", request);
-		}
+		}*/
 
 		[HttpPost("Cart/Purshare")]
         public async Task<IActionResult> Checkout(Guid addressId)

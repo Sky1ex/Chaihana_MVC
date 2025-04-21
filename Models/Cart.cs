@@ -1,17 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
-    public class Cart
+	public class Cart
     {
         public Cart() { }
 
         [Key]
         [ForeignKey("User")]
-        public Guid CartId { get; set; }
-        public required User User { get; set; }
-        public List<CartElement>? CartElement { get; set; } = new List<CartElement>();
+        public Guid CartId { get; set; } = Guid.NewGuid();
+
+        public User User { get; set; }
+		[DeleteBehavior(DeleteBehavior.Cascade)]
+		public List<CartElement>? CartElement { get; set; } = new List<CartElement>();
 
     }
 }

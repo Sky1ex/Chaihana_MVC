@@ -1,4 +1,4 @@
-﻿@model WebApplication1.Models.User
+﻿@model WebApplication1.DTO.UserDto
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -14,25 +14,23 @@
 		</svg>
 
 		<div class="personal-data">
-			@* <div class="user-name">Имя: @Model.Name</div>
-			<div class="user-phone">Номер телефона: +@Model.Phone</div> *@
-			@if (Model.Name != null)
+			@if (Model.name != null)
 			{
-				<div class="user-name">Имя: @Model.Name</div>
+					<div class="user-name">Имя: @Model.name</div>
 			}
 			else
 			{
 				<div class="user-name">Имя: не указано</div>
 			}
-			@if (Model.Phone != "")
+			@if (Model.phone != "")
 			{
-				<div class="user-phone">Номер телефона: +@Model.Phone</div>
+				<div class="user-phone">Номер телефона: +@Model.phone</div>
 			}
 			else
 			{
 				<div class="user-phone">Номер телефона: не указан</div>
 			}
-			@if (Model.Phone == null || Model.Name == null)
+			@if (Model.phone == null || Model.name == null)
 			{
 				<div id="send-phone">Указать телефон</div>
 			}
