@@ -31,7 +31,7 @@ $(document).ready(function () {
         var quantity = parseInt(quantityElement.text());
 
         if(quantity == 0) $.ajax({
-            url: '/Cart/UpdateCartItemCount',
+            url: '/Api/Cart/UpdateCartItemCount',
             type: 'POST',
             data: { productId: productId, change: 1 },
             success: function () {
@@ -59,7 +59,7 @@ $(document).ready(function () {
 
         // Отправляем запрос на обновление количества товара в корзине
         $.ajax({
-            url: '/Cart/UpdateCartItemCount',
+            url: '/Api/Cart/UpdateCartItemCount',
             type: 'POST',
             data: { productId: productId, change: 1 },
             success: function () {
@@ -91,7 +91,7 @@ $(document).ready(function () {
         }
         // Отправляем запрос на удаление товара из корзины
         $.ajax({
-            url: '/Cart/UpdateCartItemCount',
+            url: '/Api/Cart/UpdateCartItemCount',
             type: 'POST',
             data: { productId: productId, change: -1 },
             success: function () {

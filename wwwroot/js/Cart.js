@@ -19,7 +19,7 @@ $(document).ready(function () {
     // Обновление количества товара в корзине
     function updateCartItemQuantity(productId, change) {
         $.ajax({
-            url: '/Cart/UpdateCartItemCount',
+            url: '/Api/Cart/UpdateCartItemCount',
             type: 'POST',
             data: { productId: productId, change: change },
             success: function () {
@@ -49,7 +49,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/Cart/CheckoutSelected',
+            url: '/Api/Cart/CheckoutSelected',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ productIds: selectedProducts, addressId: selectedAddressId }),

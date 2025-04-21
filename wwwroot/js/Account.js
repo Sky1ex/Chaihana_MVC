@@ -55,7 +55,7 @@ $(document).ready(function () {
         var apartment = document.querySelector('#apartment').value;
 
         $.ajax({
-            url: '/Account/AddAddress',
+            url: '/Api/Account/AddAddress',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ City: city, Street: street, House: house, Apartment: apartment }),
@@ -77,7 +77,7 @@ $(document).ready(function () {
         var apartment = document.querySelector('#apartment').value;
 
         $.ajax({
-            url: '/Account/PutAddress',
+            url: '/Api/Account/PutAddress',
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({ City: city, Street: street, House: house, Apartment: apartment, AddressId: currentId }),
@@ -96,7 +96,7 @@ $(document).ready(function () {
         currentId = $(this).closest('.delete-button').attr('id');
 
         $.ajax({
-            url: '/Account/DeleteAddress',
+            url: '/Api/Account/DeleteAddress',
             type: 'DELETE',
             data: { addressId: currentId },
             success: function () {
@@ -128,7 +128,7 @@ $(document).ready(function () {
         currentPhone = document.querySelector("#phone-input").value;
 
         $.ajax({
-            url: '/Account/GetCode',
+            url: '/Api/Account/GetCode',
             type: 'GET',
             data: { userNumber: currentPhone },
             success: function () {
@@ -144,7 +144,7 @@ $(document).ready(function () {
     $(document).on('click', '.send-code-again', function () {
 
         $.ajax({
-            url: '/Account/GetCode',
+            url: '/Api/Account/GetCode',
             type: 'GET',
             data: { userNumber: currentPhone },
             success: function () {
@@ -159,7 +159,7 @@ $(document).ready(function () {
         var number = document.querySelector("#code-input").value;
 
         $.ajax({
-            url: '/Account/CheckCode',
+            url: '/Api/Account/CheckCode',
             type: 'POST',
             data: { code: number },
             success: function (answer) {
@@ -184,7 +184,7 @@ $(document).ready(function () {
         var number = document.querySelector("#name-input").value;
 
         $.ajax({
-            url: '/Account/AddName',
+            url: '/Api/Account/AddName',
             type: 'POST',
             data: { name: number },
             success: function () {

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
+using WebApplication1.Exceptions;
 using WebApplication1.Models;
 using WebApplication1.OtherClasses;
 using WebApplication1.Services;
@@ -24,22 +25,54 @@ namespace WebApplication1.Controllers
         [HttpGet("Booking")]
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
         }
 
         [HttpGet("Api/Booking/GetAll")]
-        public async Task<List<BookingDto>> GetAllBookings(int tableId)
+        public async Task<IActionResult> GetAllBookings(int tableId)
         {
-            var booking = await _bookingService.GetAllBookingsByTableId(tableId);
-            return booking;
+            try
+            {
+                var booking = await _bookingService.GetAllBookingsByTableId(tableId);
+                return Ok(booking);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
         [HttpPost("Api/Booking/Add")]
         public async Task<IActionResult> AddBooking(int tableId, DateTime time)
         {
-            var userId = await _userService.AutoLogin();
-            await _bookingService.AddBooking(tableId, time, userId);
-            return Ok();
+            try
+            {
+                var userId = await _userService.AutoLogin();
+                await _bookingService.AddBooking(tableId, time, userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
     }
 }

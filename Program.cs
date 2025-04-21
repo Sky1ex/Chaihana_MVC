@@ -1,6 +1,9 @@
 using Mapster;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 using WebApplication1.Controllers;
 using WebApplication1.DataBase;
 using WebApplication1.DataBase_and_more;
@@ -9,6 +12,14 @@ using WebApplication1.OtherClasses;
 using WebApplication1.Repository;
 using WebApplication1.Repository.Default;
 using WebApplication1.Services;
+using System.Text.Json;
+using System;
+using WebApplication1.Models;
+using WebApplication1.Exceptions;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +67,49 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+	errorApp.Run(async context =>
+	{
+		var error = context.Features.Get<IExceptionHandlerFeature>();
+		if (error == null) return;
+
+		var exception = error.Error;
+		var isApiRequest = context.Request.Path.StartsWithSegments("/api");
+
+		var model = new ErrorViewModel
+		{
+			Message = ErrorViewModel.GetUserFriendlyMessage(exception),
+			Details = context.Response.StatusCode == 500 ? exception.Message : null,
+			ValidationErrors = (exception as WebApplication1.Exceptions.ValidationException)?.Errors
+		};
+
+		if (isApiRequest)
+		{
+			context.Response.ContentType = "application/json";
+			await context.Response.WriteAsJsonAsync(model);
+		}
+		else
+		{
+			context.Response.ContentType = "text/html";
+			var result = new ViewResult
+			{
+				ViewName = "Error",
+				ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+				{
+					Model = model
+				}
+			};
+			await result.ExecuteResultAsync(new ActionContext
+			{
+				HttpContext = context,
+				RouteData = new RouteData(),
+				ActionDescriptor = new ActionDescriptor()
+			});
+		}
+	});
+});
 
 app.UseSwagger(); // 
 app.UseSwaggerUI(); // методы для swagger

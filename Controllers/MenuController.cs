@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataBase;
+using WebApplication1.Exceptions;
 using WebApplication1.OtherClasses;
 using WebApplication1.Services;
 
@@ -21,12 +22,22 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Получаем список продуктов
-            var products = await _context.Products.ToListAsync();
+            try
+            {
+                // Получаем список продуктов
+                var products = await _context.Products.ToListAsync();
 
-            ViewBag.Categories = await _menuService.GetCategories();
+                ViewBag.Categories = await _menuService.GetCategories();
 
-            return View(products);
+                return View(products);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
         }
     }
 }
