@@ -2,24 +2,19 @@ using Mapster;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
 using WebApplication1.Controllers;
 using WebApplication1.DataBase;
 using WebApplication1.DataBase_and_more;
 using WebApplication1.DTO;
 using WebApplication1.OtherClasses;
-using WebApplication1.Repository;
 using WebApplication1.Repository.Default;
 using WebApplication1.Services;
-using System.Text.Json;
-using System;
-using WebApplication1.Models;
 using WebApplication1.Exceptions;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc;
+using MapsterMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,14 +29,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Добавление маппинга (доделать его)
-/*builder.Services.AddSingleton<TypeAdapterConfig>(sp =>
-{
-	var config = new TypeAdapterConfig();
-	new MappingConfig().Register(config);
-	return config;
-});
-*/
+// Добавляем маппер
+var config = new TypeAdapterConfig();
+new MappingConfig().Register(config);
+
+builder.Services.AddSingleton(config);
+builder.Services.AddScoped<IMapper, Mapper>();
+
 builder.Services.AddHttpContextAccessor(); // Добавляем поддержку IHttpContextAccessor
 builder.Services.AddScoped<UserService>(); // Регистрируем UserService
 builder.Services.AddScoped<AccountService>(); // Регистрируем UserService
@@ -82,7 +76,7 @@ app.UseExceptionHandler(errorApp =>
 		{
 			Message = ErrorViewModel.GetUserFriendlyMessage(exception),
 			Details = context.Response.StatusCode == 500 ? exception.Message : null,
-			ValidationErrors = (exception as WebApplication1.Exceptions.ValidationException)?.Errors
+			ValidationErrors = (exception as ValidationException)?.Errors
 		};
 
 		if (isApiRequest)
@@ -121,8 +115,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 app.MapControllerRoute(
     name: "default",

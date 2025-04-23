@@ -49,7 +49,7 @@ namespace WebApplication1.Controllers
                 var userId = await _userService.AutoLogin();
                 var cart = await _cartService.GetCartAsync(userId);
                 var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
-                return Ok(cart.Products);
+                return Ok(cart.CartElement);
             }
             catch (NotFoundException ex)
             {
@@ -96,45 +96,28 @@ namespace WebApplication1.Controllers
             }
         }
 
-		[HttpPost("Api/Cart/CheckoutSelected")]
-        public async Task<IActionResult> CheckoutSelected([FromBody] CheckoutSelectedDto request)
+        [HttpGet("Cart/CheckoutSelected")]
+        public async Task<IActionResult> CheckoutSelected([FromQuery] List<string> products)
         {
-            try
-            {
-                var userId = await _userService.AutoLogin();
-                var order = await _cartService.CheckoutSelectedAsync(userId, request.ProductIds, request.AddressId);
-                return Ok(order);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ErrorViewModel
-                {
-                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
-                    Details = ex is ValidationException ? null : ex.Message
-                });
-            }
+            List<Guid> productIds = products.Select(x => new Guid(x)).ToList();
+            var userId = await _userService.AutoLogin();
+            var cart = await _cartService.GetCartAsync(userId);
+            List<CartElementDto> items = cart.CartElement.Where(x => productIds.Contains(x.ProductId)).ToList();
+            var addresses = await _cartService.GetUserAddressesAsync(userId);
+            ViewBag.Address = addresses.FirstOrDefault();
+            return View("Index", items);
         }
 
+        // В БД и модель для корзины добавить сущность сумму(расчет будет в бд). Для готового заказа добавить сущность (способ оплаты - Payment). Также добавить появление карты при кнопке изменить.
+        // На самой карте добавить уже существующие адресы пользователя, которые можно выбрать. На карте будут 2 кнопки: добавить и выбрать. При выборе адрес не сохраняется. Доделать тесты!.
 
-        // Доделать страницу оформления заказа! Идея такова: при помощи кнопки оформления заказа в корзине переходим в нужную страницу с параметрами(закомментированы) через ajax или razor. Сохранять промежуточные данные в бд не будем.
-        // Изменения: PaymentPageDto, Views/Cart/Index. Для отмены, использовать код выше.
-        // Планы: добавить репозитории или mock-тесты. Думаю, для начала написать mock-тесты на сервисы. Затем добавить репозитории и изменить DTO. Далее дописать mock-тесы. Дальше code-review. Еще можно изменить авторизация через jwt.
-
-		/*[HttpGet("Cart/CheckoutSelected")]
-		public async Task<IActionResult> CheckoutSelected(*//*[FromBody] CheckoutSelectedDto request*//*)
-		{
-            CheckoutSelectedDto request = new CheckoutSelectedDto();
-
-            return View("Index", request);
-		}*/
-
-		[HttpPost("Api/Cart/Purshare")]
-        public async Task<IActionResult> Checkout(Guid addressId)
+        [HttpPost("Api/Cart/Purshare")]
+        public async Task<IActionResult> Purshare(List<Guid> orderElements, Guid addressId)
         {
             try
             {
                 var userId = await _userService.AutoLogin();
-                var order = await _cartService.CheckoutAsync(userId, addressId);
+                var order = await _cartService.CheckoutSelectedAsync(userId, orderElements, addressId);
                 return Ok(order);
             }
             catch (Exception ex)

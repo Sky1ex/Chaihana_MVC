@@ -49,6 +49,14 @@
     color: #F9FBFA;
 }
 
+.list-mini-card {
+    position: relative;
+    /*top: 100px;*/
+    max-height: 604px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 .mini-card {
     /*top: 15px;*/
     margin-top: 15px;
@@ -73,6 +81,7 @@
     width: 125px;
     border-radius: 20px;
     left: 65px;
+
 }
 
     .mini-card-img img {

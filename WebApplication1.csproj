@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Elmah.MVC" Version="2.1.2" />
+    <PackageReference Include="FluentAssertions" Version="8.2.0" />
     <PackageReference Include="LpSolveDotNet.Native.win-x64" Version="4.0.0" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />

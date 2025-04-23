@@ -1,43 +1,47 @@
-﻿@model WebApplication1.DTO.PaymentPageDto
+﻿@model List<WebApplication1.DTO.CartElementDto>
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/Cart.js"></script>
 
 <div class="menu-content-wrapper">
     <div class="content-container">
         <div class="list-mini-card">
-            @foreach (var item in Model.Products)
+            @foreach (var item in Model)
             {
-                <div class="mini-card">
-                    <input type="checkbox" class="cart-item-checkbox" data-product-id="@item.ProductId" />
-                    <img src="@item.ImageUrl" class="mini-card-img">
-                    <span class="mini-card-name">@item.Name</span>
-                    <span class="mini-card-price">@item.Price.ToString("C")</span>
-                    <div class="buttons">
-                        <div class="decrease-quantity" data-product-id="@item.ProductId">-</div>
-                        <span class="quantity">@item.Count</span>
-                        <div class="increase-quantity" data-product-id="@item.ProductId">+</div>
-                    </div>
-                    <svg width="700" height="2" viewBox="0 0 700 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <line y1="1" x2="700" y2="1" stroke="black" stroke-width="2" />
-                    </svg>
-
+                <div class="mini-card" id="@item.ProductId">
+                    <img src="~/@item.product.ImageUrl" class="mini-card-img">
+                    <span class="mini-card-name">@item.product.Name</span>
+                    <span class="mini-card-price">@item.product.Price.ToString("C")</span>
+                     <span class="quantity">@item.Count шт.</span>
                 </div>
+                <svg width="700" height="2" viewBox="0 0 700 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line y1="1" x2="700" y2="1" stroke="black" stroke-width="2" />
+                </svg>
             }
-
         </div>
-
-        <div class="address-name">Адрес доставки:</div>
-        <div class="address-container">
-            <div class="address-element" id="city">Город: </div>
-            <div class="address-element" id="street">Улица: </div>
-            <div class="address-element" id="house">Дом: </div>
-            <div class="address-element" id="appartment">Квартира: </div>
+        <div class="input-parameters">
+            <div class="address-name">Адрес доставки:</div>
+            <div class="address-container" id="@ViewBag.Address.AddressId">
+                <div class="address-element" id="city">Город: @ViewBag.Address.City</div>
+                <div class="address-element" id="street">Улица: @ViewBag.Address.Street</div>
+                <div class="address-element" id="house">Дом: @ViewBag.Address.House</div>
+                <div class="address-element" id="appartment">Квартира: @ViewBag.Address.Apartment</div>
+            </div>
+            <div class="button-change-address">Изменить</div>
+            <div class="payment-name">Способы оплаты</div>
+            <div class="payment-container">
+                <div class="payment-method">
+                    <input type="radio" name="payment" id="cash-method" checked> Наличная оплата
+                </div>
+                <div class="payment-method">
+                    <input type="radio" name="payment" id="card-method"> Оплата картой
+                </div>
+            </div>
+            <div class="button-back">Назад</div>
+            <div class="button-accept">Оплатить</div>
         </div>
-        <div class="button-change-address">Изменить</div>
-        <div class="payment-name">Способы оплаты</div>
-        <div class="payment-container">
-            <input type="radio" class="cash-method"> Наличная оплата
-            <input type="radio" class="card-method"> Оплата картой
-        </div>
-        <div class="button-back">Назад</div>
-        <div class="button-accept">Оплатить</div>
     </div>
 </div>

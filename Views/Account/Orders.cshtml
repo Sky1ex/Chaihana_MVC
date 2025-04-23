@@ -13,7 +13,7 @@ else @foreach (var order in Model)
             <div class="Products">Товары:</div>
             @foreach(var orderElem in order.Products)
             {
-                <div class="product">@orderElem.Name - @orderElem.Price - @orderElem.Count</div>
+                <div class="product">@orderElem.Product.Name - @orderElem.Product.Price - @orderElem.Count</div>
             }
         </li>
     }

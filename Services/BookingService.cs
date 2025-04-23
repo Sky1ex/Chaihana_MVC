@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
@@ -11,22 +12,20 @@ namespace WebApplication1.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CartService> _logger;
+        private readonly IMapper _mapper;
 
-        public BookingService(ApplicationDbContext context, ILogger<CartService> logger, IUnitOfWork unitOfWork)
+        public BookingService(ApplicationDbContext context, ILogger<CartService> logger, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<List<BookingDto>> GetAllBookingsByTableId(int tableId)
         {
             var booking = await _unitOfWork.Bookings.GetBookingsByTableId(tableId);
 
-            var bookingDto = booking.Select(x => new BookingDto
-            {
-                Time = x.Time.ToLocalTime(),
-                Interval = x.Interval,
-            }).ToList();
+            var bookingDto = booking.Select(x => _mapper.Map<BookingDto>(x)).ToList();
 
             return bookingDto;
         }

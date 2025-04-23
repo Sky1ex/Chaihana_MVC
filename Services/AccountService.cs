@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Twilio.Rest.Api.V2010.Account.Sip.Domain.AuthTypes.AuthTypeCalls;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
@@ -15,11 +15,13 @@ namespace WebApplication1.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CartService> _logger;
         public static List<CodeDto> _codeList = new List<CodeDto>();
+        private readonly IMapper _mapper;
 
-        public AccountService(ILogger<CartService> logger, IUnitOfWork unitOfWork)
+        public AccountService(ILogger<CartService> logger, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<List<AddressDto>> GetAddresses(Guid userId)
@@ -27,14 +29,7 @@ namespace WebApplication1.Services
             var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
 
             List<AddressDto> Adresses = user.Adresses
-                .Select(c => new AddressDto
-                {
-                    AddressId = c.AdressId,
-                    City = c.City,
-                    Street = c.Street,
-                    House = c.House,
-                    Apartment = c.Apartment
-                }).ToList();
+                .Select(c => _mapper.Map<AddressDto>(c)).ToList();
 
             return Adresses;
         }
@@ -44,25 +39,7 @@ namespace WebApplication1.Services
 
             var user = await _unitOfWork.Users.GetByIdFull(userId);
 
-            var orders = user.Orders
-                .Select(c => new OrderDto
-                {
-                    DateTime = c.dateTime,
-                    Address = new AddressDto
-                    {
-                        City = c.Adress.City,
-                        Street = c.Adress.Street,
-                        House = c.Adress.House,
-                        Apartment = c.Adress.Apartment
-                    },
-                    Products = c.OrderElement.Select(ce => new OrderProductDto
-                    {
-                        Name = ce.Product.Name,
-                        Price = ce.Product.Price,
-                        Count = ce.Count
-                    }).ToList()
-                })
-                .ToList();
+            var orders = user.Orders.Select(c => _mapper.Map<OrderDto>(c)).ToList();
 
             return orders;
         }

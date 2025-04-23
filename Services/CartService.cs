@@ -1,4 +1,5 @@
-﻿using MapsterMapper;
+﻿using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Net;
@@ -14,13 +15,13 @@ namespace WebApplication1.Services
     {
         private readonly ILogger<CartService> _logger;
         private readonly IUnitOfWork _unitOfWork;
-		/*private readonly IMapper _mapper;*/
+		private readonly IMapper _mapper;
 
-		public CartService(ILogger<CartService> logger, IUnitOfWork unitOfWork/*, IMapper mapper*/)
+		public CartService(ILogger<CartService> logger, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
-            /*_mapper = mapper;*/
+            _mapper = mapper;
         }
 
         public async Task<CartDto> GetCartAsync(Guid userId)
@@ -33,18 +34,7 @@ namespace WebApplication1.Services
                 return null;
             }
 
-            return new CartDto
-            {
-                CartId = cart.CartId,
-                Products = cart.CartElement.Select(ce => new CartProductDto
-                {
-                    ProductId = ce.Product.ProductId,
-                    Name = ce.Product.Name,
-                    Price = ce.Product.Price,
-                    Count = ce.Count,
-                    ImageUrl = ce.Product.ImageUrl
-                }).ToList()
-            };
+            return _mapper.Map<CartDto>(cart);
         }
         public async Task RemoveFromCartAsync(Guid userId, Guid productId)
         {
@@ -60,6 +50,7 @@ namespace WebApplication1.Services
             if (cartElement != null)
             {
                 cart.CartElement.Remove(cartElement);
+                _unitOfWork.CartElements.Delete(cartElement);
                 await _unitOfWork.SaveChangesAsync();
             }
         }
@@ -76,67 +67,6 @@ namespace WebApplication1.Services
 
             cart.CartElement.Clear();
             await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task<OrderDto> CheckoutAsync(Guid userId, Guid addressId)
-        {
-            var cart = await _unitOfWork.Carts.GetByUserIdFull(userId);
-
-            if (cart == null || !cart.CartElement.Any())
-            {
-                _logger.LogWarning("Корзина для пользователя {UserId} пуста.", userId);
-                throw new InvalidOperationException("Корзина пуста.");
-            }
-
-            var address = await _unitOfWork.Addresses.GetByIdAsync(addressId);
-            if (address == null)
-            {
-                _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
-                throw new InvalidOperationException("Адрес не найден.");
-            }
-
-            var order = new Order
-            {
-                OrderId = Guid.NewGuid(),
-                dateTime = DateTimeOffset.UtcNow,
-                Adress = new AddressElement { 
-                    AddressElementId = address.AdressId,
-                    City = address.City,
-                    Street = address.Street,
-                    House = address.House,
-                    Apartment = address.Apartment
-                },
-                OrderElement = cart.CartElement.Select(ce => new OrderElement
-                {
-                    OrderElementId = Guid.NewGuid(),
-                    Product = ce.Product,
-                    Count = ce.Count
-                }).ToList()
-            };
-
-            await _unitOfWork.Orders.AddAsync(order);
-            cart.CartElement.Clear();
-            await _unitOfWork.SaveChangesAsync();
-
-            return new OrderDto
-            {
-                OrderId = order.OrderId,
-                DateTime = order.dateTime,
-                Address = new AddressDto
-                {
-                    City = address.City,
-                    Street = address.Street,
-                    House = address.House,
-					Apartment = address.Apartment
-				},
-                Products = order.OrderElement.Select(oe => new OrderProductDto
-                {
-                    ProductId = oe.Product.ProductId,
-                    Name = oe.Product.Name,
-                    Price = oe.Product.Price,
-                    Count = oe.Count
-                }).ToList()
-            };
         }
 
         // Обновление количества товара в корзине
@@ -182,8 +112,6 @@ namespace WebApplication1.Services
         public async Task<OrderDto> CheckoutSelectedAsync(Guid userId, List<Guid> productIds, Guid addressId)
         {
             var cart = await _unitOfWork.Carts.GetByUserIdFull(userId);
-
-            /*var user = await _userRepository.GetByIdAsync(userId);*/
 
             var user = await _unitOfWork.Users.GetByIdWithOrders(userId);
 
@@ -237,29 +165,12 @@ namespace WebApplication1.Services
             foreach (var cartElement in selectedCartElements)
             {
                 cart.CartElement.Remove(cartElement);
+                _unitOfWork.CartElements.Delete(cartElement);
             }
 
             await _unitOfWork.SaveChangesAsync();
 
-            return new OrderDto
-            {
-                OrderId = order.OrderId,
-                DateTime = order.dateTime,
-                Address = new AddressDto
-                {
-                    City = address.City,
-                    Street = address.Street,
-                    House = address.House,
-					Apartment = address.Apartment
-				},
-                Products = order.OrderElement.Select(oe => new OrderProductDto
-                {
-                    ProductId = oe.Product.ProductId,
-                    Name = oe.Product.Name,
-                    Price = oe.Product.Price,
-                    Count = oe.Count
-                }).ToList()
-            };
+            return _mapper.Map<OrderDto>(order);
         }
 
         // Получение адресов пользователя
@@ -269,15 +180,7 @@ namespace WebApplication1.Services
 
             List<Models.Adress> addresses = user.Adresses;
 
-            List<AddressDto> ad = addresses.Select(a => new AddressDto
-            {
-                AddressId = a.AdressId,
-                City = a.City,
-                Street = a.Street,
-                House = a.House,
-				Apartment = a.Apartment
-			})
-                .ToList();
+            List<AddressDto> ad = addresses.Select(a => _mapper.Map<AddressDto>(a)).ToList();
 
             return ad;
         }

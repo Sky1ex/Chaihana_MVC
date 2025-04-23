@@ -1,4 +1,6 @@
 ﻿using Castle.Components.DictionaryAdapter;
+using FluentAssertions;
+using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -17,22 +19,25 @@ namespace WebApplication1.Tests.Services
     {
         Category category;
 
-		Guid productId1 = Guid.NewGuid(), productId2 = Guid.NewGuid();
-		Product product1, product2; CartProductDto productDto1, productDto2;
+		Guid productId1 = new Guid("00000000-0000-0000-0000-000000000001"), productId2 = new Guid("00000000-0000-0000-0000-000000000002");
+		Product product1, product2; ProductDto productDto1, productDto2;
         
-        Guid cartId = Guid.NewGuid();
+        Guid cartElementId1 = new Guid("00000000-0000-0000-0000-000000000003"), cartElementId2 = new Guid("00000000-0000-0000-0000-000000000004");
+        CartElement cartElement1, cartElement2; CartElementDto cartElementDto1, cartElementDto2;
+
+        Guid cartId = new Guid("00000000-0000-0000-0000-000000000005");
         Cart cart; CartDto cartDto;
 
-        Guid userId = Guid.NewGuid();
+        Guid userId = new Guid("00000000-0000-0000-0000-000000000006");
         User user; UserDto userDto;
-        Mock<IUnitOfWork> mockUnit;
-        Mock<ILogger<CartService>> mockLogger;
-        Mock<IMapper> mockMapping;
-        CartService cartService;
+
+        Guid addressId = new Guid("00000000-0000-0000-0000-000000000008");
+        Adress address; AddressDto addressDto;
+
 
 		private readonly ApplicationDbContext _context;
 		private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mappingCondig;
+        private IMapper _mappingCondig;
 		private readonly CartService _cartService;
 
 		public CartServiceTests() 
@@ -43,171 +48,167 @@ namespace WebApplication1.Tests.Services
 
 			_context = new ApplicationDbContext(options);
 			_unitOfWork = new UnitOfWork(_context);
-            _mappingCondig = new Mapper();
-			_cartService = new CartService(Mock.Of<ILogger<CartService>>(), _unitOfWork/*, _mappingCondig*/);
+            var config = new TypeAdapterConfig();
+            _mappingCondig = new Mapper(config);
+			_cartService = new CartService(Mock.Of<ILogger<CartService>>(), _unitOfWork, _mappingCondig);
 
-			// Заполняем тестовыми данными
-			SeedTestData();
+            new MappingConfig().Register(config);
+
+            // Заполняем тестовыми данными
+            SeedTestData();
 		}
 
-        private void SeedTestData()
+        private async void SeedTestData()
         {
-			category = new Category { Name = "Test" };
+			category = new Category { Name = "Test", CategoryId = new Guid("00000000-0000-0000-0000-000000000007") };
 
 			product1 = new Product { ProductId = productId1, ImageUrl = "Images\\img1", Name = "Кофе", Price = 200, Weight = 150, Category = category };
-            productDto1 = new CartProductDto { ProductId = productId1, ImageUrl = "Images\\img1", Name = "Кофе", Price = 200, Count = 2 };
+            productDto1 = _mappingCondig.Map<ProductDto>(product1);
+            cartElement1 = new CartElement { Product = product1, Count = 2, CartElementId = cartElementId1 };
 			product2 = new Product { ProductId = productId2, ImageUrl = "Images\\img2", Name = "Чай", Price = 175, Weight = 125, Category = category };
-			productDto2 = new CartProductDto { ProductId = productId2, ImageUrl = "Images\\img2", Name = "Чай", Price = 175, Count = 3 };
+            productDto2 = _mappingCondig.Map<ProductDto>(product2);
+            cartElement2 = new CartElement { Product = product2, Count = 3, CartElementId = cartElementId2 };
 
-			cart = new Cart
+            cart = new Cart
 			{
 				CartId = cartId,
 				CartElement = new List<CartElement>
 				{
-					new CartElement { Product = product1, Count = 2 },
-					new CartElement { Product = product2, Count = 3 }
-				}
+                    cartElement1,
+                    cartElement2
+                }
 			};
 
-            cartDto = new CartDto
+            user = new User { Name = "Test", Cart = cart, UserId = userId };
+            userDto = new UserDto { name = "Test", userId = userId };
+            cart.User = user;
+
+            address = new Adress
             {
-                CartId = userId,
-                Products = new List<CartProductDto>
-                {
-                    productDto1, productDto2
-                }
+                AdressId = addressId,
+                City = "city",
+                Street = "street",
+                House = "house",
+                Apartment = 1
             };
 
-			user = new User { Name = "Test", Cart = cart, UserId = userId };
-            userDto = new UserDto { name = "Test", userId = userId };
-			cart.User = user;
+            addressDto = _mappingCondig.Map<AddressDto>(address);
 
             _context.Categories.Add(category);
 			_context.Carts.Add(cart);
 			_context.Users.Add(user);
-			_context.Products.Add(product1);
+			_context.CartElements.Add(cartElement1);
+            _context.CartElements.Add(cartElement2);
+            _context.Products.Add(product1);
 			_context.Products.Add(product2);
-            _context.SaveChanges();
-		}
+            _context.Adresses.Add(address);
+            await _context.SaveChangesAsync();
+
+        }
 
 		[Fact]
         public async Task GetCartAsyncTest()
         {
-
-			var userId = _context.Users.First().UserId;
 			var result = await _cartService.GetCartAsync(userId);
 
-            Assert.NotNull(result);
+            cartDto = _mappingCondig.Map<CartDto>(cart);
 
-			/*var expectedJson = JsonSerializer.Serialize(cartDto);
-			var actualJson = JsonSerializer.Serialize(result);
+            result.Should().NotBeNull();
 
-			Assert.Equal(expectedJson, actualJson);*/
-			Assert.Equal(_mappingCondig.Map<CartDto>(cart), result);
-		}
+            result.Should().BeEquivalentTo(cartDto, options =>
+            {
+                options.ComparingByMembers<CartDto>();
+                options.ComparingByMembers<CartElementDto>();
+                options.ComparingByMembers<ProductDto>();
+                return options;
+            });
+        }
 
-        /*[Fact]
-        public async Task RemoveFromCartAsync()
+        [Fact]
+        public async Task RemoveFromCartAsyncTest()
         {
-            // 1. Настраиваем InMemoryDatabase
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .Options;
 
-            var userId = Guid.NewGuid();
-            var productId1 = Guid.NewGuid();
-            var productId2 = Guid.NewGuid();
+            cartDto = _mappingCondig.Map<CartDto>(cart);
+            cartDto.CartElement.RemoveAt(0);
 
-            // 2. Заполняем базу тестовыми данными
-            using (var dbContext = new ApplicationDbContext(options))
+            await _cartService.RemoveFromCartAsync(userId, productId1);
+
+            var result = await _cartService.GetCartAsync(userId);
+
+            result.Should().NotBeNull();
+            result.CartElement.Should().HaveCount(1);
+            _context.CartElements.Should().HaveCount(1);
+            result.Should().BeEquivalentTo(cartDto, options =>
             {
-                var user = new User { Name = "Test", UserId = userId };
+                options.ComparingByMembers<CartDto>();
+                options.ComparingByMembers<CartElementDto>();
+                options.ComparingByMembers<ProductDto>();
+                return options;
+            });
+        }
 
-                var product1 = new Product { ProductId = productId1, ImageUrl = "Images\\img1", Name = "Кофе", Price = 200, Weight = 150 };
-                var product2 = new Product { ProductId = productId2, ImageUrl = "Images\\img2", Name = "Чай", Price = 175, Weight = 125 };
-
-                var cart = new Cart
-                {
-                    CartId = Guid.NewGuid(),
-                    User = user,
-                    CartElement = new List<CartElement>
-                    {
-                        new CartElement { Product = product1, Count = 2 },
-                        new CartElement { Product = product1, Count = 3 }
-                    }
-                };
-
-                dbContext.Carts.Add(cart);
-                dbContext.Users.Add(user);
-                dbContext.Products.Add(product1);
-                dbContext.Products.Add(product2);
-                await dbContext.SaveChangesAsync();
-            }
-
-            // 3. Создаём новый контекст для сервиса (чистый для теста)
-            using (var dbContext = new ApplicationDbContext(options))
-            {
-                var mockLogger = new Mock<ILogger<CartService>>();
-                var cartService = new CartService(dbContext, mockLogger.Object);
-
-                // 4. Вызываем метод
-                await cartService.RemoveFromCartAsync(userId, productId1);
-
-                // 5. Проверяем результат
-                Assert.NotNull(result);
-                Assert.Equal(2, result.Products.Count); // Пример проверки
-            }
-        }*/
-
-        /*[Fact]
-        public async Task GetUserAddressesAsyncTest()
+        [Fact]
+        public async Task UpdateCartItemQuantityAsyncTest()
         {
-            // 1. Настраиваем InMemoryDatabase
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .Options;
+            cartDto = _mappingCondig.Map<CartDto>(cart);
+            cartDto.CartElement.ElementAt(0).Count = 3;
 
-            var userId = Guid.NewGuid();
+            await _cartService.UpdateCartItemQuantityAsync(userId, productId1, 1);
 
-            // 2. Заполняем базу тестовыми данными
-            using (var dbContext = new ApplicationDbContext(options))
+            var result = await _cartService.GetCartAsync(userId);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(cartDto, options =>
             {
-                var user = new User { Name = "Test", UserId = userId };
+                options.ComparingByMembers<CartDto>();
+                options.ComparingByMembers<CartElementDto>();
+                options.ComparingByMembers<ProductDto>();
+                return options;
+            });
+        }
 
-                var product1 = new Product { ProductId = Guid.NewGuid(), ImageUrl = "Images\\img1", Name = "Кофе", Price = 200, Weight = 150 };
-                var product2 = new Product { ProductId = Guid.NewGuid(), ImageUrl = "Images\\img2", Name = "Чай", Price = 175, Weight = 125 };
+        // Доделать!
+        [Fact]
+        public async Task CheckoutSelectedAsyncTest()
+        {
 
-                var cart = new Cart
+            await _cartService.CheckoutSelectedAsync(userId, new List<Guid> { productId1, productId2 }, addressId);
+
+            OrderDto orderDtoResult = _mappingCondig.Map<OrderDto>(_context.Orders.First());
+
+            OrderDto orderDtoCurrent = new OrderDto
+            {
+                Address = addressDto,
+                Products = new List<OrderElementDto>
                 {
-                    CartId = Guid.NewGuid(),
-                    User = user,
-                    CartElement = new List<CartElement>
+                    new OrderElementDto
                     {
-                        new CartElement { Product = product1, Count = 2 },
-                        new CartElement { Product = product1, Count = 3 }
+                        Count = 2,
+                        Product = productDto1,
+                        ProductId = productId1,
+                    },
+                    new OrderElementDto
+                    {
+                        Count = 3,
+                        Product = productDto2,
+                        ProductId = productId2,
                     }
-                };
+                },
+                OrderId = orderDtoResult.OrderId,
+                DateTime = orderDtoResult.DateTime,
+            };
 
-                dbContext.Carts.Add(cart);
-                dbContext.Users.Add(user);
-                dbContext.Products.Add(product1);
-                dbContext.Products.Add(product2);
-                await dbContext.SaveChangesAsync();
-            }
+            var resultCart = await _cartService.GetCartAsync(userId);
 
-            // 3. Создаём новый контекст для сервиса (чистый для теста)
-            using (var dbContext = new ApplicationDbContext(options))
+            resultCart.CartElement.Should().BeEmpty();
+
+            orderDtoResult.Should().BeEquivalentTo(orderDtoCurrent, options =>
             {
-                var mockLogger = new Mock<ILogger<CartService>>();
-                var cartService = new CartService(dbContext, mockLogger.Object);
-
-                // 4. Вызываем метод
-                var result = await cartService.GetCartAsync(userId);
-
-                // 5. Проверяем результат
-                Assert.NotNull(result);
-                Assert.Equal(2, result.Products.Count); // Пример проверки
-            }
-        }*/
+                options.ComparingByMembers<AddressDto>();
+                options.ComparingByMembers<OrderElementDto>();
+                options.ComparingByMembers<ProductDto>();
+                return options;
+            });
+        }
     }
 }

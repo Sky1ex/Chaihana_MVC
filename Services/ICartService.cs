@@ -7,7 +7,6 @@ namespace WebApplication1.Services
         Task<CartDto> GetCartAsync(Guid userId);
         Task RemoveFromCartAsync(Guid userId, Guid productId);
         Task ClearCartAsync(Guid userId);
-        Task<OrderDto> CheckoutAsync(Guid userId, Guid addressId);
 
         Task<OrderDto> CheckoutSelectedAsync(Guid userId, List<Guid> productIds, Guid addressId);
         Task UpdateCartItemQuantityAsync(Guid userId, Guid productId, int change);

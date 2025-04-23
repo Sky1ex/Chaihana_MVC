@@ -11,16 +11,15 @@
         <span class="header-name">Ваши товары</span>
         <span class="close">&times;</span>
     </div>
-    <div id="cartContent">
-        <div> 
+    @* <div id="cartContent"> *@
             <div class="list-mini-card">
-                @foreach (var item in Model.Products)
+                @foreach (var item in Model.CartElement)
                 {
                     <div class="mini-card">
                         <input type="checkbox" class="cart-item-checkbox" data-product-id="@item.ProductId" />
-                        <img src="@item.ImageUrl" class="mini-card-img">
-                        <span class="mini-card-name">@item.Name</span>
-                        <span class="mini-card-price">@item.Price.ToString("C")</span>
+                        <img src="@item.product.ImageUrl" class="mini-card-img">
+                        <span class="mini-card-name">@item.product.Name</span>
+                        <span class="mini-card-price">@item.product.Price.ToString("C")</span>
                         <div class="buttons">
                             <div class="decrease-quantity" data-product-id="@item.ProductId">-</div>
                             <span class="quantity">@item.Count</span>
@@ -33,8 +32,7 @@
                     </div>
                 }
                 
-            </div>
-        </div>
+        @* </div> *@
         @* <div>
             <h3>Выберите адрес доставки</h3>
             <div class="address-scroll">

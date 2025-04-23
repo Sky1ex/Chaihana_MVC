@@ -4,8 +4,8 @@ namespace WebApplication1.DTO
 {
     public class PaymentPageDto
     {
-        public List<CartProductDto> Products { get; set; }
+        public List<Guid> Products { get; set; }
 
-        public Adress Address { get; set; }
+        /*public Adress Address { get; set; }*/
     }
 }
