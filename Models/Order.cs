@@ -13,5 +13,6 @@ namespace WebApplication1.Models
         public required AddressElement Adress { get; set; }
 
         public int Sum { get; set; } = 0;
+
     }
 }

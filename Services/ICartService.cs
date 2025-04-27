@@ -10,6 +10,5 @@ namespace WebApplication1.Services
 
         Task<OrderDto> CheckoutSelectedAsync(Guid userId, List<Guid> productIds, Guid addressId);
         Task UpdateCartItemQuantityAsync(Guid userId, Guid productId, int change);
-        Task<List<AddressDto>> GetUserAddressesAsync(Guid userId);
     }
 }

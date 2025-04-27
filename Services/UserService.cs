@@ -1,4 +1,5 @@
-﻿using WebApplication1.DataBase;
+﻿using MapsterMapper;
+using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
 using WebApplication1.Repository.Default;
@@ -9,11 +10,13 @@ namespace WebApplication1.OtherClasses
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
-        public UserService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
+        public UserService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         public async Task<UserDto> GetUser(Guid userId)
@@ -26,6 +29,17 @@ namespace WebApplication1.OtherClasses
                 phone = user.Phone,
                 name = user.Name
             };
+        }
+
+        public async Task<List<AddressDto>> GetUserAddressesAsync(Guid userId)
+        {
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
+
+            List<Models.Adress> addresses = user.Adresses;
+
+            List<AddressDto> ad = addresses.Select(a => _mapper.Map<AddressDto>(a)).ToList();
+
+            return ad;
         }
 
         public async Task<Guid> AutoLogin()

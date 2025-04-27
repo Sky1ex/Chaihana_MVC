@@ -1,0 +1,140 @@
+﻿.map-modal {
+    position: fixed;
+    display: none;
+    left: calc(100vw/2 - 900px/2);
+    top: calc(100vh/2 - 700px/2);
+    width: 900px;
+    height: 700px;
+    border-radius: 25px;
+    place-content: center;
+    background-color: dimgray;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.center-marker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(8%);
+    border-radius: 50%;
+    z-index: 1000;
+}
+
+#map {
+    position: absolute;
+    width: 900px;
+    height: 700px;
+    border-radius: 25px;
+}
+
+.close {
+    position: absolute;
+    color: #aaa;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    right: 20px;
+    top: 5px;
+    z-index: 100;
+}
+
+.map-modal-header {
+    position: absolute;
+    height: 70px;
+    width: 900px;
+    background-color: rgba(249, 251, 250);
+    z-index: 50;
+}
+
+.map-modal-footer {
+    position: absolute;
+    height: 300px;
+    width: 300px;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(249, 251, 250);
+    z-index: 50;
+    border-radius: 20px;
+    place-content: center;
+    place-items: center;
+}
+
+.map-modal-header-name {
+    position: relative;
+    height: 31px;
+    left: 40px;
+    top: 20px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+}
+
+.address-data {
+    position: relative;
+    display: inline-grid;
+    gap: 10px;
+    z-index: 100;
+    place-content: center;
+    place-items: center;
+    /* bottom: 40px;
+    left: 40px;*/
+}
+
+.address-add {
+    position: relative;
+    width: 200px;
+    height: 50px;
+    top: 20px;
+    background-color: #E67225;
+    place-content: center;
+    place-items: center;
+    text-align: center;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+
+    color: #FFFFFF;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.name {
+    position: relative;
+    width: 150px;
+    left: 40px;
+    gap: 10px;
+    align-self: center;
+}
+
+.name-address{
+    left: 0px;
+    justify-self: right;
+}
+
+#send-address-data, #update-address-data, #save-address-data {
+    height: 50px;
+    width: 150px;
+    position: absolute;
+    display: inline-flex;
+    border-radius: 20px;
+    z-index: 100;
+    bottom: 40px;
+    right: 40px;
+    background: #E67225;
+    cursor: pointer;
+    user-select: none;
+    place-content: center;
+    place-items: center;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 31px;
+    color: #FFFFFF;
+}

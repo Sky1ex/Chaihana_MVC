@@ -1,18 +1,33 @@
-﻿.menu-content-wrapper {
+﻿/*.menu-content-wrapper {
     position: relative;
-    min-height: calc(100vh - 80px); /* Вычитаем высоту header */
-    padding-top: 110px; /* Компенсируем top: 110px у visible-category */
-    margin-bottom: 150px; /* Для футера */
-}
+    min-height: calc(100vh - 80px);*/ /* Вычитаем высоту header */
+    /*padding-top: 110px;*/ /* Компенсируем top: 110px у visible-category */
+    /*margin-bottom: 150px;*/ /* Для футера */
+/*}
 
-.account-content {
+.account-content {*/
     /* Rectangle 25 */
 
-    position: absolute;
+    /*position: relative;
     width: 1320px;
     min-height: 90vh;
     left: calc(100vw/2 - 1320px/2);
-    top: 40px;
+    top: -40px;
+    background: rgba(249, 251, 250, 0.8);
+    border-radius: 20px;
+}*/
+
+.menu-content-wrapper {
+    min-height: calc(100vh - 80px);
+    padding-top: 110px;
+    margin-bottom: 150px;
+    width: 100%;
+}
+
+.account-content {
+    width: 1320px;
+    margin: 0 auto;
+    padding: 20px 40px;
     background: rgba(249, 251, 250, 0.8);
     border-radius: 20px;
 }
@@ -38,6 +53,7 @@
 .line{
     position: relative;
     top: 20px;
+    left: -40px;
 }
 
 .personal-data{
@@ -188,9 +204,14 @@
     user-select: none;
 }
 
-.order-data-header {
+/*.order-data-header {
     position: relative;
     top: 80px;
+}*/
+
+.order-data-header {
+    /* Убираем position: relative, если не нужно */
+    margin-top: 80px; /* Заменяем top */
 }
 
 .order-data-header-name {
@@ -208,7 +229,7 @@
     color: #000000;
 }
 
-.order-data {
+/*.order-data {
     left: 80px;
     position: relative;
     padding: 40px 0 0 0;
@@ -218,121 +239,17 @@
     font-size: 20px;
     line-height: 25px;
     color: #000000;
-}
+}*/
 
-.map-modal {
-    position: fixed;
-    display: none;
-    left: calc(100vw/2 - 900px/2);
-    top: calc(100wv/2 - 700px/2);
-    width: 900px;
-    height: 700px;
-    border-radius: 25px;
-    place-content: center;
-    background-color: dimgray;
-    overflow: hidden;
-    z-index: 100;
-}
-
-.center-marker {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(8%);
-    border-radius: 50%;
-    z-index: 1000;
-}
-
-#map {
-    position: absolute;
-    width: 900px;
-    height: 700px;
-    border-radius: 25px;
-}
-
-.close {
-    position: absolute;
-    color: #aaa;
-    font-size: 35px;
-    font-weight: bold;
-    cursor: pointer;
-    right: 20px;
-    top: 5px;
-    z-index: 100;
-}
-
-.map-modal-header {
-    position: absolute;
-    height: 70px;
-    width: 900px;
-    background-color: rgba(249, 251, 250);
-    z-index: 50;
-}
-
-.map-modal-footer {
-    position: absolute;
-    height: 300px;
-    width: 300px;
-    bottom: 20px;
-    left: 20px;
-    background-color: rgba(249, 251, 250);
-    z-index: 50;
-    border-radius: 20px;
-    place-content: center;
-    place-items: center;
-}
-
-.map-modal-header-name {
-    position: relative;
-    height: 31px;
-    left: 40px;
-    top: 20px;
-    font-family: 'Prosto One';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 25px;
-    line-height: 31px;
-}
-
-.address-data {
-    position: relative;
-    display: inline-grid;
-    gap: 10px;
-    z-index: 100;
-    place-content: center;
-    place-items: center;
-    /* bottom: 40px;
-    left: 40px;*/
-}
-
-.name {
-    position: relative;
-    width: 150px;
-    left: 40px;
-    gap: 10px;
-    align-self: center;
-}
-
-#send-address-data, #update-address-data {
-    height: 50px;
-    width: 150px;
-    position: absolute;
-    display: inline-flex;
-    border-radius: 20px;
-    z-index: 100;
-    bottom: 40px;
-    right: 40px;
-    background: #E67225;
-    cursor: pointer;
-    user-select: none;
-    place-content: center;
-    place-items: center;
+.order-data {
+    margin: 40px 0 0 80px; /* Заменяем position: relative и top/left */
+    padding: 0;
     font-family: 'Prosto One';
     font-style: normal;
     font-weight: 400;
     font-size: 20px;
-    line-height: 31px;
-    color: #FFFFFF;
+    line-height: 25px;
+    color: #000000;
 }
 
 .phone-modal {

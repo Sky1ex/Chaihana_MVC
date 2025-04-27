@@ -20,6 +20,7 @@ namespace WebApplication1.Controllers
             _menuService = menuService;
         }
 
+        [HttpGet("Menu")]
         public async Task<IActionResult> Index()
         {
             try

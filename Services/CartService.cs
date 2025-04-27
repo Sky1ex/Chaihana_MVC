@@ -81,6 +81,7 @@ namespace WebApplication1.Services
             }
 
             var cartElement = cart.CartElement.FirstOrDefault(ce => ce.Product.ProductId == productId);
+
             if (cartElement != null)
             {
                 cartElement.Count += change;
@@ -142,20 +143,8 @@ namespace WebApplication1.Services
             {
                 OrderId = Guid.NewGuid(),
                 dateTime = DateTimeOffset.UtcNow,
-                Adress = new AddressElement
-                {
-                    AddressElementId = address.AdressId,
-                    City = address.City,
-                    Street = address.Street,
-                    House = address.House,
-                    Apartment = address.Apartment
-                },
-                OrderElement = selectedCartElements.Select(ce => new OrderElement
-                {
-                    OrderElementId = Guid.NewGuid(),
-                    Product = ce.Product,
-                    Count = ce.Count
-                }).ToList()
+                Adress = _mapper.Map<AddressElement>(address),
+                OrderElement = selectedCartElements.Select(ce => _mapper.Map<OrderElement>(ce)).ToList()
             };
 
             await _unitOfWork.Orders.AddAsync(order);
@@ -171,18 +160,6 @@ namespace WebApplication1.Services
             await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<OrderDto>(order);
-        }
-
-        // Получение адресов пользователя
-        public async Task<List<AddressDto>> GetUserAddressesAsync(Guid userId)
-        {
-            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
-
-            List<Models.Adress> addresses = user.Adresses;
-
-            List<AddressDto> ad = addresses.Select(a => _mapper.Map<AddressDto>(a)).ToList();
-
-            return ad;
         }
     }
 }

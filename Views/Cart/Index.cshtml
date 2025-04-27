@@ -4,7 +4,10 @@
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/js/Cart.js"></script>
+<script hidden src="https://api-maps.yandex.ru/v3/?apikey=46514e07-4df3-4059-9c68-309be409aa4b&lang=ru_RU"></script>
+<script src="~/js/Cart.js" asp-append-version="true"></script>
+<script src="~/js/Map.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />
 
 <div class="menu-content-wrapper">
     <div class="content-container">
@@ -25,10 +28,10 @@
         <div class="input-parameters">
             <div class="address-name">Адрес доставки:</div>
             <div class="address-container" id="@ViewBag.Address.AddressId">
-                <div class="address-element" id="city">Город: @ViewBag.Address.City</div>
-                <div class="address-element" id="street">Улица: @ViewBag.Address.Street</div>
-                <div class="address-element" id="house">Дом: @ViewBag.Address.House</div>
-                <div class="address-element" id="appartment">Квартира: @ViewBag.Address.Apartment</div>
+                <div class="address-element" id="city-element">Город: @ViewBag.Address.City</div>
+                <div class="address-element" id="street-element">Улица: @ViewBag.Address.Street</div>
+                <div class="address-element" id="house-element">Дом: @ViewBag.Address.House</div>
+                <div class="address-element" id="appartment-element">Квартира: @ViewBag.Address.Apartment</div>
             </div>
             <div class="button-change-address">Изменить</div>
             <div class="payment-name">Способы оплаты</div>
@@ -43,5 +46,21 @@
             <div class="button-back">Назад</div>
             <div class="button-accept">Оплатить</div>
         </div>
+    </div>
+    <div class="map-modal">
+        <div class="close">&times;</div>
+        <div class="map-modal-header">
+            <div class="map-modal-header-name">Выберите адрес:</div>
+        </div>
+        <div id="map">
+            <svg xmlns="http://www.w3.org/2000/svg" width="512px" height="512px" class="center-marker" fill="#E67225">
+                <path d="M256,0C167.625,0,96,71.625,96,160c0,23.875,5.25,46.563,14.594 66.875l121.875,264.469C238.313,504.062,246.688,512,256,512c9.312,0 17.688-7.938,23.531-20.625l121.875-264.5C410.781,206.563,416,183.875 416,160C416,71.625,344.375,0,256,0z M256,256c-53,0-96-43-96-96s43-96 96-96s96,43,96,96S309,256,256,256" />
+            </svg>
+        </div>
+        <div class="map-modal-footer">
+            <div class="address-data"></div>
+            <div class="address-add">Добавить</div>
+        </div>
+        <div id="send-address-data">Выбрать</div>
     </div>
 </div>

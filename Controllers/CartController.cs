@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
             {
                 var userId = await _userService.AutoLogin();
                 var cart = await _cartService.GetCartAsync(userId);
-                var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+                var addresses = await _userService.GetUserAddressesAsync(userId); // Получение адресов пользователя
                 ViewBag.Addresses = addresses;
                 return PartialView("_CartContentPartial", cart);
             }
@@ -48,7 +48,7 @@ namespace WebApplication1.Controllers
             {
                 var userId = await _userService.AutoLogin();
                 var cart = await _cartService.GetCartAsync(userId);
-                var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+                var addresses = await _userService.GetUserAddressesAsync(userId); // Получение адресов пользователя
                 return Ok(cart.CartElement);
             }
             catch (NotFoundException ex)
@@ -103,7 +103,7 @@ namespace WebApplication1.Controllers
             var userId = await _userService.AutoLogin();
             var cart = await _cartService.GetCartAsync(userId);
             List<CartElementDto> items = cart.CartElement.Where(x => productIds.Contains(x.ProductId)).ToList();
-            var addresses = await _cartService.GetUserAddressesAsync(userId);
+            var addresses = await _userService.GetUserAddressesAsync(userId);
             ViewBag.Address = addresses.FirstOrDefault();
             return View("Index", items);
         }

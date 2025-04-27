@@ -5,6 +5,8 @@ using WebApplication1.OtherClasses;
 using WebApplication1.DTO;
 using WebApplication1.Services;
 using WebApplication1.Exceptions;
+using System.Diagnostics.Contracts;
+using System.Xml.Linq;
 
 namespace WebApplication1.Controllers
 {
@@ -172,6 +174,27 @@ namespace WebApplication1.Controllers
                 await _accountService.AddName(name, userId);
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
+        }
+
+        [HttpGet("Api/Account/GetAddresses")]
+        public async Task<IActionResult> GetAddresses()
+        {
+            try
+            {
+                var userId = _userService.AutoLogin().Result;
+
+                var addresses = await _accountService.GetAddresses(userId);
+
+                return Ok(addresses);
             }
             catch (Exception ex)
             {
