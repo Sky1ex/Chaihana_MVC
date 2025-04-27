@@ -61,7 +61,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 await _bookingService.AddBooking(tableId, time, userId);
                 return Ok();
             }

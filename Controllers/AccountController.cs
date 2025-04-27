@@ -26,7 +26,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 return Ok($"User ID: {userId}");
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 var addresses = await _accountService.GetAddresses(userId);
                 var orders = await _accountService.GetOrders(userId);
                 var user = await _userService.GetUser(userId);
@@ -66,7 +66,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
 
                 await _accountService.AddAddress(request.City, request.Street, request.House, request.Apartment, userId);
 
@@ -87,7 +87,7 @@ namespace WebApplication1.Controllers
 		{
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
 
                 await _accountService.PutAddress(request.City, request.Street, request.House, request.Apartment, userId, request.AddressId);
 
@@ -108,7 +108,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
 
                 await _accountService.DeleteAddress(addressId, userId);
 
@@ -130,7 +130,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = _userService.AutoLogin().Result;
+                var userId = _userService.GetLogin().Result;
                 using var response = await _accountService.PostSms(userNumber, userId);
 
                 return StatusCode((int)response.StatusCode);
@@ -150,7 +150,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 string answer = await _accountService.CheckCode(code, userId);
                 if (!(answer == "true" || answer == "false")) _userService.SetLogin(Guid.Parse(answer));
                 return Ok(answer);
@@ -170,7 +170,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = _userService.AutoLogin().Result;
+                var userId = _userService.GetLogin().Result;
                 await _accountService.AddName(name, userId);
 
                 return Ok();
@@ -190,7 +190,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = _userService.AutoLogin().Result;
+                var userId = _userService.GetLogin().Result;
 
                 var addresses = await _accountService.GetAddresses(userId);
 

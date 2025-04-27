@@ -58,7 +58,7 @@
 
 .personal-data{
     position: relative;
-    left: 80px;
+    left: 40px;
 }
 
 .user-name, .user-phone {
@@ -97,7 +97,7 @@
 }
 
 .full-address {
-    left: 80px;
+    left: 40px;
     position: relative;
     padding: 40px 0 0 0;
     bottom: 0px;
@@ -166,7 +166,7 @@
     border-radius: 20px;
     width: 150px;
     height: 40px;
-    left: 80px;
+    left: 40px;
     top: 40px;
     position: relative;
     display: inline-flex;
@@ -242,7 +242,7 @@
 }*/
 
 .order-data {
-    margin: 40px 0 0 80px; /* Заменяем position: relative и top/left */
+    margin: 40px 0 0 40px; /* Заменяем position: relative и top/left */
     padding: 0;
     font-family: 'Prosto One';
     font-style: normal;

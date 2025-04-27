@@ -26,7 +26,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 var cart = await _cartService.GetCartAsync(userId);
                 var addresses = await _userService.GetUserAddressesAsync(userId); // Получение адресов пользователя
                 ViewBag.Addresses = addresses;
@@ -46,7 +46,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 var cart = await _cartService.GetCartAsync(userId);
                 var addresses = await _userService.GetUserAddressesAsync(userId); // Получение адресов пользователя
                 return Ok(cart.CartElement);
@@ -74,7 +74,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-				var userId = await _userService.AutoLogin();
+				var userId = await _userService.GetLogin();
 				await _cartService.UpdateCartItemQuantityAsync(userId, productId, change);
 				return Ok();
 			}
@@ -100,7 +100,7 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> CheckoutSelected([FromQuery] List<string> products)
         {
             List<Guid> productIds = products.Select(x => new Guid(x)).ToList();
-            var userId = await _userService.AutoLogin();
+            var userId = await _userService.GetLogin();
             var cart = await _cartService.GetCartAsync(userId);
             List<CartElementDto> items = cart.CartElement.Where(x => productIds.Contains(x.ProductId)).ToList();
             var addresses = await _userService.GetUserAddressesAsync(userId);
@@ -116,7 +116,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var userId = await _userService.AutoLogin();
+                var userId = await _userService.GetLogin();
                 var order = await _cartService.CheckoutSelectedAsync(userId, orderElements, addressId);
                 return Ok(order);
             }
