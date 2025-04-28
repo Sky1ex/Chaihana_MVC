@@ -29,12 +29,8 @@ namespace WebApplication1.OtherClasses
         {
             var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
-            return new UserDto
-            {
-                userId = user.UserId,
-                phone = user.Phone,
-                name = user.Name
-            };
+            return _mapper.Map<UserDto>(user);
+
         }
 
         public async Task<List<AddressDto>> GetUserAddressesAsync(Guid userId)

@@ -116,6 +116,12 @@ namespace WebApplication1.Services
         {
             var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
 
+            if(City == null || Street == null || House == null || Apartment == 0)
+            {
+                _logger.LogWarning("Ошибка! Вводиый адрес: {City}, {Street}, {House}, {Apartment}", City, Street, House, Apartment);
+                throw new InvalidOperationException("Введите полный адрес.");
+            }
+
             var address = new Adress { AdressId = Guid.NewGuid(), City = City, House = House, Street = Street, Apartment = Apartment };
             user.Adresses.Add(address);
             await _unitOfWork.Addresses.AddAsync(address);
@@ -127,8 +133,18 @@ namespace WebApplication1.Services
 		{
             var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
 
+            if (City == null || Street == null || House == null || Apartment == 0)
+            {
+                _logger.LogWarning("Ошибка! Вводиый адрес: {City}, {Street}, {House}, {Apartment}", City, Street, House, Apartment);
+                throw new InvalidOperationException("Введите полный адрес.");
+            }
+
             var address = user.Adresses.FirstOrDefault(c => c.AdressId == addressId);
-            if(address == null) return false;
+            if (address == null)
+            {
+                _logger.LogWarning("Адрес {addressId} не найден.", addressId);
+                throw new InvalidOperationException("Адрес не найден.");
+            }
             address.House = House;
             address.City = City;
             address.Street = Street;
@@ -143,6 +159,11 @@ namespace WebApplication1.Services
 
             var address = user.Adresses.FirstOrDefault(c => c.AdressId == new Guid(addressId));
 
+            if (address == null)
+            {
+                _logger.LogWarning("Адрес {addressId} не найден.", addressId);
+                throw new InvalidOperationException("Адрес не найден.");
+            }
 
             user.Adresses.Remove(address);
             await _unitOfWork.SaveChangesAsync();

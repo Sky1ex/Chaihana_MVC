@@ -1,0 +1,86 @@
+﻿.menu-content-wrapper {
+    position: relative;
+    min-height: calc(100vh - 80px); /* Вычитаем высоту header */
+    padding-top: 110px; /* Компенсируем top: 110px у visible-category */
+    margin-bottom: 40px; /* Для футера */
+}
+
+.main-container {
+    /* Rectangle 36 */
+
+    position: relative;
+    width: 1320px;
+    height: 820px;
+    top: -70px;
+    justify-self: center;
+    background: rgba(249, 251, 250, 0.8);
+    border-radius: 29px;
+}
+
+.header {
+    /* Добро пожаловать в нашу чайхану! */
+
+    position: relative;
+    left: 40px;
+    top: 25px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+
+    color: #000000;
+}
+
+.inline-content{
+    top: 48px;
+    position: relative;
+    display: inline-flex;
+}
+
+.main_img {
+    /* main_img */
+
+    position: relative;
+    width: 800px;
+    height: 400px;
+    left: 40px;
+    /*top: 24px;*/
+    background: url(6716475076.jpg);
+    border-radius: 29px;
+}
+
+.text-content {
+    position: relative;
+    width: 400px;
+    height: 320px;
+    left: 80px;
+    place-self: center;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    color: #000000;
+}
+
+.interier-menu {
+    /* interier-menu */
+
+    position: relative;
+    display: inline-flex;
+    width: 1240px;
+    height: 300px;
+    left: 40px;
+    top: 70px;
+    gap: 30px;
+}
+
+.interier {
+    position: relative;
+    width: 400px;
+    height: 300px;
+    background: url(2bc447b383134fc4969e9091ad7abb90.jpg);
+    border-radius: 29px;
+}

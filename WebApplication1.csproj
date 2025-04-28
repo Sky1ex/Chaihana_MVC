@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <None Include="Views\Menu\Details.cshtml" />
-    <None Include="wwwroot\Images\Tea.jpg" />
   </ItemGroup>
 
   <ItemGroup>

@@ -31,7 +31,7 @@ namespace WebApplication1.Services
             if (cart == null)
             {
                 _logger.LogWarning("Корзина для пользователя {UserId} не найдена.", userId);
-                return null;
+                throw new InvalidOperationException("Корзина не найдена.");
             }
 
             return _mapper.Map<CartDto>(cart);
@@ -47,7 +47,12 @@ namespace WebApplication1.Services
             }
 
             var cartElement = cart.CartElement.FirstOrDefault(ce => ce.Product.ProductId == productId);
-            if (cartElement != null)
+            if (cartElement == null)
+            {
+                _logger.LogWarning("Элемент коризны {UserId} не найдена.", userId);
+                throw new InvalidOperationException("Элемент корзины не найден.");
+            }
+            else
             {
                 cart.CartElement.Remove(cartElement);
                 _unitOfWork.CartElements.Delete(cartElement);
@@ -95,6 +100,13 @@ namespace WebApplication1.Services
             else
             {
                 var product = await _unitOfWork.Products.GetByIdAsync(productId);
+
+                if(product == null)
+                {
+                    _logger.LogWarning("Продукт {productId} не найден.", productId);
+                    throw new InvalidOperationException("Продукт не найден.");
+                }
+
                 CartElement newCartElem = new CartElement
                 {
                     CartElementId = Guid.NewGuid(),

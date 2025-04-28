@@ -99,13 +99,23 @@ namespace WebApplication1.Controllers
         [HttpGet("Cart/CheckoutSelected")]
         public async Task<IActionResult> CheckoutSelected([FromQuery] List<string> products)
         {
-            List<Guid> productIds = products.Select(x => new Guid(x)).ToList();
-            var userId = await _userService.GetLogin();
-            var cart = await _cartService.GetCartAsync(userId);
-            List<CartElementDto> items = cart.CartElement.Where(x => productIds.Contains(x.ProductId)).ToList();
-            var addresses = await _userService.GetUserAddressesAsync(userId);
-            ViewBag.Address = addresses.FirstOrDefault();
-            return View("Index", items);
+            try
+            {
+                List<Guid> productIds = products.Select(x => new Guid(x)).ToList();
+                var userId = await _userService.GetLogin();
+                var cart = await _cartService.GetCartAsync(userId);
+                List<CartElementDto> items = cart.CartElement.Where(x => productIds.Contains(x.ProductId)).ToList();
+                var addresses = await _userService.GetUserAddressesAsync(userId);
+                ViewBag.Address = addresses.FirstOrDefault();
+                return View("Index", items);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
         }
 
         // В БД и модель для корзины добавить сущность сумму(расчет будет в бд). Для готового заказа добавить сущность (способ оплаты - Payment). Также добавить появление карты при кнопке изменить.
