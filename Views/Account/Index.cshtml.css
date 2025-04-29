@@ -1,0 +1,574 @@
+﻿/*.menu-content-wrapper {
+    position: relative;
+    min-height: calc(100vh - 80px);*/ /* Вычитаем высоту header */
+    /*padding-top: 110px;*/ /* Компенсируем top: 110px у visible-category */
+    /*margin-bottom: 150px;*/ /* Для футера */
+/*}
+
+.account-content {*/
+    /* Rectangle 25 */
+
+    /*position: relative;
+    width: 1320px;
+    min-height: 90vh;
+    left: calc(100vw/2 - 1320px/2);
+    top: -40px;
+    background: rgba(249, 251, 250, 0.8);
+    border-radius: 20px;
+}*/
+
+.menu-content-wrapper {
+    min-height: calc(100vh - 80px);
+    padding-top: 110px;
+    margin-bottom: 150px;
+    width: 100%;
+}
+
+.account-content {
+    width: 1320px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    background: rgba(249, 251, 250, 0.8);
+    border-radius: 20px;
+}
+
+.personal-data-header-name {
+    /* Личные данные */
+
+    position: relative;
+    width: 227px;
+    height: 31px;
+    left: 40px;
+    top: 19px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+
+    color: #000000;
+}
+
+.line{
+    position: relative;
+    top: 20px;
+    left: -40px;
+}
+
+.personal-data{
+    position: relative;
+    left: 40px;
+}
+
+.user-name, .user-phone {
+
+    position: relative;
+    padding: 40px 0 0 0;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+
+    color: #000000;
+}
+
+.addresses-data-header{
+    position: relative;
+    top: 40px;
+}
+
+.addresses-data-header-name {
+    /* Личные данные */
+
+    position: relative;
+    height: 31px;
+    left: 40px;
+    top: 19px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+
+    color: #000000;
+}
+
+.full-address {
+    left: 40px;
+    position: relative;
+    padding: 40px 0 0 0;
+    bottom: 0px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    color: #000000;
+}
+
+.change-button {
+    /*top: calc(40px + 25px/2 - 40px/2);*/
+    top: calc(40px + 25px/2 - 40px/2);
+    display: inline-flex;
+    position: absolute;
+    width: 150px;
+    height: 40px;
+    right: 175px;
+    /* Main color */
+    background: #E67225;
+    border-radius: 20px;
+    /* Изменить */
+
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    /* identical to box height */
+
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+}
+
+.delete-button {
+    /*top: calc(40px + 25px/2 - 40px/2);*/
+    top: calc(40px + 25px/2 - 40px/2);
+    display: inline-flex;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 120px;
+    /* Main color */
+    background: #E67225;
+    border-radius: 20px;
+    /* Изменить */
+
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    /* identical to box height */
+
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+}
+
+.add-button{
+    background: #E67225;
+    border-radius: 20px;
+    width: 150px;
+    height: 40px;
+    left: 40px;
+    top: 40px;
+    position: relative;
+    display: inline-flex;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    /* identical to box height */
+
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+}
+
+#send-phone {
+    background: #E67225;
+    border-radius: 20px;
+    width: 250px;
+    height: 40px;
+    top: 40px;
+    position: relative;
+    display: inline-flex;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    /* identical to box height */
+
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+}
+
+/*.order-data-header {
+    position: relative;
+    top: 80px;
+}*/
+
+.order-data-header {
+    /* Убираем position: relative, если не нужно */
+    margin-top: 80px; /* Заменяем top */
+}
+
+.order-data-header-name {
+    position: relative;
+    height: 31px;
+    left: 40px;
+    top: 19px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+
+    color: #000000;
+}
+
+/*.order-data {
+    left: 80px;
+    position: relative;
+    padding: 40px 0 0 0;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    color: #000000;
+}*/
+
+.order-data {
+    margin: 40px 0 0 40px; /* Заменяем position: relative и top/left */
+    padding: 0;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    color: #000000;
+}
+
+.phone-modal {
+    position: fixed;
+    display: none;
+    width: 500px;
+    height: 500px;
+    left: calc(100vw/2 - 500px/2);
+    top: calc(100%/2 - 500px/2);
+    background-color: #FFFFFF;
+    border-radius: 25px;
+}
+
+.phone-modal-header {
+    position: relative;
+    width: 500px;
+    height: 70px;
+    background: #E67225;
+    border-radius: 20px 20px 0 0;
+}
+
+.phone-modal-header-name {
+    left: 40px;
+    top: 16px;
+    position: absolute;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 37px;
+    display: flex;
+    align-items: center;
+    color: #FFFFFF;
+}
+
+.phone-modal-content {
+    position: absolute;
+    top: 70px;
+    height: 430px;
+}
+
+#content-send-code{
+    display: none;
+}
+
+#content-send-name {
+    display: none;
+}
+
+#content-send-phone .description {
+    /* Укажите номер телефона по которому мы отправим вам код подтвержения для входа */
+    position: relative;
+    width: 400px;
+    height: 90px;
+    left: 50px;
+    top: 75px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    color: #000000;
+}
+
+#content-send-phone #phone-input {
+    /* поле ввода */
+    position: relative;
+    width: 300px;
+    height: 50px;
+    left: 100px;
+    top: 125px;
+    background: #D9D9D9;
+    border-radius: 20px;
+    padding: 0px;
+    border: 0px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+}
+
+#content-send-phone .send-phone-data {
+    display: inline-flex;
+    cursor: pointer;
+    user-select: none;
+    /* Rectangle 29 */
+
+    position: relative;
+    width: 200px;
+    height: 60px;
+    left: 150px;
+    top: 170px;
+    background: #E67225;
+    border-radius: 20px;
+    place-content: center;
+    place-items: center;
+    /* отправить */
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+
+    color: #F9FBFA;
+}
+
+#content-send-code .description {
+    position: absolute;
+    width: 460px;
+    height: 60px;
+    left: 20px;
+    top: 20px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    color: #000000;
+}
+
+#content-send-code .attention {
+    /* Если код не пришел, нажмите на “повторить” */
+
+    position: absolute;
+    width: 460px;
+    height: 48px;
+    left: 20px;
+    top: 100px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    color: #7E7E7E;
+}
+
+#content-send-code .code-timer {
+    /* 2 : 00 */
+
+    position: absolute;
+    width: 120px;
+    height: 37px;
+    left: 190px;
+    top: 160px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+    text-align: center;
+    color: #000000;
+}
+
+#content-send-code #code-input {
+    position: relative;
+    width: 300px;
+    height: 50px;
+    left: 100px;
+    top: 217px;
+    background: #D9D9D9;
+    border-radius: 20px;
+    padding: 0px;
+    border: 0px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+}
+
+#content-send-code .send-code-data {
+    display: inline-flex;
+    cursor: pointer;
+    user-select: none;
+    /* Rectangle 29 */
+
+    position: relative;
+    width: 200px;
+    height: 60px;
+    left: 250px;
+    top: 275px;
+    background: #E67225;
+    border-radius: 20px;
+    place-content: center;
+    place-items: center;
+    /* отправить */
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+
+    color: #F9FBFA;
+    /* Кнопка */
+}
+
+::deep #content-send-code .send-code-again {
+    display: inline-flex;
+    cursor: pointer;
+    user-select: none;
+    /* Rectangle 29 */
+
+    position: relative;
+    width: 200px;
+    height: 60px;
+    left: -160px;
+    top: 275px;
+    background: #E67225;
+    border-radius: 20px;
+    place-content: center;
+    place-items: center;
+    /* отправить */
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+
+    color: #F9FBFA;
+    /* Кнопка */
+}
+
+::deep #content-send-code .send-code-again.denied {
+    display: inline-flex;
+    user-select: none;
+    /* Rectangle 29 */
+
+    position: relative;
+    width: 200px;
+    height: 60px;
+    left: -160px;
+    top: 275px;
+    border-radius: 20px;
+    place-content: center;
+    place-items: center;
+    /* отправить */
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+
+    color: #F9FBFA;
+    /* Кнопка */
+
+    background: #ccc;
+    cursor: not-allowed
+}
+
+#content-send-name .description {
+    /* Укажите ваше имя: */
+
+    position: absolute;
+    width: 400px;
+    height: 30px;
+    left: 50px;
+    top: 105px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    color: #000000;
+}
+
+#content-send-name #name-input {
+    position: relative;
+    width: 300px;
+    height: 50px;
+    left: 100px;
+    top: 200px;
+    background: #D9D9D9;
+    border-radius: 20px;
+    padding: 0px;
+    border: 0px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+}
+
+#content-send-name .send-name-data {
+    display: inline-flex;
+    cursor: pointer;
+    user-select: none;
+    /* Rectangle 29 */
+
+    position: relative;
+    width: 200px;
+    height: 60px;
+    left: 150px;
+    top: 275px;
+    background: #E67225;
+    border-radius: 20px;
+    place-content: center;
+    place-items: center;
+    /* отправить */
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+
+    color: #F9FBFA;
+}

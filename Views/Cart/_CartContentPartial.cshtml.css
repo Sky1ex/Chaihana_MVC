@@ -1,0 +1,176 @@
+﻿
+
+.modal-content {
+    position: fixed;
+    width: 700px;
+    height: 840px;
+    left: calc(50% - 700px/2);
+    top: calc(50% - 840px/2);
+    z-index: 10;
+    border-radius: 20px;
+    background-color: #fefefe;
+}
+
+.close {
+    position: absolute;
+    color: #aaa;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    right: 40px;
+    top: 10px;
+    top: calc(50px - 55px/2);
+}
+
+    .close:hover {
+        color: black;
+    }
+
+.header {
+    background-color: #E67225;
+    width: 700px;
+    height: 100px;
+    border-radius: 20px 20px 0 0;
+}
+
+.header-name {
+    /* Ваши товары: */
+
+    position: absolute;
+    width: 272px;
+    height: 25px;
+    left: 60px;
+    top: calc(50px - 25px/2);
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 25px;
+    color: #F9FBFA;
+}
+
+.list-mini-card {
+    position: relative;
+    /*top: 100px;*/
+    max-height: 604px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.mini-card {
+    /*top: 15px;*/
+    margin-top: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    width: 700px;
+    height: 140px;
+    align-content: center;
+}
+
+.cart-item-checkbox{
+    position: absolute;
+    left: 23px;
+    top: 53px;
+    height: 20px;
+    width: 20px;
+}
+
+.mini-card-img {
+    position: relative;
+    height: 125px;
+    width: 125px;
+    border-radius: 20px;
+    left: 65px;
+
+}
+
+    .mini-card-img img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        cursor: pointer;
+    }
+
+.mini-card-name {
+    position: absolute;
+    left: 220px;
+    top: calc(125px/2 - 37px/2);
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 37px;
+    color: #000000;
+}
+
+.mini-card-price {
+    /* 299 ₽ */
+    position: absolute;
+    top: calc(125px/2 - 37px/2);
+    left: 409px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 25px;
+    /*line-height: 37px;*/
+    color: #000000;
+}
+
+.buttons {
+    /* количество товара */
+    display: inline-flex;
+    position: absolute;
+    width: 140px;
+    height: 40px;
+    left: 530px;
+    top: calc(125px/2 - 40px/2);
+    justify-content: center;
+    gap: 33px;
+    background-color: #D9D9D9;
+    border-radius: 25px;
+}
+
+.decrease-quantity, .quantity, .increase-quantity {
+    /* 2 */
+    position: relative;
+    width: 18px;
+    height: 21px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 37px;
+    color: #000000;
+    cursor: pointer;
+}
+
+#checkout-selected {
+    position: absolute;
+    width: 200px;
+    height: 60px;
+    left: 438px;
+    top: 742px;
+    align-items: center;
+    border-radius: 20px;
+    background-color: #E67225;
+    z-index: 0;
+    cursor: pointer;
+    /* оформить */
+}
+
+#checkout-selected-name {
+    /* оформить */
+
+    position: relative;
+    left: 19px;
+    top: calc(60px/2 - 37px/2);
+    width: 161px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 37px;
+    /* identical to box height */
+    user-select: none;
+    color: #F9FBFA;
+}

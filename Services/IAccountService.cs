@@ -6,6 +6,6 @@ namespace WebApplication1.Services
     {
         Task<List<AddressDto>> GetAddresses(Guid userId);
 
-        List<OrderDto> GetOrders(Guid userId);
+        Task<List<OrderDto>> GetOrders(Guid userId);
     }
 }

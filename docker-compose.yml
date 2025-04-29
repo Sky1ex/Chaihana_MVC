@@ -1,0 +1,38 @@
+﻿services:
+  web:
+    build: .
+    ports:
+      - "8080:5000"
+    volumes:
+      - ./data-protection-keys:/app/keys
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Database=WebDB;User Id=postgres;Password=admin;
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: WebDB
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./DumbDb.dump:/docker-entrypoint-initdb.d/dump.dump 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  data-protection-keys:

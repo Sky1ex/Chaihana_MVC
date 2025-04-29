@@ -1,42 +1,84 @@
 ﻿@model IEnumerable<Product>
-
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/Menu.js" asp-append-version="true"></script>
+<script src="~/js/CartPartial.js" asp-append-version="true"></script> 
 
-<h1>Меню кафе</h1>
-<p>Добро пожаловать в наше кафе! Вот наш ассортимент:</p>
-
-@foreach(var category in ViewBag.Categories)
-{
-    <div class="Category">@category.Name</div>
-
-    <div class="product-grid">
-        @foreach (var product in Model)
-        {
-            @if(product.Category == category) {
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="@product.ImageUrl" alt="@product.Name" />
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">@product.Name</div>
-                        <div hidden class="product-id">@product.ProductId</div>
-                        <div class="product-details">
-                            <div class="product-price">@product.Price.ToString("C")</div>
-                            <div class="product-weight">@product.Weight г</div>
-                        </div>
-                    </div>
-                    <button class="add-to-cart-btn" data-product-id="@product.ProductId">
-                        <span class="add-text">Добавить</span>
-                        <span class="quantity-controls" style="display: none;">
-                            <span class="minus-btn">-</span>
-                            <span class="quantity">0</span>
-                            <span class="plus-btn">+</span>
-                        </span>
-                    </button>
-                </div>
-            }
+<div class="menu-content-wrapper">
+<div class="under-menu-mask">
+    <div class="under-menu">
+        @foreach (var category in ViewBag.Categories) 
+        {  
+            <div class="Category-background">
+                <div class="Category" id="@category.CategoryId">@category.Name</div>
+            </div> 
         }
     </div>
+</div>
+
+@foreach (var category in ViewBag.Categories)
+{
+        <div class="visible-category" id="@category.CategoryId">
+            <div class="big-category">@category.Name</div>
+        <svg class="line"  xmlns="http://www.w3.org/2000/svg">
+            <line x1="8.74228e-08" y1="1" x2="12040" y2="1.00011" stroke="black" stroke-width="2" />
+        </svg>
+        <div class="product-grid">
+            @foreach (var product in Model)
+            {
+                @if (product.Category == category)
+                {
+                    <div class="product-card">
+
+                        <div class="product-image">
+                            <img src="@product.ImageUrl" alt="@product.Name" />
+                        </div>
+
+                        <div hidden class="product-id">@product.ProductId</div>
+                        <div class="product-name">@product.Name</div>
+                        <div class="product-price">@product.Price ₽</div>
+                        <div class="product-weight">@product.Weight г</div>
+
+                        <svg class="rect-blur" width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <foreignObject x="-4" y="-4" width="248" height="68"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2px);clip-path:url(#bgblur_0_1_67_clip_path);height:100%;width:100%"></div></foreignObject>
+                            <path data-figma-bg-blur-radius="4" d="M0 20C0 8.9543 8.95431 0 20 0H220C231.046 0 240 8.95431 240 20V60H0V20Z" fill="#000000" fill-opacity="0.1" />
+                            <defs>
+                                <clipPath id="bgblur_0_1_67_clip_path" transform="translate(4 4)">
+                                    <path d="M0 20C0 8.9543 8.95431 0 20 0H220C231.046 0 240 8.95431 240 20V60H0V20Z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                        <div class="rect-btn" data-product-id="@product.ProductId" width="240" height="61">
+                            <div class="rect-btn-name">добавить</div>
+                            <span class="quantity-controls" style="display: none;">
+                                <span class="minus-btn">-</span>
+                                <span class="quantity">0</span>
+                                <span class="plus-btn">+</span>
+                            </span>
+                        </div>
+
+
+                    </div>
+                }
+
+            }
+        </div>
+        
+        
+
+    </div>
 }
+</div>
+
+<svg id="view-cart" width="65" height="65" viewBox="0 0 65 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32.5" cy="32.5" r="32.5" fill="#E67225" />
+    <path d="M55.4316 25.3848C54.3867 24.0762 52.9609 23.3535 51.418 23.3535H47.8926C47.5605 14.3105 41.0078 7.07422 33 7.07422C24.9922 7.07422 18.4395 14.3105 18.1074 23.3535H14.582C13.0391 23.3535 11.6133 24.0762 10.5684 25.3848C9.25 27.0254 8.77148 29.3105 9.26953 31.5078L13.498 50.1406C14.1328 52.9531 16.3203 54.9258 18.8105 54.9258H47.1797C49.6699 54.9258 51.8574 52.9629 52.4922 50.1406L56.7305 31.5078C57.2285 29.3105 56.75 27.0254 55.4316 25.3848ZM33 11.0586C38.8203 11.0586 43.5859 16.5078 43.8984 23.3535H22.1016C22.4141 16.5176 27.1797 11.0586 33 11.0586ZM52.8438 30.6191L48.6152 49.2617C48.4004 50.2188 47.7852 50.9414 47.1895 50.9414H18.8105C18.2148 50.9414 17.5996 50.2188 17.3848 49.2617L13.1562 30.6191C12.9316 29.6328 12.7949 27.3379 14.582 27.3379H51.418C53.3418 27.3379 53.0684 29.6328 52.8438 30.6191Z" fill="white" />
+    <path d="M23.1074 31.3027C22.0039 31.3027 21.1152 32.1914 21.1152 33.2949V45.7461C21.1152 46.8496 22.0039 47.7383 23.1074 47.7383C24.2109 47.7383 25.0996 46.8496 25.0996 45.7461V33.2949C25.1094 32.2012 24.2109 31.3027 23.1074 31.3027Z" fill="white" />
+    <path d="M32.7656 31.3027C31.6621 31.3027 30.7734 32.1914 30.7734 33.2949V45.7461C30.7734 46.8496 31.6621 47.7383 32.7656 47.7383C33.8691 47.7383 34.7578 46.8496 34.7578 45.7461V33.2949C34.7578 32.2012 33.8594 31.3027 32.7656 31.3027Z" fill="white" />
+    <path d="M42.4141 31.3027C41.3105 31.3027 40.4219 32.1914 40.4219 33.2949V45.7461C40.4219 46.8496 41.3105 47.7383 42.4141 47.7383C43.5176 47.7383 44.4062 46.8496 44.4062 45.7461V33.2949C44.4062 32.2012 43.5176 31.3027 42.4141 31.3027Z" fill="white" />
+</svg>
+<div id="cartModal" class="modal"></div>

@@ -2,7 +2,7 @@
 {
     public class CartElement
     {
-        public Guid CartElementId { get; set; }
+        public Guid CartElementId { get; set; } = Guid.NewGuid();
         public required Product Product { get; set; }
         public int Count { get; set; } = 1;
     }

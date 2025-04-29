@@ -1,109 +1,325 @@
-﻿.product-grid {
-    display: flex;
-    flex-wrap: wrap;
+﻿
+.under-menu-mask {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 8px;
     gap: 20px;
+    isolation: isolate;
+    position: absolute;
+    width: 1300px;
+    width: calc(100vw - 140px);
+    height: 30px;
+    left: calc(50% - 1300px/2);
+    left: 70px;
+    top: 42.5px;
+}
+
+.menu-content-wrapper {
+    position: relative;
+    min-height: calc(100vh - 80px); /* Вычитаем высоту header */
+    padding-top: 110px; /* Компенсируем top: 110px у visible-category */
+    margin-bottom: 150px; /* Для футера */
+}
+
+.under-mask {
+    /* пункты */
+    /* Auto layout */
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 20px;
+    position: relative;
+    width: 679px;
+    height: 30px;
+    left: calc(50% - 679px/2 + 0.5px);
+    top: 0px;
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    z-index: 1;
+}
+
+.Category-background {
+    /* пункт 3 */
+    /* Auto layout */
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 8px;
+    gap: 10px;
+    width: 88px;
+    height: 30px;
+    background: rgba(249, 251, 250, 0.6);
+    border-radius: 25px;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    /* блюда */
+}
+
+.Category {
+    /* блюда */
+    cursor: pointer;
+    width: 72px;
+    height: 25px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 25px;
+    /* identical to box height */
+    text-align: center;
+    color: #000000;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+/*.visible-category {*/
+    /* категория */
+
+    /*margin: 20px 118px 40px 118px;
+    position: relative;
+    width: calc(100vw - 236px);
+    display: inline-table;*/ /*изменение*/
+    /*height: 41px;
+    top: 110px;
+}*/
+
+.visible-category {
+    margin: 20px 118px 40px 118px;
+    width: calc(100vw - 236px);
+    /* Уберите position: relative и top */
+    display: block;
+}
+
+.big-category {
+    /* блюда */
+    
+    padding-bottom: 10px;
+    position: relative;
+    width: 90px;
+    height: 31px;
+    left: 20px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+    text-align: center;
+    color: #000000;
+}
+
+.line {
+    width: calc(100vw - 236px);
+    height: 2px;
+    fill: none;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
+    grid-gap: 40px;
+    margin-top: 40px;
+    width: 100%;
 }
 
 .product-card {
-    width: 200px; /* Ширина квадрата */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    align-content: flex-start;
+    padding: 0px;
+    row-gap: 0px;
+    isolation: isolate;
+    position: relative;
+    width: 240px;
+    height: 320px;
 }
 
+
 .product-image {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f9f9f9;
+    position: absolute;
+    width: 240px;
+    height: 260px;
+    bottom: 60px;
+    background: url(Chebureki-Dumplings-from-Russia.jpg);
+    border-radius: 20px 20px 0px 0px;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    z-index: 0;
 }
 
     .product-image img {
         max-width: 100%;
         max-height: 100%;
         object-fit: cover;
+        border-radius: 20px 20px 0px 0px;
+        cursor: pointer;
     }
 
-.product-info {
-    padding: 10px;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.rect-btn {
+    top: 200px;
+    position: relative;
+    z-index: 0;
+    cursor: pointer;
+    background-color: #E67225;
+    border-radius: 0 0 20px 20px;
+
+    width: 240px; 
+    height: 61px;
+}
+.rect-blur {
+    top: 200px;
+    position: relative;
+    z-index: 1;
+}
+
+.rect-btn-name {
+    /* добавить */
+
+    position: absolute;
+    width: 128.4px;
+    height: 25.08px;
+    left: calc(50% - 128.4px/2 + 0.2px);
+    /*top: 17.05px;*/
+    /*top: 275px;*/
+    bottom: 18.05px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    text-align: center;
+    color: #FFFFFF;
+    /* Inside auto layout */
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+    z-index: 2;
+    user-select: none;
+    cursor: pointer;
 }
 
 .product-name {
-    font-size: 14px;
-    font-weight: bold;
-    flex: 1;
-    margin-right: 10px;
-}
+    /* чебуреки */
 
-.product-details {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    position: absolute;
+    width: 220px;
+    height: 25px;
+    left: 10px;
+    top: 205px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    /* identical to box height */
+    text-align: center;
+    color: #FFFFFF;
+    /* Inside auto layout */
+    flex: none;
+    order: 4;
+    flex-grow: 0;
+    z-index: 4;
 }
 
 .product-price {
-    font-size: 14px;
-    color: #333;
+    /* 299 ₽ */
+
+    position: absolute;
+    width: 60px;
+    height: 18px;
+    left: 8px;
+    top: 234px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: #FFFFFF;
+    /* Inside auto layout */
+    flex: none;
+    order: 6;
+    flex-grow: 0;
+    z-index: 6;
 }
 
 .product-weight {
-    font-size: 12px;
-    color: #777;
+    /* 200 г */
+
+    position: absolute;
+    width: 40px;
+    height: 18px;
+    left: 192px;
+    top: 234px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: #FFFFFF;
+    /* Inside auto layout */
+    flex: none;
+    order: 5;
+    flex-grow: 0;
+    z-index: 5;
 }
 
-/* Стили для кнопки */
-.add-to-cart-btn {
-    background-color: #28a745; /* Зеленый цвет */
-    color: white;
-    border: none;
-    padding: 10px;
-    width: 100%;
+#view-cart{
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-    .add-to-cart-btn:hover {
-        background-color: #218838; /* Темно-зеленый при наведении */
-    }
-
-/* Анимация добавления в корзину */
-@keyframes addToCart {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+.minus-btn, .plus-btn, .quantity {
+    /* 2 */
+    position: relative;
+    width: 25px;
+    /*height: 13px;*/
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    /*line-height: 50%;*/
+    /* identical to box height, or 12px */
+    text-align: center;
+    color: #FFFFFF;
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
 }
 
-.add-to-cart-btn.added {
-    animation: addToCart 0.5s ease;
-    background-color: #ffc107; /* Желтый цвет после добавления */
-}
-
-.product-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.add-to-cart-btn:active {
-    transform: scale(0.95);
+.quantity-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 40px;
+    position: absolute;
+    width: 155px;
+    top: 10px;
+    /*height: 30px;*/
+    left: calc(50% - 155px/2 + 0.5px);
+    /* Inside auto layout */
+    flex: none;
+    order: 6;
+    flex-grow: 0;
+    z-index: 8;
 }

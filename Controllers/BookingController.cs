@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataBase;
+using WebApplication1.DTO;
+using WebApplication1.Exceptions;
+using WebApplication1.Models;
 using WebApplication1.OtherClasses;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
@@ -8,17 +13,68 @@ namespace WebApplication1.Controllers
     {
         private readonly UserService _userService;
         private readonly ApplicationDbContext _context;
+        private readonly BookingService _bookingService;
 
-        public BookingController(UserService userService, ApplicationDbContext context)
+        public BookingController(UserService userService, ApplicationDbContext context, BookingService bookingService)
         {
             _userService = userService;
             _context = context;
+            _bookingService = bookingService;
         }
 
         [HttpGet("Booking")]
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
+        }
+
+        [HttpGet("Api/Booking/GetAll")]
+        public async Task<IActionResult> GetAllBookings(int tableId)
+        {
+            try
+            {
+                var booking = await _bookingService.GetAllBookingsByTableId(tableId);
+                return Ok(booking);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
+        }
+
+        // Доделать обработку всех ошибок в js!!!
+
+        [HttpPost("Api/Booking/Add")]
+        public async Task<IActionResult> AddBooking(int tableId, DateTime time, int interval)
+        {
+            try
+            {
+                var userId = await _userService.GetLogin();
+                await _bookingService.AddBooking(tableId, time, interval, userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
     }
 }

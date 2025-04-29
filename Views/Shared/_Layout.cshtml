@@ -1,5 +1,4 @@
-﻿@* @model IEnumerable<WebApplication1.Models.Product> *@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,59 +10,81 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="menu">
+
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Чайхана</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Menu" asp-action="">Меню</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Магазины</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="Index">Бронирование</a>
-                        </li>
-                    </ul>
+
+                <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">чайхана</a>
+
+                <div class="navbar-nav-container">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Личный кабинет</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Menu" asp-action="">меню</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">магазины</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="Index">бронирование</a>
                         </li>
                     </ul>
+                    <div class="nav-item-account">
+                        <a class="nav-link text-dark p-0" asp-area="" asp-controller="Account" asp-action="Index">
+                            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="50" height="50" rx="20" fill="#E67225" />
+                                <path d="M40.6109 35.2131C40.6109 36.9302 40.0886 38.2859 39.0441 39.2804C37.9996 40.2748 36.6116 40.772 34.8803 40.772H16.1217C14.3904 40.772 13.0024 40.2748 11.9579 39.2804C10.9134 38.2859 10.3911 36.9302 10.3911 35.2131C10.3911 34.4548 10.4162 33.7143 10.4662 32.9917C10.5163 32.2691 10.6165 31.4893 10.7667 30.6523C10.917 29.8152 11.1065 29.039 11.3355 28.3235C11.5644 27.6081 11.8721 26.9106 12.2584 26.2309C12.6447 25.5512 13.0883 24.9717 13.5891 24.4924C14.0899 24.0131 14.7016 23.6303 15.4242 23.3441C16.1468 23.058 16.9445 22.9149 17.8173 22.9149C17.9461 22.9149 18.2465 23.0687 18.7187 23.3763C19.1909 23.684 19.7239 24.0274 20.3177 24.4066C20.9115 24.7857 21.6842 25.1291 22.6357 25.4368C23.5872 25.7444 24.5423 25.8982 25.501 25.8982C26.4597 25.8982 27.4148 25.7444 28.3663 25.4368C29.3178 25.1291 30.0905 24.7857 30.6843 24.4066C31.2781 24.0274 31.8111 23.684 32.2833 23.3763C32.7555 23.0687 33.0559 22.9149 33.1847 22.9149C34.0576 22.9149 34.8553 23.058 35.5778 23.3441C36.3004 23.6303 36.9121 24.0131 37.4129 24.4924C37.9137 24.9717 38.3573 25.5512 38.7436 26.2309C39.13 26.9106 39.4376 27.6081 39.6665 28.3235C39.8955 29.039 40.0851 29.8152 40.2353 30.6523C40.3855 31.4893 40.4857 32.2691 40.5358 32.9917C40.5859 33.7143 40.6109 34.4548 40.6109 35.2131ZM33.7428 16.0468C33.7428 18.3218 32.9379 20.2642 31.3282 21.8739C29.7185 23.4837 27.7761 24.2885 25.501 24.2885C23.2259 24.2885 21.2835 23.4837 19.6738 21.8739C18.0641 20.2642 17.2592 18.3218 17.2592 16.0468C17.2592 13.7717 18.0641 11.8293 19.6738 10.2196C21.2835 8.60985 23.2259 7.80499 25.501 7.80499C27.7761 7.80499 29.7185 8.60985 31.3282 10.2196C32.9379 11.8293 33.7428 13.7717 33.7428 16.0468Z" fill="white" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
+
+                <svg class="back" width="100%" height="80" viewBox="0 0 1440 80" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0H1440V60C1440 71.0457 1431.05 80 1420 80H20C8.95432 80 0 71.0457 0 60V0Z" fill="#F9FBFA" fill-opacity="0.6" />
+                </svg> 
+
             </div>
+
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    
+
+    @* <svg class="vector" width="1440" height="842" viewBox="0 0 1440 842" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g filter="url(#filter0_f_4_189)">
+            <path d="M1497 817.865C1477.17 737.365 1427.8 558.865 1389 488.865C1340.5 401.365 1164.5 799.365 998.5 817.865C832.5 836.365 1113.5 276.365 988.5 232.865C863.5 189.365 583 772.365 441 709.865C299 647.365 535.5 207.865 434 48.365C352.8 -79.235 125.5 305.532 22 513.865L-111 767.865" stroke="#FCFCFC" stroke-opacity="0.3" stroke-width="30" />
+        </g>
+        <defs>
+            <filter id="filter0_f_4_189" x="-132.289" y="-0.00088501" width="1651.85" height="841.314" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                <feGaussianBlur stdDeviation="4" result="effect1_foregroundBlur_4_189" />
+            </filter>
+        </defs>
+    </svg>  *@
+
+    <div class="container-fluid p-0">
+        <main role="main" class="pb-0">
             @RenderBody()
         </main>
+
     </div>
 
-    <footer class="border-top footer text-muted">
-        @if (ViewContext.RouteData.Values["controller"].ToString() == "Menu")
-        {
-            <button id="view-cart">Корзина</button>
-             <div id="cartModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <div id="cartContent"></div>
-                    <button id="checkout-selected">Оформить выбранные товары</button>
-                    <button id="purshare">Оформить заказ</button>
-                </div>
-            </div> 
-        }
-    </footer>
+     <footer>
+         <div class="points">
+            <div class="about-us">О нас</div>
+            <div class="point">Пункт</div>
+            <div class="other-site">Для работников чайной (ссылка пока не работает)</div>
+            <div class="contacts">Контакты</div>
+         </div>
+        <div class="copyrite">«© 2025 Чайная «Чайхана» — pet-проект».</div>
+     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
+    <!-- В _Layout.cshtml перед </body> -->
+    <canvas id="steamCanvas"></canvas>
+    <script src="~/js/steam.js" asp-append-version="true"></script>
 </body>
-    
+
 </html>

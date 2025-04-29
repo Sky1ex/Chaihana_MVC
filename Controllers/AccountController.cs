@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.OtherClasses;
 using WebApplication1.DTO;
 using WebApplication1.Services;
+using WebApplication1.Exceptions;
+using System.Diagnostics.Contracts;
+using System.Xml.Linq;
 
 namespace WebApplication1.Controllers
 {
@@ -11,102 +14,196 @@ namespace WebApplication1.Controllers
     {
         private readonly UserService _userService;
         private readonly AccountService _accountService;
-        private readonly ApplicationDbContext _context;
 
-        public AccountController(UserService userService, AccountService accountService, ApplicationDbContext context)
+        public AccountController(UserService userService, AccountService accountService)
         {
             _userService = userService;
-            _context = context;
             _accountService = accountService;
         }
 
         [HttpGet("Api/Login")]
         public async Task<IActionResult> AutoLogin()
         {
-            var userId = await _userService.AutoLogin();
-            return Ok($"User ID: {userId}");
+            try
+            {
+                var userId = await _userService.GetLogin();
+                return Ok($"User ID: {userId}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
         [HttpGet("Account")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            try
+            {
+                var userId = await _userService.GetLogin();
+                var addresses = await _accountService.GetAddresses(userId);
+                var orders = await _accountService.GetOrders(userId);
+                var user = await _userService.GetUser(userId);
+                ViewBag.Orders = orders;
+                ViewBag.Addresses = addresses;
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
         }
 
-        [HttpGet("Account/Addresses")]
-        public async Task<IActionResult> Addresses()
-        {
-            var userId = await _userService.AutoLogin();
-            var addresses = await _accountService.GetAddresses(userId);
-
-            return View(addresses);
-        }
-
-        [HttpGet("Account/Orders")]
-        public IActionResult Orders()
-        {
-            var userId = _userService.AutoLogin().Result;
-            var orders = _accountService.GetOrders(userId);
-
-            return View(orders);
-        }
-
-        [HttpGet("Account/UserData")]
-        public IActionResult UserData()
-        {
-            var userId = _userService.AutoLogin();
-            var user = _context.Users
-                .FirstOrDefaultAsync(c => c.UserId == userId.Result).Result;
-
-            return View(user);
-        }
-
-        [HttpPost("Account/AddAddress")]
+        [HttpPost("Api/Account/AddAddress")]
         public async Task<IActionResult> AddAddress([FromBody] AddressDto request)
         {
-            var userId = _userService.AutoLogin();
+            try
+            {
+                var userId = await _userService.GetLogin();
 
-            await _accountService.AddAddress(request.City, request.Street, request.House, userId.Result);
+                await _accountService.AddAddress(request.City, request.Street, request.House, request.Apartment, userId);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
-        [HttpDelete("Account/DeleteAddress")]
+        [HttpPut("Api/Account/PutAddress")]
+		public async Task<IActionResult> PutAddress([FromBody] AddressDto request)
+		{
+            try
+            {
+                var userId = await _userService.GetLogin();
+
+                await _accountService.PutAddress(request.City, request.Street, request.House, request.Apartment, userId, request.AddressId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
+        }
+
+		[HttpDelete("Api/Account/DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(string addressId)
         {
-            var userId = await _userService.AutoLogin();
+            try
+            {
+                var userId = await _userService.GetLogin();
 
-            _accountService.DeleteAddress(addressId, userId);
+                await _accountService.DeleteAddress(addressId, userId);
 
-            return Ok();
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
-        [HttpGet("Account/GetCode")]
+        [HttpGet("Api/Account/GetCode")]
         public async Task<IActionResult> GetCode(string userNumber)
         {
-            var userId = _userService.AutoLogin().Result;
-            using var response = await _accountService.PostSms(userNumber, userId);
-            var responseContent = await response.Content.ReadAsStringAsync();
-            
-            return StatusCode((int)response.StatusCode, responseContent);
+            try
+            {
+                var userId = _userService.GetLogin().Result;
+                using var response = await _accountService.PostSms(userNumber, userId);
+
+                return StatusCode((int)response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
-        [HttpPost("Account/CheckCode")]
-        public async Task<string> CheckCode(string code)
+        [HttpPost("Api/Account/CheckCode")]
+        public async Task<IActionResult> CheckCode(string code)
         {
-            var userId = _userService.AutoLogin().Result;
-            string answer = await _accountService.CheckCode(code, userId);
-            if (!(answer == "true" || answer == "false")) _userService.SetLogin(Guid.Parse(answer));
-            return answer;
+            try
+            {
+                var userId = await _userService.GetLogin();
+                string answer = await _accountService.CheckCode(code, userId);
+                if (!(answer == "true" || answer == "false")) _userService.SetLogin(Guid.Parse(answer));
+                return Ok(answer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
-        [HttpPost("Account/AddName")]
+        [HttpPost("Api/Account/AddName")]
         public async Task<IActionResult> AddName(string name)
         {
-            var userId = _userService.AutoLogin().Result;
-            await _accountService.AddName(name, userId);
+            try
+            {
+                var userId = _userService.GetLogin().Result;
+                await _accountService.AddName(name, userId);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
+        }
+
+        [HttpGet("Api/Account/GetAddresses")]
+        public async Task<IActionResult> GetAddresses()
+        {
+            try
+            {
+                var userId = _userService.GetLogin().Result;
+
+                var addresses = await _accountService.GetAddresses(userId);
+
+                return Ok(addresses);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
     }
 }

@@ -1,0 +1,67 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+RUN dotnet tool install --global dotnet-ef
+
+COPY ["WebApplication1.csproj", "."]
+RUN dotnet restore "WebApplication1.csproj"
+COPY . .
+RUN dotnet publish "WebApplication1.csproj" -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+
+# Решение для DataProtection
+RUN mkdir -p /app/keys
+ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_DataProtection__Keys__Path=/app/keys
+
+ENTRYPOINT ["dotnet", "WebApplication1.dll"]
+
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:5000"
+    volumes:
+      - ./data-protection-keys:/app/keys
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Database=WebDB;User Id=postgres;Password=admin;
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: WebDB
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  data-protection-keys:
+
+
+
+"DefaultConnection": "Host=localhost;Port=5432;Database=WebDB;Username=postgres;Password=admin"
+
+команды для docker для БД: 
+PS C:\Рабочая папка\3 курс 2 полугодие\Практика\WebApplication1\DataBase and more> docker cp DumbDb.sql webapplication1-db-1:/tmp/DumbDb.dump
+PS C:\Рабочая папка\3 курс 2 полугодие\Практика\WebApplication1\DataBase and more> docker-compose exec db pg_restore -U postgres -d WebDB -v /tmp/DumbDb.dump

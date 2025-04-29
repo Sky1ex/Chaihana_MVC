@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
+using WebApplication1.Exceptions;
 using WebApplication1.Models;
 using WebApplication1.OtherClasses;
 using WebApplication1.Services;
@@ -23,44 +24,120 @@ namespace WebApplication1.Controllers
         [HttpGet("Cart/ShowCart")]
         public async Task<IActionResult> GetCart()
         {
-            var userId = await _userService.AutoLogin();
-            var cart = await _cartService.GetCartAsync(userId);
-            var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
-            ViewBag.Addresses = addresses;
-            return PartialView("_CartContentPartial", cart);
+            try
+            {
+                var userId = await _userService.GetLogin();
+                var cart = await _cartService.GetCartAsync(userId);
+                var addresses = await _userService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+                ViewBag.Addresses = addresses;
+                return PartialView("_CartContentPartial", cart);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
         }
 
         [HttpGet("Api/Cart/ShowCart")]
-        public async Task<List<CartProductDto>> GetCartElement()
+        public async Task<IActionResult> GetCartElement()
         {
-            var userId = await _userService.AutoLogin();
-            var cart = await _cartService.GetCartAsync(userId);
-            var addresses = await _cartService.GetUserAddressesAsync(userId); // Получение адресов пользователя
-            return cart.Products;
+            try
+            {
+                var userId = await _userService.GetLogin();
+                var cart = await _cartService.GetCartAsync(userId);
+                var addresses = await _userService.GetUserAddressesAsync(userId); // Получение адресов пользователя
+                return Ok(cart.CartElement);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = "Корзина не найдена"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
-        [HttpPost("Cart/UpdateCartItemCount")]
+        [HttpPost("Api/Cart/UpdateCartItemCount")]
         public async Task<IActionResult> UpdateCartItemQuantity(Guid productId, int change)
         {
-            var userId = await _userService.AutoLogin();
-            await _cartService.UpdateCartItemQuantityAsync(userId, productId, change);
-            return Ok();
+            try
+            {
+				var userId = await _userService.GetLogin();
+				await _cartService.UpdateCartItemQuantityAsync(userId, productId, change);
+				return Ok();
+			}
+            catch (NotFoundException ex)
+            {
+                return NotFound(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = "Корзина не найдена"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
 
-        [HttpPost("Cart/CheckoutSelected")]
-        public async Task<IActionResult> CheckoutSelected([FromBody] CheckoutSelectedDto request)
+        [HttpGet("Cart/CheckoutSelected")]
+        public async Task<IActionResult> CheckoutSelected([FromQuery] List<string> products)
         {
-            var userId = await _userService.AutoLogin();
-            var order = await _cartService.CheckoutSelectedAsync(userId, request.ProductIds, request.AddressId);
-            return Ok(order);
+            try
+            {
+                List<Guid> productIds = products.Select(x => new Guid(x)).ToList();
+                var userId = await _userService.GetLogin();
+                var cart = await _cartService.GetCartAsync(userId);
+                List<CartElementDto> items = cart.CartElement.Where(x => productIds.Contains(x.ProductId)).ToList();
+                var addresses = await _userService.GetUserAddressesAsync(userId);
+                ViewBag.Address = addresses.FirstOrDefault();
+                return View("Index", items);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex)
+                });
+            }
         }
 
-        [HttpPost("Cart/Purshare")]
-        public async Task<IActionResult> Checkout(Guid addressId)
+        // В БД и модель для корзины добавить сущность сумму(расчет будет в бд). Для готового заказа добавить сущность (способ оплаты - Payment). Также добавить появление карты при кнопке изменить.
+        // На самой карте добавить уже существующие адресы пользователя, которые можно выбрать. На карте будут 2 кнопки: добавить и выбрать. При выборе адрес не сохраняется. Доделать тесты!.
+
+        [HttpPost("Api/Cart/Purshare")]
+        public async Task<IActionResult> Purshare(List<Guid> orderElements, Guid addressId)
         {
-            var userId = await _userService.AutoLogin();
-            var order = await _cartService.CheckoutAsync(userId, addressId);
-            return Ok(order);
+            try
+            {
+                var userId = await _userService.GetLogin();
+                var order = await _cartService.CheckoutSelectedAsync(userId, orderElements, addressId);
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
         }
     }
 }

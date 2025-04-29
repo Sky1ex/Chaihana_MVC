@@ -2,9 +2,10 @@
 {
     public class Booking
     {
-        public Guid BookingId { get; set; }
-        public User User { get; set; }
-        public int Table { get; set; }
-        public DateTime Time { get; set; }
+        public Guid BookingId { get; set; } = Guid.NewGuid();
+        public required User User { get; set; }
+        public required int Table { get; set; }
+        public DateTime Time { get; set; } = DateTime.Now;
+		public int Interval { get; set; }
     }
 }

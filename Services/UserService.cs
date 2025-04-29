@@ -1,20 +1,50 @@
-﻿using WebApplication1.DataBase;
+﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using WebApplication1.DataBase;
+using WebApplication1.DataBase_and_more;
+using WebApplication1.DTO;
 using WebApplication1.Models;
+using WebApplication1.Repository.Default;
 
 namespace WebApplication1.OtherClasses
 {
     public class UserService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
-        public UserService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        public UserService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
-        public async Task<Guid> AutoLogin()
+        public async Task<UserDto> GetUser(Guid userId)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+            return _mapper.Map<UserDto>(user);
+
+        }
+
+        public async Task<List<AddressDto>> GetUserAddressesAsync(Guid userId)
+        {
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
+
+            List<Models.Adress> addresses = user.Adresses;
+
+            List<AddressDto> ad = addresses.Select(a => _mapper.Map<AddressDto>(a)).ToList();
+
+            return ad;
+        }
+
+        public async Task<Guid> GetLogin()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext == null)
@@ -22,41 +52,30 @@ namespace WebApplication1.OtherClasses
                 throw new InvalidOperationException("HttpContext is not available.");
             }
 
-            // Проверяем, есть ли идентификатор в куках
-            if (!httpContext.Request.Cookies.TryGetValue("UserId", out var userIdString))
+            // Проверяем JWT токен
+            var jwtToken = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            Guid userId;
+
+            if (string.IsNullOrEmpty(jwtToken) || !AuthOptions.ValidateToken(jwtToken, out userId))
             {
-                // Генерируем новый GUID
-                var userId = Guid.NewGuid();
-
-                // Сохраняем GUID в куки
-                httpContext.Response.Cookies.Append("UserId", userId.ToString(), new CookieOptions
-                {
-                    Expires = DateTimeOffset.Now.AddYears(1), // Куки будут храниться год
-                    HttpOnly = true, // Защита от XSS
-                    Secure = true // Только для HTTPS
-                });
-
                 // Создаем нового пользователя
-                var user = new User { UserId = userId };
-                /*var cart = new Cart(user)*//* { User = user }*//*;*/
-                var cart = new Cart()
-                {
-                    CartId = Guid.NewGuid(),
-                    User = user
-                };
+                userId = Guid.NewGuid();
+                var cart = new Cart() { CartId = Guid.NewGuid() };
+                var user = new User { UserId = userId, Cart = cart };
+                cart.User = user;
 
-                // Сохраняем в базу данных
-                _dbContext.Users.Add(user);
-                _dbContext.Carts.Add(cart);
-                await _dbContext.SaveChangesAsync();
+                await _unitOfWork.Users.AddAsync(user);
+                await _unitOfWork.Carts.AddAsync(cart);
+                await _unitOfWork.SaveChangesAsync();
 
-                return userId;
+                AuthOptions.SetJwtCookie(httpContext, userId);
+
+                // Генерируем новый токен
+                var newToken = AuthOptions.GenerateJwtToken(userId);
+                httpContext.Response.Headers.Append("Authorization", $"Bearer {newToken}");
             }
-            else
-            {
-                // Если кука уже существует, возвращаем существующий GUID
-                return Guid.Parse(userIdString);
-            }
+
+            return userId;
         }
 
         public bool SetLogin(Guid login)
@@ -68,13 +87,7 @@ namespace WebApplication1.OtherClasses
                 throw new InvalidOperationException("HttpContext is not available.");
             }
 
-            // Сохраняем GUID в куки
-            httpContext.Response.Cookies.Append("UserId", login.ToString(), new CookieOptions
-            {
-                Expires = DateTimeOffset.Now.AddYears(1), // Куки будут храниться год
-                HttpOnly = true, // Защита от XSS
-                Secure = true // Только для HTTPS
-            });
+            AuthOptions.SetJwtCookie(httpContext, login);
 
             return true;
         }

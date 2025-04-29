@@ -28,6 +28,9 @@ namespace WebApplication1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Apartment")
+                        .HasColumnType("integer");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
@@ -50,6 +53,9 @@ namespace WebApplication1.Migrations
                     b.Property<Guid>("AdressId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Apartment")
+                        .HasColumnType("integer");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -78,6 +84,9 @@ namespace WebApplication1.Migrations
                     b.Property<Guid>("BookingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Interval")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Table")
                         .HasColumnType("integer");
@@ -249,7 +258,8 @@ namespace WebApplication1.Migrations
                 {
                     b.HasOne("WebApplication1.Models.User", null)
                         .WithMany("Adresses")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Booking", b =>
@@ -278,7 +288,8 @@ namespace WebApplication1.Migrations
                 {
                     b.HasOne("WebApplication1.Models.Cart", null)
                         .WithMany("CartElement")
-                        .HasForeignKey("CartId");
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebApplication1.Models.Product", "Product")
                         .WithMany()
@@ -299,7 +310,8 @@ namespace WebApplication1.Migrations
 
                     b.HasOne("WebApplication1.Models.User", null)
                         .WithMany("Orders")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Adress");
                 });

@@ -1,71 +1,45 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Twilio.Rest.Api.V2010.Account.Sip.Domain.AuthTypes.AuthTypeCalls;
 using WebApplication1.DataBase;
 using WebApplication1.DTO;
 using WebApplication1.Models;
+using WebApplication1.Repository.Default;
 
 namespace WebApplication1.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CartService> _logger;
         public static List<CodeDto> _codeList = new List<CodeDto>();
+        private readonly IMapper _mapper;
 
-        public AccountService(ApplicationDbContext context, ILogger<CartService> logger)
+        public AccountService(ILogger<CartService> logger, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
             _logger = logger;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<List<AddressDto>> GetAddresses(Guid userId)
         {
-            var user = await _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
+
             List<AddressDto> Adresses = user.Adresses
-                .Select(c => new AddressDto
-                {
-                    AddressId = c.AdressId,
-                    City = c.City,
-                    Street = c.Street,
-                    House = c.House
-                }).ToList();
+                .Select(c => _mapper.Map<AddressDto>(c)).ToList();
 
             return Adresses;
         }
 
-        public List<OrderDto> GetOrders(Guid userId)
+        public async Task<List<OrderDto>> GetOrders(Guid userId)
         {
-            var user = _context.Users
-                .Include(c => c.Orders)
-                .ThenInclude(ce => ce.OrderElement)
-                .ThenInclude(ced => ced.Product)
-                .Include(c => c.Orders)
-                .ThenInclude(ce => ce.Adress)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            var orders = user.Result.Orders
-                .Select(c => new OrderDto
-                {
-                    DateTime = c.dateTime,
-                    Address = new AddressDto
-                    {
-                        City = c.Adress.City,
-                        Street = c.Adress.Street,
-                        House = c.Adress.House
-                    },
-                    Products = c.OrderElement.Select(ce => new OrderProductDto
-                    {
-                        Name = ce.Product.Name,
-                        Price = ce.Product.Price,
-                        Count = ce.Count
-                    }).ToList()
-                })
-                .ToList();
+            var user = await _unitOfWork.Users.GetByIdFull(userId);
+
+            var orders = user.Orders.Select(c => _mapper.Map<OrderDto>(c)).ToList();
 
             return orders;
         }
@@ -103,18 +77,19 @@ namespace WebApplication1.Services
 
         public async Task<string> CheckCode(string code, Guid userId)
         {
-            CodeDto codeDto = _codeList.FirstOrDefault( x => x.Code == code && x.UserId == userId);
+            CodeDto codeDto = _codeList.FirstOrDefault(x => x.Code == code && x.UserId == userId);
             if (codeDto == null) return "false";
             else
             {
-                var checkUser = await _context.Users.FirstOrDefaultAsync(x => x.Phone == codeDto.number);
+
+                var checkUser = await _unitOfWork.Users.GetByPhone(codeDto.number);
+
                 if (checkUser != null)
                 {
-                    var user = await _context.Users
-                        .FirstOrDefaultAsync(c => c.UserId == userId);
+                    var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
-                    _context.Users.Remove(user);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Users.Delete(user);
+                    await _unitOfWork.SaveChangesAsync();
                     _codeList.Remove(codeDto);
                     return checkUser.UserId.ToString();
                 }
@@ -125,42 +100,73 @@ namespace WebApplication1.Services
         public async Task<bool> AddName(string name, Guid userId)
         {
             CodeDto codeDto = _codeList.FirstOrDefault(x => x.UserId == userId);
-            var user = await _context.Users
-             .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
             user.Name = name;
             user.Phone = codeDto.number;
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             _codeList.Remove(codeDto);
 
             return true;
         }
 
-        public async Task<bool> AddAddress(string City, string Street, string House, Guid userId)
+        public async Task<bool> AddAddress(string City, string Street, string House, int Apartment, Guid userId)
         {
-            var user = await _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-            var address = new Adress { AdressId = Guid.NewGuid(), City = City, House = House, Street = Street };
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
+
+            if(City == null || Street == null || House == null || Apartment == 0)
+            {
+                _logger.LogWarning("Ошибка! Вводиый адрес: {City}, {Street}, {House}, {Apartment}", City, Street, House, Apartment);
+                throw new InvalidOperationException("Введите полный адрес.");
+            }
+
+            var address = new Adress { AdressId = Guid.NewGuid(), City = City, House = House, Street = Street, Apartment = Apartment };
             user.Adresses.Add(address);
-            await _context.Adresses.AddAsync(address);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.Addresses.AddAsync(address);
+            await _unitOfWork.SaveChangesAsync();
             return true;
         }
 
-        public async void DeleteAddress(string addressId, Guid userId)
+		public async Task<bool> PutAddress(string City, string Street, string House, int Apartment, Guid userId, Guid addressId)
+		{
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
+
+            if (City == null || Street == null || House == null || Apartment == 0)
+            {
+                _logger.LogWarning("Ошибка! Вводиый адрес: {City}, {Street}, {House}, {Apartment}", City, Street, House, Apartment);
+                throw new InvalidOperationException("Введите полный адрес.");
+            }
+
+            var address = user.Adresses.FirstOrDefault(c => c.AdressId == addressId);
+            if (address == null)
+            {
+                _logger.LogWarning("Адрес {addressId} не найден.", addressId);
+                throw new InvalidOperationException("Адрес не найден.");
+            }
+            address.House = House;
+            address.City = City;
+            address.Street = Street;
+            address.Apartment = Apartment;
+			await _unitOfWork.SaveChangesAsync();
+			return true;
+		}
+
+		public async Task DeleteAddress(string addressId, Guid userId)
         {
-            var user = _context.Users
-                .Include(c => c.Adresses)
-                .FirstOrDefault(c => c.UserId == userId);
+            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
 
             var address = user.Adresses.FirstOrDefault(c => c.AdressId == new Guid(addressId));
 
+            if (address == null)
+            {
+                _logger.LogWarning("Адрес {addressId} не найден.", addressId);
+                throw new InvalidOperationException("Адрес не найден.");
+            }
 
             user.Adresses.Remove(address);
-            _context.Adresses.Remove(address);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
