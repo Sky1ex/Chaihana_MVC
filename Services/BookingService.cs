@@ -32,7 +32,7 @@ namespace WebApplication1.Services
 
         // Доделать бронь!!! Сейчас отсутствует интервал
 
-        public async Task AddBooking(int tableId, DateTime time, Guid userId)
+        public async Task AddBooking(int tableId, DateTime time, int interval, Guid userId)
         {
             var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
@@ -41,7 +41,8 @@ namespace WebApplication1.Services
                 BookingId = Guid.NewGuid(),
                 User = user,
                 Time = time,
-                Table = tableId
+                Table = tableId,
+                Interval = interval
             };
 
             await _unitOfWork.Bookings.AddAsync(booking);

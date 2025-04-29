@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
     // Календарь
     const calendarBtn = document.getElementById('calendar-btn');
     const calendarDropdown = document.getElementById('calendar-dropdown');
@@ -6,6 +7,13 @@
     const calendarNext = document.getElementById('calendar-next');
     const calendarMonth = document.getElementById('calendar-month');
     const calendarDays = document.getElementById('calendar-days');
+
+    // Прокрутка времени (8:00 - 21:00) с проверкой доступности
+    const timePrev = document.getElementById('button-prev');
+    const timeNext = document.getElementById('button-next');
+
+    // Бронирование
+    const booking = document.querySelector('.button-booking');
 
     let currentDate = new Date();
     let selectedDate = new Date();
@@ -132,8 +140,11 @@
     // Проверяет, доступно ли выбранное время
     function isTimeSlotAvailable(time) {
         const selectedDateTime = new Date(selectedDate);
+        const selectedDateTimeWithInterval = new Date(selectedDate);
         const [hours, minutes] = time.split(':').map(Number);
+        const selectedInterval = parseInt(document.querySelector('.time-container').textContent[0]);
         selectedDateTime.setHours(hours, minutes, 0, 0);
+        selectedDateTimeWithInterval.setHours(hours + selectedInterval, minutes, 0, 0);
 
         // Проверяем, не попадает ли выбранное время в занятый промежуток
         for (const booking of bookedTimeSlots) {
@@ -141,12 +152,17 @@
             const bookingEnd = new Date(bookingStart);
             bookingEnd.setHours(bookingStart.getHours() + booking.interval);
 
-            if (selectedDateTime >= bookingStart && selectedDateTime < bookingEnd) {
-                return false;
+            if ((selectedDateTime >= bookingStart && selectedDateTime < bookingEnd) ||
+                (selectedDateTimeWithInterval > bookingStart && selectedDateTimeWithInterval <= bookingEnd) ||
+                selectedDateTimeWithInterval.getHours() > 22) {
+                /*return false;*/
+                document.querySelector('.button-booking').className = 'button-booking denied';
             }
+            else document.querySelector('.button-booking').className = 'button-booking';
         }
-        return true;
+        /*return true;*/
     }
+
 
     // Обновление временных слотов с учетом занятых промежутков
     function updateTimeSlots() {
@@ -163,29 +179,15 @@
 
             // Проверяем, доступно ли это время
             let timeStr = hour + ':00';
-            if (!isTimeSlotAvailable(timeStr)) {
-                // Ищем ближайшее доступное время
-                for (let h = hour + 1; h <= 21; h++) {
-                    timeStr = h + ':00';
-                    if (isTimeSlotAvailable(timeStr)) break;
-                }
-            }
+
+            isTimeSlotAvailable(timeStr);
 
             timeSlotsContainer.textContent = timeStr;
         } else {
             // Для других дней устанавливаем начало рабочего дня
             let timeStr = '8:00';
-
-            // Проверяем, доступно ли это время
-            if (!isTimeSlotAvailable(timeStr)) {
-                // Ищем ближайшее доступное время
-                for (let h = 9; h <= 21; h++) {
-                    timeStr = h + ':00';
-                    if (isTimeSlotAvailable(timeStr)) break;
-                }
-            }
-
             timeSlotsContainer.textContent = timeStr;
+            isTimeSlotAvailable(timeStr);
         }
     }
 
@@ -209,29 +211,6 @@
     updateCalendar();
     updateTimeSlots();
 
-    // Переключение месяцев (только если есть доступные дни в следующем месяце)
-    calendarPrev.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        updateCalendar();
-    });
-
-    calendarNext.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        updateCalendar();
-    });
-
-    // Открытие/закрытие календаря
-    calendarBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        calendarDropdown.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!calendarBtn.contains(e.target) && !calendarDropdown.contains(e.target)) {
-            calendarDropdown.classList.remove('active');
-        }
-    });
-
     // Выбор стола
     const tables = document.querySelectorAll('.table');
     tables.forEach(table => {
@@ -243,49 +222,14 @@
             if (currentTableId) {
                 loadBookedTimeSlots(currentTableId);
             }
+
+            
         });
     });
 
-    // Прокрутка времени (8:00 - 21:00) с проверкой доступности
-    const timePrev = document.getElementById('button-prev');
-    const timeNext = document.getElementById('button-next');
+    
 
-    timePrev.addEventListener('click', () => {
-        const timeSlotsContainer = document.querySelector('.button-time-text');
-        const button = document.querySelector('.button-booking');
-        let currentTime = parseInt(timeSlotsContainer.textContent);
-
-        if (currentTime > 8) {
-            timeSlotsContainer.textContent = (currentTime - 1) + ':00';
-        } else {
-            timeSlotsContainer.textContent = '21:00';
-        }
-
-        if (!isTimeSlotAvailable(timeSlotsContainer.textContent)) {
-            button.className = 'button-booking denied';
-        }
-        else button.className = 'button-booking';
-    });
-
-    timeNext.addEventListener('click', () => {
-        const timeSlotsContainer = document.querySelector('.button-time-text');
-        const button = document.querySelector('.button-booking');
-        let currentTime = parseInt(timeSlotsContainer.textContent);
-
-        if (currentTime < 21) {
-            timeSlotsContainer.textContent = (currentTime + 1) + ':00';
-        } else {
-            timeSlotsContainer.textContent = '8:00';
-        }
-
-        if (!isTimeSlotAvailable(timeSlotsContainer.textContent)) {
-            button.className = 'button-booking denied';
-        }
-        else button.className = 'button-booking';
-    });
-
-    // Бронирование
-    const booking = document.querySelector('.button-booking');
+    
     booking.addEventListener('click', () => {
         if (booking.className != 'button-booking denied') {
             const monthNames = {
@@ -303,6 +247,7 @@
             const month = monthNames[monthStr];
             const [hours, minutes] = timeStr.split(':').map(Number);
             const bookingDate = new Date(year, month, day, hours, minutes);
+            const interval = parseInt(document.querySelector('.time-container').textContent[0]);
 
             // Проверяем, доступно ли выбранное время
             if (!isTimeSlotAvailable(timeStr)) {
@@ -315,7 +260,8 @@
                 type: 'POST',
                 data: {
                     tableId: tableId,
-                    time: bookingDate.toISOString()
+                    time: bookingDate.toISOString(),
+                    interval: interval
                 },
                 success: function () {
                     console.log("Booking добавлен!");
@@ -330,5 +276,76 @@
             });
         }
         
+    });
+
+    // Переключение месяцев (только если есть доступные дни в следующем месяце)
+    calendarPrev.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        updateCalendar();
+    });
+
+    calendarNext.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        updateCalendar();
+    });
+
+    // Открытие/закрытие календаря
+    calendarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calendarDropdown.classList.toggle('active');
+
+        const timeSlotsContainer = document.querySelector('.button-time-text');
+        isTimeSlotAvailable(timeSlotsContainer.textContent);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!calendarBtn.contains(e.target) && !calendarDropdown.contains(e.target)) {
+            calendarDropdown.classList.remove('active');
+        }
+    });
+
+    timePrev.addEventListener('click', () => {
+        const timeSlotsContainer = document.querySelector('.button-time-text');
+        let currentTime = parseInt(timeSlotsContainer.textContent);
+
+        if (currentTime > 8) {
+            timeSlotsContainer.textContent = (currentTime - 1) + ':00';
+        } else {
+            timeSlotsContainer.textContent = '21:00';
+        }
+
+        isTimeSlotAvailable(timeSlotsContainer.textContent);
+    });
+
+    timeNext.addEventListener('click', () => {
+        const timeSlotsContainer = document.querySelector('.button-time-text');
+        let currentTime = parseInt(timeSlotsContainer.textContent);
+
+        if (currentTime < 21) {
+            timeSlotsContainer.textContent = (currentTime + 1) + ':00';
+        } else {
+            timeSlotsContainer.textContent = '8:00';
+        }
+
+        isTimeSlotAvailable(timeSlotsContainer.textContent);
+
+    });
+
+    $(document).on('click', '#interval-next', function () {
+        const cont = document.querySelector('.time-container');
+        if (cont.textContent[0] < 3) cont.textContent = (parseInt(cont.textContent[0]) + 1) + ' ч';
+        const timeStr = document.querySelector('.button-time-text').textContent.trim();
+        const timeSlotsContainer = document.querySelector('.button-time-text');
+
+        isTimeSlotAvailable(timeSlotsContainer.textContent);
+    });
+
+    $(document).on('click', '#interval-prev', function () {
+        const cont = document.querySelector('.time-container');
+        if (cont.textContent[0] > 1) cont.textContent = (parseInt(cont.textContent[0]) - 1) + ' ч';
+        const timeStr = document.querySelector('.button-time-text').textContent.trim();
+        const timeSlotsContainer = document.querySelector('.button-time-text');
+
+        isTimeSlotAvailable(timeSlotsContainer.textContent);
     });
 });

@@ -1,22 +1,20 @@
-# Используем официальный образ ASP.NET Core
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем файлы проекта и восстанавливаем зависимости
+RUN dotnet tool install --global dotnet-ef
+
 COPY ["WebApplication1.csproj", "."]
 RUN dotnet restore "WebApplication1.csproj"
-
-# Копируем все файлы и собираем проект
 COPY . .
-RUN dotnet publish -c Release -o /app
+RUN dotnet publish "WebApplication1.csproj" -c Release -o /app
 
-# Финальный образ
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app .
 
-# Устанавливаем переменные среды для Npgsql
+# Решение для DataProtection
+RUN mkdir -p /app/keys
 ENV ASPNETCORE_URLS=http://+:5000
-ENV ConnectionStrings__DefaultConnection="Host=localhost;Database=WebDB;Username=postgres;Password=admin"
+ENV ASPNETCORE_DataProtection__Keys__Path=/app/keys
 
 ENTRYPOINT ["dotnet", "WebApplication1.dll"]

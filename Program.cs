@@ -18,6 +18,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +93,12 @@ builder.Services.AddExceptionHandler<ExceptionHandler>(); // добавляем обработчи
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate(); // Создаст БД и применит миграции, если их нет
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

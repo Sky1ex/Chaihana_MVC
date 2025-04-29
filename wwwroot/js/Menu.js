@@ -110,7 +110,7 @@ $(document).ready(function () {
 // Загрузка содержимого корзины
 function loadCart() {
     $.ajax({
-        url: 'https://localhost:7008/Cart/ShowCart',
+        url: '/Cart/ShowCart',
         type: 'GET',
         success: function (data) {
             $('#cartModal').html(data);

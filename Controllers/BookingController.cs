@@ -56,13 +56,15 @@ namespace WebApplication1.Controllers
             }
         }
 
+        // Доделать обработку всех ошибок в js!!!
+
         [HttpPost("Api/Booking/Add")]
-        public async Task<IActionResult> AddBooking(int tableId, DateTime time)
+        public async Task<IActionResult> AddBooking(int tableId, DateTime time, int interval)
         {
             try
             {
                 var userId = await _userService.GetLogin();
-                await _bookingService.AddBooking(tableId, time, userId);
+                await _bookingService.AddBooking(tableId, time, interval, userId);
                 return Ok();
             }
             catch (Exception ex)
