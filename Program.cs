@@ -67,6 +67,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.ConfigureDbContext<ApplicationDbContext>(options => options.EnableSensitiveDataLogging(true));
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Добавляем маппер

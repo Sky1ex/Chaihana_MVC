@@ -33,15 +33,10 @@ namespace WebApplication1.OtherClasses
 
         }
 
-        public async Task<List<AddressDto>> GetUserAddressesAsync(Guid userId)
+        public async Task<bool> CheckPhone(Guid userId)
         {
-            var user = await _unitOfWork.Users.GetByIdWithAddresses(userId);
-
-            List<Models.Adress> addresses = user.Adresses;
-
-            List<AddressDto> ad = addresses.Select(a => _mapper.Map<AddressDto>(a)).ToList();
-
-            return ad;
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            return user.Phone != string.Empty;
         }
 
         public async Task<Guid> GetLogin()

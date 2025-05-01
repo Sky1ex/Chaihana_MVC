@@ -32,6 +32,16 @@ namespace WebApplication1.Repository
                 .FirstOrDefaultAsync(x => x.User.UserId == userId);
         }
 
+        public async Task<Cart?> GetByUserIdFullWithoutTracking(Guid userId)
+        {
+            return await _context.Carts
+                .AsNoTracking()
+                .Include(x => x.CartElement)
+                .ThenInclude(x => x.Product)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.User.UserId == userId);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

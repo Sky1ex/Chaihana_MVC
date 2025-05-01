@@ -27,12 +27,24 @@
         </div>
         <div class="input-parameters">
             <div class="address-name">Адрес доставки:</div>
-            <div class="address-container" id="@ViewBag.Address.AddressId">
-                <div class="address-element" id="city-element">Город: @ViewBag.Address.City</div>
-                <div class="address-element" id="street-element">Улица: @ViewBag.Address.Street</div>
-                <div class="address-element" id="house-element">Дом: @ViewBag.Address.House</div>
-                <div class="address-element" id="appartment-element">Квартира: @ViewBag.Address.Apartment</div>
-            </div>
+            @if(ViewBag.Address != null)
+            {
+                <div class="address-container" id="@ViewBag.Address.AddressId">
+                    <div class="address-element" id="city-element">Город: @ViewBag.Address.City</div>
+                    <div class="address-element" id="street-element">Улица: @ViewBag.Address.Street</div>
+                    <div class="address-element" id="house-element">Дом: @ViewBag.Address.House</div>
+                    <div class="address-element" id="appartment-element">Квартира: @ViewBag.Address.Apartment</div>
+                </div>
+            }
+            else
+            {
+                <div class="address-container">
+                    <div class="address-element" id="city-element">Город: не указан</div>
+                    <div class="address-element" id="street-element">Улица: не указана</div>
+                    <div class="address-element" id="house-element">Дом: не указан</div>
+                    <div class="address-element" id="appartment-element">Квартира: не указана</div>
+                </div>
+            }
             <div class="button-change-address">Изменить</div>
             <div class="payment-name">Способы оплаты</div>
             <div class="payment-container">

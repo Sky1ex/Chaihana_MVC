@@ -9,6 +9,10 @@
         });
 
         var address = document.querySelector('.address-container').id;
+        if (address == "") {
+            alert('Укажите адрес!');
+            return;
+        }
 
         $.ajax({
             url: '/Api/Cart/Purshare',
@@ -18,6 +22,9 @@
             success: function (data) {
                 alert('Заказ оформлен!');
                 window.location.href = '/Menu'
+            },
+            error: function (message) {
+                alert(message.responseText);
             }
         });
     });

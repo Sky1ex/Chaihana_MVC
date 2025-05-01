@@ -10,7 +10,6 @@ namespace WebApplication1.Repository
 
         public CartElementRepository(ApplicationDbContext context) : base(context) { }
 
-
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
