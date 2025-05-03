@@ -30,11 +30,29 @@ namespace WebApplication1.Services
             return bookingDto;
         }
 
-        // Доделать бронь!!! Сейчас отсутствует интервал
+		public async Task<List<BookingDto>> GetAllBookingsByUserId(Guid userId)
+		{
+			var booking = await _unitOfWork.Bookings.GetBookingsByUserId(userId);
 
-        public async Task AddBooking(int tableId, DateTime time, int interval, Guid userId)
+			var bookingDto = booking.Select(x => _mapper.Map<BookingDto>(x)).ToList();
+
+			bookingDto.ForEach(x => x.Time = x.Time.ToLocalTime());
+
+			return bookingDto;
+		}
+
+		public async Task<bool> AddBooking(int tableId, DateTime time, int interval, Guid userId)
         {
             var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+            var bookings = await _unitOfWork.Bookings.GetBookingsByTableId(tableId);
+
+            var checkBooking = bookings.Where(b => (time.Hour >= b.Time.Hour && (time.Hour < b.Time.Hour + b.Interval)) || ((time.Hour + interval) > b.Time.Hour && (time.Hour + interval) <= (b.Time.Hour + b.Interval)));
+
+            if (checkBooking.Count() != 0 || interval > 3 || interval <= 0)
+            {
+                return false;
+            }
 
             var booking = new Booking
             {
@@ -48,6 +66,15 @@ namespace WebApplication1.Services
             await _unitOfWork.Bookings.AddAsync(booking);
 
             await _unitOfWork.SaveChangesAsync();
+            return true;
         }
+
+        public async Task DeleteBooking(Guid bookingId)
+        {
+            var booking = await _unitOfWork.Bookings.GetByIdAsync(bookingId);
+            _unitOfWork.Bookings.Delete(booking);
+
+			await _unitOfWork.SaveChangesAsync();
+		}
     }
 }

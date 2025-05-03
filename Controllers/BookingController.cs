@@ -64,7 +64,26 @@ namespace WebApplication1.Controllers
             try
             {
                 var userId = await _userService.GetLogin();
-                await _bookingService.AddBooking(tableId, time, interval, userId);
+                if(await _bookingService.AddBooking(tableId, time, interval, userId)) return Ok();
+                else return BadRequest("Время уже занято или интервал превышает 3 часа!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorViewModel
+                {
+                    Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+                    Details = ex is ValidationException ? null : ex.Message
+                });
+            }
+        }
+
+
+        [HttpDelete("Api/Booking/Delete")]
+        public async Task<IActionResult> DeleteBooking(Guid bookingId)
+        {
+            try
+            {
+                await _bookingService.DeleteBooking(bookingId);
                 return Ok();
             }
             catch (Exception ex)

@@ -155,12 +155,13 @@
             if ((selectedDateTime >= bookingStart && selectedDateTime < bookingEnd) ||
                 (selectedDateTimeWithInterval > bookingStart && selectedDateTimeWithInterval <= bookingEnd) ||
                 selectedDateTimeWithInterval.getHours() > 22) {
-                /*return false;*/
                 document.querySelector('.button-booking').className = 'button-booking denied';
+                return false;
             }
             else document.querySelector('.button-booking').className = 'button-booking';
         }
-        /*return true;*/
+        document.querySelector('.button-booking').className = 'button-booking';
+        return true;
     }
 
 
@@ -249,11 +250,13 @@
             const bookingDate = new Date(year, month, day, hours, minutes);
             const interval = parseInt(document.querySelector('.time-container').textContent[0]);
 
+            isTimeSlotAvailable(timeStr);
+
             // Проверяем, доступно ли выбранное время
-            if (!isTimeSlotAvailable(timeStr)) {
+            /*if (!isTimeSlotAvailable(timeStr)) {
                 alert('Это время уже занято. Пожалуйста, выберите другое время.');
                 return;
-            }
+            }*/
 
             $.ajax({
                 url: '/Api/Booking/Add',

@@ -22,8 +22,6 @@ using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => options.LoginPath = "/login");*/
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -38,7 +36,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = AuthOptions.AUDIENCE,
             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
         };
-        // Чтение токена из Cookie
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -56,13 +53,12 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .WithExposedHeaders("Authorization"); // Важно для JWT
+              .WithExposedHeaders("Authorization");
     });
 });
 
 builder.Services.AddAuthorization();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -159,7 +155,7 @@ app.UseSwagger(); //
 app.UseSwaggerUI(); // методы для swagger
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // для работы с отправкой кода
+app.UseStaticFiles();
 
 app.UseRouting();
 

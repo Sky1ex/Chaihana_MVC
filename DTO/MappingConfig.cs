@@ -41,6 +41,7 @@ namespace WebApplication1.DTO
 
             // Booking -> BookingDto
             config.NewConfig<Booking, BookingDto>()
+				.Map(dest => dest.BookingId, src => src.BookingId)
 				.Map(dest => dest.Time, src => src.Time)
 				.Map(dest => dest.Interval, src => src.Interval)
 				.Map(dest => dest.Table, src => src.Table);
