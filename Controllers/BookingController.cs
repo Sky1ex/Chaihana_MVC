@@ -56,9 +56,27 @@ namespace WebApplication1.Controllers
             }
         }
 
-        // Доделать обработку всех ошибок в js!!!
+		[HttpGet("Api/Booking/GetByDate")]
+		public async Task<IActionResult> GetAllBookingsByDate(int tableId, DateTime time)
+		{
+			try
+			{
+				var booking = await _bookingService.GetAllBookingsByTableIdAndDate(tableId, time);
+				return Ok(booking);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new ErrorViewModel
+				{
+					Message = ErrorViewModel.GetUserFriendlyMessage(ex),
+					Details = ex is ValidationException ? null : ex.Message
+				});
+			}
+		}
 
-        [HttpPost("Api/Booking/Add")]
+		// Доделать обработку всех ошибок в js!!!
+
+		[HttpPost("Api/Booking/Add")]
         public async Task<IActionResult> AddBooking(int tableId, DateTime time, int interval)
         {
             try

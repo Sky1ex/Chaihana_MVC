@@ -30,6 +30,17 @@ namespace WebApplication1.Services
             return bookingDto;
         }
 
+		public async Task<List<BookingDto>> GetAllBookingsByTableIdAndDate(int tableId, DateTime time)
+		{
+			var booking = await _unitOfWork.Bookings.GetBookingsByTableId(tableId);
+            
+            booking = booking.Where(x => x.Time.Day == time.Day).OrderBy(x => x.Time.Hour).ToList();
+
+			var bookingDto = booking.Select(x => _mapper.Map<BookingDto>(x)).ToList();
+
+			return bookingDto;
+		}
+
 		public async Task<List<BookingDto>> GetAllBookingsByUserId(Guid userId)
 		{
 			var booking = await _unitOfWork.Bookings.GetBookingsByUserId(userId);
