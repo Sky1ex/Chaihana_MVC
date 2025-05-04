@@ -243,7 +243,12 @@
             const day = parseInt(document.querySelector('.calendar-day.selected').textContent, 10);
             const year = new Date().getFullYear();
             const timeStr = document.querySelector('.button-time-text').textContent.trim();
-            const tableId = document.querySelector('.table.selected').getAttribute('data-table-id');
+            const tableId = document.querySelector('.table.selected');
+
+            if (tableId == null) {
+                alert('Выберите стол!');
+                return;
+            }
 
             const month = monthNames[monthStr];
             const [hours, minutes] = timeStr.split(':').map(Number);
@@ -252,17 +257,12 @@
 
             isTimeSlotAvailable(timeStr);
 
-            // Проверяем, доступно ли выбранное время
-            /*if (!isTimeSlotAvailable(timeStr)) {
-                alert('Это время уже занято. Пожалуйста, выберите другое время.');
-                return;
-            }*/
 
             $.ajax({
                 url: '/Api/Booking/Add',
                 type: 'POST',
                 data: {
-                    tableId: tableId,
+                    tableId: tableId.getAttribute('data-table-id'),
                     time: bookingDate.toISOString(),
                     interval: interval
                 },
