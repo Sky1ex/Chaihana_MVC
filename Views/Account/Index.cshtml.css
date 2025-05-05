@@ -210,7 +210,6 @@
 }*/
 
 .order-data-header {
-    /* Убираем position: relative, если не нужно */
     margin-top: 80px; /* Заменяем top */
 }
 
@@ -242,7 +241,7 @@
 }*/
 
 .order-data {
-    margin: 40px 0 0 40px; /* Заменяем position: relative и top/left */
+    margin: 40px 0 0 40px;
     padding: 0;
     font-family: 'Prosto One';
     font-style: normal;
@@ -250,6 +249,66 @@
     font-size: 20px;
     line-height: 25px;
     color: #000000;
+}
+
+.booking-data-header {
+    margin-top: 80px;
+}
+
+.booking-data-header-name {
+    position: relative;
+    height: 31px;
+    left: 40px;
+    top: 19px;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 31px;
+    /* identical to box height */
+
+    color: #000000;
+}
+
+.booking-data {
+    margin: 40px 0 0 40px;
+    padding: 0;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    color: #000000;
+    display: inline-flex;
+}
+
+.booking{
+    align-self: center;
+}
+
+.booking-delete-button {
+    /*top: calc(40px + 25px/2 - 40px/2);*/
+    display: inline-flex;
+    position: relative;
+    width: 150px;
+    height: 40px;
+    left: 320px;
+    /* Main color */
+    background: #E67225;
+    border-radius: 20px;
+    /* Изменить */
+
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    /* identical to box height */
+
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
 }
 
 .phone-modal {

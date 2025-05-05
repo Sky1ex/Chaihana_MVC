@@ -14,11 +14,13 @@ namespace WebApplication1.Controllers
     {
         private readonly UserService _userService;
         private readonly AccountService _accountService;
+        private readonly BookingService _bookingService;
 
-        public AccountController(UserService userService, AccountService accountService)
+        public AccountController(UserService userService, AccountService accountService, BookingService bookingService)
         {
             _userService = userService;
             _accountService = accountService;
+            _bookingService = bookingService;
         }
 
         [HttpGet("Api/Login")]
@@ -47,9 +49,11 @@ namespace WebApplication1.Controllers
                 var userId = await _userService.GetLogin();
                 var addresses = await _accountService.GetAddresses(userId);
                 var orders = await _accountService.GetOrders(userId);
+                var bookings = await _bookingService.GetAllBookingsByUserId(userId);
                 var user = await _userService.GetUser(userId);
                 ViewBag.Orders = orders;
                 ViewBag.Addresses = addresses;
+                ViewBag.Bookings = bookings;
                 return View(user);
             }
             catch (Exception ex)

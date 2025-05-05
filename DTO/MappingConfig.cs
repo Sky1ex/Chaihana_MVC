@@ -41,6 +41,7 @@ namespace WebApplication1.DTO
 
             // Booking -> BookingDto
             config.NewConfig<Booking, BookingDto>()
+				.Map(dest => dest.BookingId, src => src.BookingId)
 				.Map(dest => dest.Time, src => src.Time)
 				.Map(dest => dest.Interval, src => src.Interval)
 				.Map(dest => dest.Table, src => src.Table);
@@ -57,20 +58,7 @@ namespace WebApplication1.DTO
 				.Map(dest => dest.DateTime, src => src.dateTime)
 				.Map(dest => dest.Address, src => src.Adress)
 				.Map(dest => dest.Products, src => src.OrderElement);
-
-            // Adress -> AddressElement
-            config.NewConfig<Adress, AddressElement>()
-				.Map(dest => dest.AddressElementId, src => src.AdressId)
-				.Map(dest => dest.City, src => src.City)
-				.Map(dest => dest.Street, src => src.Street)
-				.Map(dest => dest.House, src => src.House)
-				.Map(dest => dest.Apartment, src => src.Apartment);
-
-            // CartElement -> OrderElement
-            config.NewConfig<CartElement, OrderElement>()
-				.Map(dest => dest.OrderElementId, src => src.CartElementId)
-				.Map(dest => dest.Product, src => src.Product)
-				.Map(dest => dest.Count, src => src.Count);
+                
         }
 	}
 }

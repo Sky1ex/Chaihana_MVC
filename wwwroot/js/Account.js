@@ -1,5 +1,7 @@
 ﻿var currentId;
 
+var currentBookingId;
+
 var currentPhone;
 
 var started = false;
@@ -101,6 +103,21 @@ $(document).ready(function () {
             data: { addressId: currentId },
             success: function () {
                 console.log('Адрес удален!');
+                window.location.reload();
+            },
+        });
+    });
+
+    $(document).on('click', '.booking-delete-button', function () {
+
+        currentBookingId = $(this).attr('id');
+
+        $.ajax({
+            url: '/Api/Booking/Delete',
+            type: 'DELETE',
+            data: { bookingId: currentBookingId },
+            success: function () {
+                console.log('бронирование удалено!');
                 window.location.reload();
             },
         });

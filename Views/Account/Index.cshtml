@@ -72,6 +72,22 @@
 			</div>
 		}
 	</div>
+
+		<div class="booking-data-header">
+			<div class="booking-data-header-name">Ваши бронирования:</div>
+			<svg class="line" width="1320" height="2" viewBox="0 0 1320 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<line x1="-8.74228e-08" y1="1" x2="1320" y2="0.999885" stroke="black" stroke-width="2" />
+			</svg>
+			@foreach (var booking in ViewBag.Bookings)
+			{
+				<div class="booking-data">
+					<div class="booking">
+						Дата - @booking.Time, на время - @booking.Interval ч, Стол - №@booking.Table
+					</div>
+					<div class="booking-delete-button" id="@booking.BookingId">Удалить</div>
+				</div>
+			}
+		</div>
 </div>
 	<div class="map-modal">
 		<div class="close">&times;</div>

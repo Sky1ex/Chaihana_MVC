@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using FluentAssertions;
+using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -155,8 +156,20 @@ namespace WebApplication1.Services
             {
                 OrderId = Guid.NewGuid(),
                 dateTime = DateTimeOffset.UtcNow,
-                Adress = _mapper.Map<AddressElement>(address),
-                OrderElement = selectedCartElements.Select(ce => _mapper.Map<OrderElement>(ce)).ToList()
+                Adress = new AddressElement
+                {
+                    AddressElementId = Guid.NewGuid(),
+                    City = address.City,
+                    Street = address.Street,
+                    House = address.House,
+                    Apartment = address.Apartment
+                },
+                OrderElement = selectedCartElements.Select(ce => new OrderElement
+                {
+                    OrderElementId = Guid.NewGuid(),
+                    Product = ce.Product,
+                    Count = ce.Count
+                }).ToList()
             };
 
             await _unitOfWork.Orders.AddAsync(order);

@@ -13,8 +13,45 @@ div.scheme {
     z-index: 10;
 }
 
+.inline-contaier{
+    display: inline-flex;
+}
+
 div.walls {
     position: relative;
+}
+
+.booking-reserved-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.6);
+    width: 300px;
+    height: 740px;
+    left: 40px;
+    border-radius: 20px;
+}
+
+.booking-reserved-header {
+    width: 300px;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: #E67225;
+    border-radius: 20px 20px 0 0;
+    font-family: 'Prosto One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
+::deep .booking-reserved-element {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
 }
 
 div.bar {

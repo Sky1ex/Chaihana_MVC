@@ -18,7 +18,14 @@ namespace WebApplication1.Repository
                 .ToListAsync();
         }
 
-        protected virtual void Dispose(bool disposing)
+		public async Task<List<Booking>> GetBookingsByUserId(Guid userId)
+		{
+			return await _context.Bookings
+				.Where(x => x.User.UserId == userId)
+				.ToListAsync();
+		}
+
+		protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
             {

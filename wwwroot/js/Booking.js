@@ -111,6 +111,9 @@
             if (!dayElement.classList.contains('other-month')) {
                 dayElement.addEventListener('click', () => {
                     selectedDate = new Date(year, month, i);
+                    if (currentTableId != null) {
+                        loadBookedTimeSlots(currentTableId)
+                    }
                     document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
                     dayElement.classList.add('selected');
                     updateTimeSlots();
@@ -146,6 +149,11 @@
         selectedDateTime.setHours(hours, minutes, 0, 0);
         selectedDateTimeWithInterval.setHours(hours + selectedInterval, minutes, 0, 0);
 
+        if (selectedDateTimeWithInterval.getHours() > 22 || selectedDateTimeWithInterval.getHours() == 0) {
+            document.querySelector('.button-booking').className = 'button-booking denied';
+            return false;
+        }
+
         // Проверяем, не попадает ли выбранное время в занятый промежуток
         for (const booking of bookedTimeSlots) {
             const bookingStart = new Date(booking.time);
@@ -154,13 +162,15 @@
 
             if ((selectedDateTime >= bookingStart && selectedDateTime < bookingEnd) ||
                 (selectedDateTimeWithInterval > bookingStart && selectedDateTimeWithInterval <= bookingEnd) ||
-                selectedDateTimeWithInterval.getHours() > 22) {
-                /*return false;*/
+                (selectedDateTime <= bookingStart && selectedDateTimeWithInterval >= bookingEnd))
+                {
                 document.querySelector('.button-booking').className = 'button-booking denied';
+                return false;
             }
             else document.querySelector('.button-booking').className = 'button-booking';
         }
-        /*return true;*/
+        document.querySelector('.button-booking').className = 'button-booking';
+        return true;
     }
 
 
@@ -190,16 +200,42 @@
             isTimeSlotAvailable(timeStr);
         }
     }
+    function UpdateBookingReserved() {
+        var content = document.querySelector('.booking-reserved-array');
+        content.innerHTML = ''
+        if (bookedTimeSlots.length == 0) {
+            var element = document.createElement('div');
+            element.className = 'booking-reserved-element';
+            element.textContent = 'Все время свободно!';
+            content.appendChild(element);
+            return;
+        }
+        for (const booking of bookedTimeSlots) {
+            var element = document.createElement('div');
+            element.className = 'booking-reserved-element';
+            var start = new Date(booking.time);
+            var end = new Date(booking.time);
+            end.setHours(start.getHours() + booking.interval)
+            element.textContent = start.toLocaleTimeString() + " - " + end.toLocaleTimeString();
+            content.appendChild(element);
+        }
+    }
 
     // Загружает занятые временные слоты для выбранного стола
     function loadBookedTimeSlots(tableId) {
+        var tempDate = new Date(selectedDate);
+        tempDate.setHours(12);
+        var date = new Date(tempDate).toISOString();
         $.ajax({
-            url: '/Api/Booking/GetAll',
+            /*url: '/Api/Booking/GetAll',*/
+            url: '/Api/Booking/GetByDate',
             type: 'GET',
-            data: { tableId: tableId },
+            data: { tableId: tableId, time: date },
             success: function (bookings) {
+                
                 bookedTimeSlots = bookings;
                 updateTimeSlots(); // Обновляем временные слоты после загрузки данных
+                UpdateBookingReserved(); // добавляем все брони в таблицу
             },
             error: function () {
                 console.error('Ошибка при загрузке бронирований');
@@ -242,24 +278,26 @@
             const day = parseInt(document.querySelector('.calendar-day.selected').textContent, 10);
             const year = new Date().getFullYear();
             const timeStr = document.querySelector('.button-time-text').textContent.trim();
-            const tableId = document.querySelector('.table.selected').getAttribute('data-table-id');
+            const tableId = document.querySelector('.table.selected');
+
+            if (tableId == null) {
+                alert('Выберите стол!');
+                return;
+            }
 
             const month = monthNames[monthStr];
             const [hours, minutes] = timeStr.split(':').map(Number);
             const bookingDate = new Date(year, month, day, hours, minutes);
             const interval = parseInt(document.querySelector('.time-container').textContent[0]);
 
-            // Проверяем, доступно ли выбранное время
-            if (!isTimeSlotAvailable(timeStr)) {
-                alert('Это время уже занято. Пожалуйста, выберите другое время.');
-                return;
-            }
+            isTimeSlotAvailable(timeStr);
+
 
             $.ajax({
                 url: '/Api/Booking/Add',
                 type: 'POST',
                 data: {
-                    tableId: tableId,
+                    tableId: tableId.getAttribute('data-table-id'),
                     time: bookingDate.toISOString(),
                     interval: interval
                 },
