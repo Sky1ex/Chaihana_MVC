@@ -180,12 +180,12 @@ $(document).ready(function () {
             type: 'POST',
             data: { code: number },
             success: function (answer) {
-                if (answer == true)
+                if (answer == "true")
                 {
                     $('#content-send-code').css('display', 'none');
                     $('#content-send-name').css('display', 'block');
                 }
-                else if (answer == false) alert("Неправильный код");
+                else if (answer == "false") alert("Неправильный код");
                 else {
                     alert("Вы уже были зарегистрированы");
                     $('#content-send-code').css('display', 'none');
